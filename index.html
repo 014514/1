@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>沙塵突圍 3D：跨電腦 1v1 ＋ 3人連線打機器人版</title>
+    <title>沙塵突圍 3D：硬派現代戰術槍戰版</title>
+    <!-- 標準 CDN 載入 Tailwind CSS、Three.js r128、MQTT.js 與軍武字型 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Noto+Sans+TC:wght@500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
     <style>
         * {
@@ -36,10 +39,10 @@
             height: 100%;
         }
         .hud-glass {
-            background: linear-gradient(145deg, rgba(22, 20, 17, 0.88), rgba(12, 11, 9, 0.94));
-            border: 1px solid rgba(217, 178, 115, 0.34);
+            background: linear-gradient(145deg, rgba(20, 19, 16, 0.90), rgba(10, 10, 8, 0.95));
+            border: 1px solid rgba(217, 178, 115, 0.36);
             backdrop-filter: blur(8px);
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.65);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.68);
         }
         .newspaper-panel {
             background: linear-gradient(160deg, #e9dec3 0%, #d4c39c 55%, #bfa97a 100%);
@@ -73,14 +76,23 @@
             text-shadow: 0 2px 6px rgba(0,0,0,0.95);
             animation: floatUpDmg 0.85s ease-out forwards;
         }
-        /* 狙擊鏡高倍光學分化線疊層 */
+        /* M24 8倍狙擊鏡高倍光學分化線疊層 */
         .sniper-scope-mask {
             background: radial-gradient(circle at center,
                 transparent 0%,
                 rgba(8, 12, 10, 0.04) 24%,
                 rgba(5, 10, 8, 0.32) 30%,
-                rgba(0, 0, 0, 0.96) 33.5%,
+                rgba(0, 0, 0, 0.97) 33.5%,
                 #000000 100%);
+        }
+        @keyframes killFeedSlide {
+            0% { opacity: 0; transform: translateX(18px); }
+            12% { opacity: 1; transform: translateX(0); }
+            85% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(10px); }
+        }
+        .kill-feed-item {
+            animation: killFeedSlide 4.2s ease-out forwards;
         }
     </style>
 </head>
@@ -93,45 +105,46 @@
     <div id="buddha-aura" class="fixed inset-0 pointer-events-none z-10 opacity-0 transition-opacity duration-300 buddha-screen-aura"></div>
 
     <!-- 開鏡（ADS）周邊景深暗角遮罩 -->
-    <div id="ads-vignette" class="fixed inset-0 pointer-events-none z-11 opacity-0 transition-opacity duration-150"
-         style="background: radial-gradient(circle, transparent 44%, rgba(0, 0, 0, 0.56) 100%);"></div>
+    <div id="ads-vignette" class="fixed inset-0 pointer-events-none z-11 opacity-0 transition-opacity duration-150" style="background: radial-gradient(circle, transparent 44%, rgba(0, 0, 0, 0.58) 100%);"></div>
 
     <!-- M24 狙擊鏡高倍光學密位分化線疊層 -->
     <div id="sniper-scope-overlay" class="fixed inset-0 pointer-events-none z-14 opacity-0 transition-opacity duration-150 sniper-scope-mask flex items-center justify-center">
         <svg viewBox="0 0 600 600" class="w-[82vmin] h-[82vmin] max-w-[660px] max-h-[660px] overflow-visible">
-            <circle cx="300" cy="300" r="248" fill="none" stroke="rgba(15, 23, 20, 0.92)" stroke-width="14" />
-            <circle cx="300" cy="300" r="241" fill="none" stroke="rgba(52, 211, 153, 0.35)" stroke-width="1.5" />
-            <line x1="58" y1="300" x2="542" y2="300" stroke="rgba(12, 16, 14, 0.9)" stroke-width="1.4" />
-            <line x1="300" y1="58" x2="300" y2="542" stroke="rgba(12, 16, 14, 0.9)" stroke-width="1.4" />
-            <line x1="58" y1="300" x2="155" y2="300" stroke="rgba(10, 12, 11, 0.95)" stroke-width="4.5" />
-            <line x1="445" y1="300" x2="542" y2="300" stroke="rgba(10, 12, 11, 0.95)" stroke-width="4.5" />
-            <line x1="300" y1="445" x2="300" y2="542" stroke="rgba(10, 12, 11, 0.95)" stroke-width="4.5" />
-            <circle cx="200" cy="300" r="2.6" fill="#090d0b" />
-            <circle cx="225" cy="300" r="2.6" fill="#090d0b" />
-            <circle cx="250" cy="300" r="2.6" fill="#090d0b" />
-            <circle cx="275" cy="300" r="2.6" fill="#090d0b" />
-            <circle cx="325" cy="300" r="2.6" fill="#090d0b" />
-            <circle cx="350" cy="300" r="2.6" fill="#090d0b" />
-            <circle cx="375" cy="300" r="2.6" fill="#090d0b" />
-            <circle cx="400" cy="300" r="2.6" fill="#090d0b" />
-            <circle cx="300" cy="225" r="2.6" fill="#090d0b" />
-            <circle cx="300" cy="250" r="2.6" fill="#090d0b" />
-            <circle cx="300" cy="275" r="2.6" fill="#090d0b" />
-            <circle cx="300" cy="325" r="2.6" fill="#090d0b" />
-            <circle cx="300" cy="350" r="2.6" fill="#090d0b" />
-            <circle cx="300" cy="375" r="2.6" fill="#090d0b" />
-            <circle cx="300" cy="400" r="2.6" fill="#090d0b" />
-            <line x1="291" y1="337" x2="309" y2="337" stroke="#090d0b" stroke-width="1.6" />
-            <line x1="288" y1="362" x2="312" y2="362" stroke="#090d0b" stroke-width="1.6" />
-            <line x1="285" y1="387" x2="315" y2="387" stroke="#090d0b" stroke-width="1.6" />
-            <circle cx="300" cy="300" r="2.2" fill="#ef4444" />
-            <text x="368" y="288" fill="rgba(52, 211, 153, 0.78)" font-size="11" font-family="monospace" font-weight="bold">8X MIL-DOT</text>
+            <circle cx="300" cy="300" r="248" fill="none" stroke="rgba(15, 23, 20, 0.92)" stroke-width="14"></circle>
+            <circle cx="300" cy="300" r="241" fill="none" stroke="rgba(52, 211, 153, 0.35)" stroke-width="1.5"></circle>
+            <line x1="58" y1="300" x2="542" y2="300" stroke="rgba(12, 16, 14, 0.9)" stroke-width="1.4"></line>
+            <line x1="300" y1="58" x2="300" y2="542" stroke="rgba(12, 16, 14, 0.9)" stroke-width="1.4"></line>
+            <line x1="58" y1="300" x2="155" y2="300" stroke="rgba(10, 12, 11, 0.95)" stroke-width="4.5"></line>
+            <line x1="445" y1="300" x2="542" y2="300" stroke="rgba(10, 12, 11, 0.95)" stroke-width="4.5"></line>
+            <line x1="300" y1="445" x2="300" y2="542" stroke="rgba(10, 12, 11, 0.95)" stroke-width="4.5"></line>
+            <circle cx="200" cy="300" r="2.6" fill="#090d0b"></circle>
+            <circle cx="225" cy="300" r="2.6" fill="#090d0b"></circle>
+            <circle cx="250" cy="300" r="2.6" fill="#090d0b"></circle>
+            <circle cx="275" cy="300" r="2.6" fill="#090d0b"></circle>
+            <circle cx="325" cy="300" r="2.6" fill="#090d0b"></circle>
+            <circle cx="350" cy="300" r="2.6" fill="#090d0b"></circle>
+            <circle cx="375" cy="300" r="2.6" fill="#090d0b"></circle>
+            <circle cx="400" cy="300" r="2.6" fill="#090d0b"></circle>
+            <circle cx="300" cy="225" r="2.6" fill="#090d0b"></circle>
+            <circle cx="300" cy="250" r="2.6" fill="#090d0b"></circle>
+            <circle cx="300" cy="275" r="2.6" fill="#090d0b"></circle>
+            <circle cx="300" cy="325" r="2.6" fill="#090d0b"></circle>
+            <circle cx="300" cy="350" r="2.6" fill="#090d0b"></circle>
+            <circle cx="300" cy="375" r="2.6" fill="#090d0b"></circle>
+            <circle cx="300" cy="400" r="2.6" fill="#090d0b"></circle>
+            <line x1="291" y1="337" x2="309" y2="337" stroke="#090d0b" stroke-width="1.6"></line>
+            <line x1="288" y1="362" x2="312" y2="362" stroke="#090d0b" stroke-width="1.6"></line>
+            <line x1="285" y1="387" x2="315" y2="387" stroke="#090d0b" stroke-width="1.6"></line>
+            <circle cx="300" cy="300" r="2.2" fill="#ef4444"></circle>
+            <text x="362" y="286" fill="rgba(52, 211, 153, 0.85)" font-size="11" font-family="monospace" font-weight="bold">8X MIL-DOT [SHIFT 屏息]</text>
         </svg>
     </div>
 
-    <!-- 受擊紅色暗角 -->
-    <div id="damage-vignette" class="fixed inset-0 pointer-events-none z-10 opacity-0 transition-opacity duration-150"
-         style="background: radial-gradient(circle, transparent 52%, rgba(220, 38, 38, 0.72) 100%);"></div>
+    <!-- 受擊紅色暗角與方向指示弧 -->
+    <div id="damage-vignette" class="fixed inset-0 pointer-events-none z-10 opacity-0 transition-opacity duration-150" style="background: radial-gradient(circle, transparent 52%, rgba(220, 38, 38, 0.72) 100%);"></div>
+    <div id="hit-direction-indicator" class="fixed inset-0 pointer-events-none z-15 flex items-center justify-center opacity-0 transition-opacity duration-150">
+        <div id="hit-dir-arrow" class="w-44 h-44 rounded-full border-t-4 border-red-500/90 drop-shadow-[0_0_12px_rgba(239,68,68,0.95)]"></div>
+    </div>
 
     <!-- 浮動傷害數字容器 -->
     <div id="floating-dmg-layer" class="fixed inset-0 pointer-events-none z-20 overflow-hidden"></div>
@@ -156,15 +169,15 @@
         </div>
     </div>
 
-    <!-- 中心準星與命中標記 -->
+    <!-- 中心動態十字準星與命中標記（移動與連射時四翼會動態張開） -->
     <div id="crosshair-container" class="fixed inset-0 pointer-events-none z-15 flex items-center justify-center">
         <div class="relative flex items-center justify-center">
             <div id="ch-bars" class="relative flex items-center justify-center transition-opacity duration-100">
-                <div class="absolute w-0.5 h-3 bg-emerald-400 shadow-[0_0_4px_#000] -translate-y-3"></div>
-                <div class="absolute w-0.5 h-3 bg-emerald-400 shadow-[0_0_4px_#000] translate-y-3"></div>
-                <div class="absolute h-0.5 w-3 bg-emerald-400 shadow-[0_0_4px_#000] -translate-x-3"></div>
-                <div class="absolute h-0.5 w-3 bg-emerald-400 shadow-[0_0_4px_#000] translate-x-3"></div>
-                <div class="w-1 h-1 rounded-full bg-amber-300"></div>
+                <div id="ch-top" class="absolute w-0.5 h-3 bg-emerald-400 shadow-[0_0_4px_#000]" style="transform: translateY(-12px);"></div>
+                <div id="ch-bottom" class="absolute w-0.5 h-3 bg-emerald-400 shadow-[0_0_4px_#000]" style="transform: translateY(12px);"></div>
+                <div id="ch-left" class="absolute h-0.5 w-3 bg-emerald-400 shadow-[0_0_4px_#000]" style="transform: translateX(-12px);"></div>
+                <div id="ch-right" class="absolute h-0.5 w-3 bg-emerald-400 shadow-[0_0_4px_#000]" style="transform: translateX(12px);"></div>
+                <div class="w-1 h-1 rounded-full bg-amber-300 shadow-[0_0_3px_#000]"></div>
             </div>
 
             <div id="hitmarker" class="absolute w-6 h-6 opacity-0 transition-opacity duration-75 flex items-center justify-center">
@@ -186,34 +199,30 @@
     <div class="fixed top-2 left-2 sm:top-3 sm:left-3 z-20 flex flex-wrap items-start gap-2 max-w-[44vw] sm:max-w-[68vw]">
         <div class="hidden sm:block hud-glass rounded-xl p-1.5 relative">
             <canvas id="radar-canvas" width="96" height="96" class="w-20 h-20 sm:w-24 sm:h-24 rounded-lg block"></canvas>
-            <div class="text-[9px] text-center font-black tracking-widest text-amber-300/90 mt-0.5">RADAR</div>
+            <div class="text-[9px] text-center font-black tracking-widest text-amber-300/90 mt-0.5">TACTICAL RADAR</div>
         </div>
 
         <div class="hud-glass rounded-xl px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs space-y-1 min-w-[165px] sm:min-w-[205px]">
             <div class="flex items-center justify-between gap-1">
-                <button id="btn-toggle-mode" class="px-2 py-0.5 rounded bg-amber-500/25 hover:bg-amber-500/40 border border-amber-400/60 text-amber-200 font-black text-[10px] sm:text-[11px] cursor-pointer">
-                    ⚔️ 純 1v1 單挑
-                </button>
-                <span id="hud-ping-badge" class="px-1.5 py-0.5 rounded bg-stone-800 border border-stone-600 text-[10px] font-mono font-black text-emerald-300">
-                    雲端待命
-                </span>
+                <button id="btn-toggle-mode" class="px-2 py-0.5 rounded bg-amber-500/25 hover:bg-amber-500/40 border border-amber-400/60 text-amber-200 font-black text-[10px] sm:text-[11px] cursor-pointer">🤝 3人合作打AI</button>
+                <span id="hud-ping-badge" class="px-1.5 py-0.5 rounded bg-cyan-950 border border-cyan-400 text-[10px] font-mono font-black text-cyan-200">🌐 全球伺服器就緒</span>
             </div>
             <div class="flex items-center justify-between gap-1">
                 <span class="text-stone-400 font-bold">進度</span>
-                <span id="hud-wave" class="font-military text-xs sm:text-sm text-cyan-300">純 1v1 單挑</span>
+                <span id="hud-wave" class="font-military text-xs sm:text-sm text-cyan-300">3人合作・第 1 波</span>
             </div>
             <div class="flex items-center justify-between gap-1">
                 <span class="text-stone-400 font-bold">目標</span>
-                <span id="hud-enemies" class="font-black text-amber-300">等待對手連線</span>
+                <span id="hud-enemies" class="font-black text-amber-300">0 敵軍 (1/3 隊友)</span>
             </div>
             <div class="pt-0.5 border-t border-stone-700/80 space-y-0.5">
                 <div class="flex items-center justify-between gap-1">
                     <span class="text-cyan-300 font-black">房號</span>
-                    <span id="hud-online-count" class="font-black text-emerald-300">7788 (1/3人)</span>
+                    <span id="hud-online-count" class="font-black text-emerald-300">房號 7788 (1/3人)</span>
                 </div>
                 <div class="flex items-center justify-between text-[10px] text-stone-300">
-                    <span>身分: <span id="hud-role-label" class="font-bold text-amber-300">房主 (南基地)</span></span>
-                    <span id="hud-sync-badge" class="px-1.5 py-0.5 rounded bg-cyan-800 text-cyan-100 font-black">Cloud Sync</span>
+                    <span>身分: <span id="hud-role-label" class="font-bold text-amber-300">特戰小隊 (1號隊友)</span></span>
+                    <span id="hud-sync-badge" class="px-1.5 py-0.5 rounded bg-cyan-800 text-cyan-100 font-black">Ballistics v2</span>
                 </div>
             </div>
             <div class="pt-0.5 border-t border-stone-700/80 flex items-center justify-between gap-2">
@@ -223,27 +232,26 @@
         </div>
 
         <div id="radio-box" class="hidden xl:block hud-glass rounded-xl px-3 py-2 text-xs border-l-4 border-l-emerald-500 max-w-xs">
-            <div class="text-[10px] font-black text-emerald-400 tracking-wider">📻 跨電腦戰術無線電頻道</div>
+            <div class="text-[10px] font-black text-emerald-400 tracking-wider">📻 戰術無線電與彈藥補給提示</div>
             <div id="radio-text" class="text-stone-200 font-bold mt-0.5 leading-snug">
-                「已啟用 Canvas 安全雲端即時同步通道！分享畫面或開啟連結輸入相同 4 碼房號即可跨電腦對戰！」
+                「街道掩體旁設有綠色彈藥補給箱，走近可補充備彈與護甲！M870 泵動與 M24 拉栓皆已實裝真槍機械循環！」
             </div>
         </div>
     </div>
 
-    <!-- 右側：跨電腦 1v1 房號控制面板 + 兩張分開的戰地祈福報紙海報 -->
+    <!-- 右側：跨電腦房號控制面板 + 擊殺播報欄（Kill Feed）+ 兩張戰地祈福報紙海報 -->
     <div class="fixed top-2 right-2 sm:top-3 sm:right-3 z-20 flex flex-col items-end gap-2">
         <div class="hud-glass rounded-xl p-2 sm:p-2.5 w-44 sm:w-60 border border-cyan-400/55 space-y-1.5">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] sm:text-xs font-black text-cyan-300 tracking-wide">🌐 跨電腦房號</span>
-                <span id="side-room-status" class="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-black">● 1 人等待對手</span>
+                <span id="side-room-status" class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-black">● 1/3 人等待加入</span>
             </div>
             <div class="bg-stone-950/90 rounded-lg px-2.5 py-1 flex items-center justify-between border border-stone-700">
                 <span class="text-[10px] text-stone-400 font-bold">房間代碼</span>
                 <span id="side-room-code" class="font-military text-base sm:text-lg text-amber-300 tracking-widest">7788</span>
             </div>
             <div class="flex gap-1">
-                <input id="input-room-code" type="text" maxlength="8" value="7788" placeholder="4碼房號"
-                    class="w-full bg-stone-900 border border-stone-600 rounded-lg px-2 py-1 text-xs font-mono font-bold text-white uppercase focus:outline-none focus:border-cyan-400">
+                <input id="input-room-code" type="text" maxlength="8" value="7788" placeholder="4碼房號" class="w-full bg-stone-900 border border-stone-600 rounded-lg px-2 py-1 text-xs font-mono font-bold text-white uppercase focus:outline-none focus:border-cyan-400">
                 <button id="btn-join-room" class="px-2 py-1 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-[11px] font-black shrink-0 cursor-pointer">
                     加入
                 </button>
@@ -261,6 +269,9 @@
                 <span id="side-duel-record" class="font-black text-amber-300">0 勝 - 0 敗</span>
             </div>
         </div>
+
+        <!-- 戰場即時擊殺播報欄 (Kill Feed) -->
+        <div id="kill-feed-container" class="flex flex-col items-end gap-1 pointer-events-none max-w-[260px]"></div>
 
         <!-- 兩張獨立分開的戰地祈福舊報紙海報 -->
         <div class="hidden sm:flex flex-row items-end gap-2 select-none">
@@ -322,10 +333,10 @@
         </div>
 
         <div class="hud-glass rounded-xl p-1.5 pointer-events-auto flex items-center justify-center gap-1 flex-wrap">
-            <button data-wpn="0" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-black bg-amber-500/30 border border-amber-400 text-white cursor-pointer">[1] M4</button>
-            <button data-wpn="1" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-bold bg-stone-800/80 border border-stone-700 text-stone-300 cursor-pointer">[2] 散彈</button>
-            <button data-wpn="2" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-bold bg-stone-800/80 border border-stone-700 text-stone-300 cursor-pointer">[3] 機槍</button>
-            <button data-wpn="3" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-bold bg-stone-800/80 border border-stone-700 text-stone-300 cursor-pointer">[4] 狙擊</button>
+            <button data-wpn="0" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-black bg-amber-500/30 border border-amber-400 text-white cursor-pointer">[1] M4A1</button>
+            <button data-wpn="1" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-bold bg-stone-800/80 border border-stone-700 text-stone-300 cursor-pointer">[2] M870</button>
+            <button data-wpn="2" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-bold bg-stone-800/80 border border-stone-700 text-stone-300 cursor-pointer">[3] M249</button>
+            <button data-wpn="3" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-bold bg-stone-800/80 border border-stone-700 text-stone-300 cursor-pointer">[4] M24</button>
             <button data-wpn="4" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-bold bg-stone-800/80 border border-stone-700 text-stone-300 cursor-pointer">[5] 軍刀</button>
         </div>
 
@@ -335,11 +346,14 @@
                 <span id="hud-ammo" class="font-military text-2xl text-white">30 / 150</span>
             </div>
             <div class="flex flex-wrap items-center justify-end gap-1.5">
+                <button id="btn-camera-view" class="px-2 py-1 rounded-lg bg-cyan-900/80 hover:bg-cyan-800 border border-cyan-400/70 text-[11px] font-black text-cyan-200 cursor-pointer">
+                    🎥 第一人稱 [C]
+                </button>
                 <button id="btn-crouch" class="px-2 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 border border-stone-600 text-[11px] font-bold text-stone-200 cursor-pointer">
-                    🧎 蹲伏 [C]
+                    🧎 蹲伏 [X/Ctrl]
                 </button>
                 <button id="btn-inspect" class="px-2 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 border border-stone-600 text-[11px] font-bold text-amber-300 cursor-pointer">
-                    ✨ 展示 [F]
+                    ✨ 檢視 [F]
                 </button>
                 <button id="btn-reload" class="px-2 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 border border-stone-600 text-[11px] font-bold text-sky-300 cursor-pointer">
                     🔄 換彈 [R]
@@ -354,26 +368,26 @@
         </div>
     </div>
 
-    <!-- 開場作戰簡報與跨電腦 P2P 連線大廳覆蓋層 -->
+    <!-- 開場作戰簡報與跨電腦連線大廳覆蓋層 -->
     <div id="start-overlay" class="fixed inset-0 z-30 flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 overflow-y-auto">
         <div class="flex flex-col lg:flex-row items-stretch justify-center gap-4 max-w-4xl w-full my-auto">
             <div class="hud-glass rounded-2xl flex-1 p-5 sm:p-7 text-center border-2 border-amber-500/60 flex flex-col justify-between">
                 <div>
                     <div class="inline-block px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 text-xs font-black tracking-widest mb-2">
-                        CROSS-PC CLOUD REALTIME + MULTI-TAB SYNC 1v1
+                        REALISTIC TACTICAL FPS • SHELL EJECTION • BOLT & PUMP ACTION
                     </div>
                     <h1 class="font-military text-3xl sm:text-5xl text-white tracking-wider drop-shadow-lg">
-                        沙塵突圍 3D：跨電腦連線版
+                        沙塵突圍 3D：硬派槍戰版
                     </h1>
                     <p class="text-xs sm:text-sm text-stone-300 mt-2.5 mb-4 leading-relaxed">
-                        已新增 <strong>🤝 三台電腦合作打機器人（3-PC Co-op 合作模式）</strong>！三台不同電腦輸入同一個 4 碼房號加入，即自動編成<strong>友軍特戰小隊（關閉隊友誤傷、綠色特戰名牌）</strong>，合力抵禦強化波次敵軍！同時保留<strong>純 1v1 單挑</strong>與<strong>自由混戰</strong>！
+                        全面重製硬派現代戰術槍械：<strong>M4A1 PEQ-15 綠雷射與全息鏡</strong>、<strong>M870 射擊自動泵動上膛</strong>、<strong>M249 進彈抖動黃銅彈鏈</strong>、<strong>M24 射擊右手拉栓退殼與 8 倍鏡屏息</strong>，搭配<strong>真實黃銅彈殼拋出落地音效、動態擴散準星與彈孔火花</strong>！
                     </p>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-left text-xs bg-stone-900/85 p-3 rounded-xl border border-stone-700 mb-5">
-                        <div><span class="text-amber-400 font-black">WASD / Shift</span>：移動與衝刺</div>
-                        <div><span class="text-amber-400 font-black">滑鼠移動</span>：第一人稱精準瞄準</div>
-                        <div><span class="text-amber-400 font-black">左鍵 / 右鍵</span>：射擊 / 機械鐵瞄</div>
-                        <div><span class="text-amber-400 font-black">C / Space</span>：蹲伏掩體 / 跳躍</div>
-                        <div><span class="text-amber-400 font-black">[1]~[5] / [F]</span>：換武器 / 展示把玩</div>
+                        <div><span class="text-amber-400 font-black">WASD / Shift</span>：移動 / 衝刺 / 狙擊屏息</div>
+                        <div><span class="text-amber-400 font-black">滑鼠移動</span>：精準瞄準</div>
+                        <div><span class="text-amber-400 font-black">左鍵 / 右鍵</span>：射擊 / 開鏡(ADS)</div>
+                        <div><span class="text-cyan-300 font-black">[C] 切換視角</span>：第一人稱 / 第三人稱</div>
+                        <div><span class="text-amber-400 font-black">X / Ctrl / Space</span>：蹲伏 / 跳躍</div>
                         <div><span class="text-yellow-300 font-black">[6] 十字架 / [0] 變佛</span>：復活 / 神掌</div>
                     </div>
                 </div>
@@ -395,18 +409,17 @@
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-sm font-black text-cyan-300">🌐 跨電腦連線房號</span>
-                        <span id="lobby-room-status" class="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-black">● 1/3 人等待隊友</span>
+                        <span id="lobby-room-status" class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-black">● 1/3 人等待加入</span>
                     </div>
                     <div class="bg-stone-950/90 rounded-xl p-3 text-center border border-stone-700">
                         <div class="text-[10px] text-stone-400 font-bold mb-0.5">目前房間代碼（最多支援 3 台電腦同房）</div>
                         <div id="lobby-room-code" class="font-military text-3xl text-amber-300 tracking-widest">7788</div>
-                        <div id="lobby-net-diag" class="text-[11px] text-cyan-300 font-bold mt-1 leading-snug">正在連接雲端即時同步通道...</div>
+                        <div id="lobby-net-diag" class="text-[11px] text-cyan-300 font-bold mt-1 leading-snug">🌐 HiveMQ 全球主線已連線！房號 [7788] 等待朋友加入 (1/3)</div>
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-stone-300 mb-1">輸入朋友的 4 碼房號：</label>
                         <div class="flex gap-1.5">
-                            <input id="lobby-input-room" type="text" maxlength="8" value="7788" placeholder="例如 7788"
-                                class="w-full bg-stone-900 border border-stone-600 rounded-lg px-3 py-2 text-sm font-mono font-black text-white uppercase focus:outline-none focus:border-cyan-400">
+                            <input id="lobby-input-room" type="text" maxlength="8" value="7788" placeholder="例如 7788" class="w-full bg-stone-900 border border-stone-600 rounded-lg px-3 py-2 text-sm font-mono font-black text-white uppercase focus:outline-none focus:border-cyan-400">
                             <button id="lobby-btn-join" class="px-3 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-black shrink-0 cursor-pointer">
                                 連線加入
                             </button>
@@ -486,10 +499,10 @@
 
     <script>
         // ==========================================
-        // 1. 核心遊戲狀態、玩家數據與五款純機械武器配置
+        // 1. 核心遊戲狀態、玩家數據與五款現代戰術武器配置
         // ==========================================
         let gameState = 'MENU';
-        let battleMode = 'coop3'; // 'coop3' | 'pure1v1' | 'hybrid'
+        let battleMode = 'coop3';
         let currentWave = 1;
         let totalKills = 0;
         let score = 0;
@@ -509,16 +522,24 @@
             maxArmor: 100,
             onGround: true,
             isCrouching: false,
+            isThirdPerson: false,
+            tpProgress: 0,
             isADS: false,
             adsProgress: 0,
             isReloading: false,
             reloadTimer: 0,
+            reloadTotal: 1.5,
             fireCooldown: 0,
             recoilKick: 0,
+            recoilYawKick: 0,
             weaponRecoilZ: 0,
             muzzleFlashTimer: 0,
             walkBobTimer: 0,
             swayTimer: 0,
+            crosshairSpread: 12,
+            pumpActionTimer: 0,     // M870 射擊後泵動上膛動畫計時
+            boltActionTimer: 0,     // M24 射擊後右手拉栓退殼動畫計時
+            beltJitterTimer: 0,     // M249 黃銅彈鏈進彈抖動計時
             currentWeaponIdx: 0,
             grenades: 3,
             isInspecting: false,
@@ -536,50 +557,55 @@
 
         const WEAPONS = [
             {
-                name: 'M4A1 全息紅點卡賓槍',
+                id: 'M4A1',
+                name: 'M4A1 SOPMOD 全息戰術卡賓槍',
                 type: 'rifle',
                 mag: 30, magSize: 30, reserve: 150,
-                fireRate: 0.11, dmg: 26, headMult: 2.3,
-                spread: 0.024, pellets: 1, reloadTime: 1.5,
+                fireRate: 0.105, dmg: 27, headMult: 2.35,
+                spread: 0.022, pellets: 1, reloadTime: 1.55,
                 adsFov: 50,
                 hipPos: { x: 0.22, y: -0.21, z: -0.44 },
                 adsPos: { x: 0, y: -0.078, z: -0.32 }
             },
             {
-                name: 'M870 光纖準星戰術散彈槍',
+                id: 'M870',
+                name: 'M870 戰術泵動散彈槍',
                 type: 'shotgun',
                 mag: 8, magSize: 8, reserve: 40,
-                fireRate: 0.68, dmg: 18, headMult: 1.8,
-                spread: 0.095, pellets: 8, reloadTime: 1.8,
+                fireRate: 0.72, dmg: 19, headMult: 1.85,
+                spread: 0.092, pellets: 8, reloadTime: 1.85,
                 adsFov: 58,
                 hipPos: { x: 0.22, y: -0.21, z: -0.44 },
                 adsPos: { x: 0, y: -0.044, z: -0.34 }
             },
             {
-                name: 'M249 階梯照門輕機槍',
+                id: 'M249',
+                name: 'M249 SAW 彈鏈班用輕機槍',
                 type: 'rifle',
                 mag: 100, magSize: 100, reserve: 200,
-                fireRate: 0.09, dmg: 22, headMult: 2.0,
-                spread: 0.036, pellets: 1, reloadTime: 2.4,
+                fireRate: 0.088, dmg: 23, headMult: 2.0,
+                spread: 0.034, pellets: 1, reloadTime: 2.45,
                 adsFov: 52,
                 hipPos: { x: 0.23, y: -0.22, z: -0.45 },
                 adsPos: { x: 0, y: -0.068, z: -0.34 }
             },
             {
-                name: 'M24 8倍光學狙擊步槍',
+                id: 'M24',
+                name: 'M24 8倍光學栓動狙擊步槍',
                 type: 'sniper',
                 mag: 5, magSize: 5, reserve: 30,
-                fireRate: 1.05, dmg: 165, headMult: 2.2,
-                spread: 0.0012, pellets: 1, reloadTime: 2.0,
+                fireRate: 1.15, dmg: 170, headMult: 2.3,
+                spread: 0.001, pellets: 1, reloadTime: 2.1,
                 adsFov: 20,
                 hipPos: { x: 0.22, y: -0.21, z: -0.46 },
                 adsPos: { x: 0, y: -0.072, z: -0.26 }
             },
             {
-                name: '戰術軍刀 (Tactical Knife)',
+                id: 'KNIFE',
+                name: 'M9 鋸齒戰術軍刀',
                 type: 'knife',
                 mag: 1, magSize: 1, reserve: 0,
-                fireRate: 0.34, dmg: 65, headMult: 2.0,
+                fireRate: 0.34, dmg: 70, headMult: 2.0,
                 spread: 0, pellets: 1, reloadTime: 0,
                 adsFov: 68,
                 hipPos: { x: 0.24, y: -0.21, z: -0.42 },
@@ -588,66 +614,136 @@
         ];
 
         // ==========================================
-        // 2. Web Audio 戰場擬真音效引擎
+        // 2. 硬派多層次戰場擬真音效引擎（白噪音火藥爆燃＋金屬槍機循環＋彈殼落地叮噹）
         // ==========================================
         const audio = {
             ctx: null,
+            noiseBuffer: null,
             init() {
                 if (!this.ctx) {
                     const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                    if (AudioCtx) this.ctx = new AudioCtx();
+                    if (AudioCtx) {
+                        this.ctx = new AudioCtx();
+                        const bufferSize = this.ctx.sampleRate * 1.5;
+                        this.noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                        const data = this.noiseBuffer.getChannelData(0);
+                        for (let i = 0; i < bufferSize; i++) {
+                            data[i] = Math.random() * 2 - 1;
+                        }
+                    }
                 }
                 if (this.ctx && this.ctx.state === 'suspended') {
                     this.ctx.resume().catch(() => {});
                 }
             },
+            playNoiseBurst(duration, filterType, freqStart, freqEnd, gainPeak, delay = 0) {
+                if (!this.ctx || !this.noiseBuffer) return;
+                const now = this.ctx.currentTime + delay;
+                const src = this.ctx.createBufferSource();
+                src.buffer = this.noiseBuffer;
+
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = filterType;
+                filter.frequency.setValueAtTime(freqStart, now);
+                if (freqEnd !== freqStart) {
+                    filter.frequency.exponentialRampToValueAtTime(Math.max(40, freqEnd), now + duration);
+                }
+
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(gainPeak, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                src.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+                src.start(now);
+                src.stop(now + duration + 0.02);
+            },
             playAdsToggle(entering) {
                 this.init();
                 if (!this.ctx) return;
-                const now = this.ctx.currentTime;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(entering ? 320 : 240, now);
-                osc.frequency.exponentialRampToValueAtTime(entering ? 620 : 140, now + 0.055);
-                gain.gain.setValueAtTime(0.085, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.065);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.07);
+                this.playNoiseBurst(0.055, 'bandpass', entering ? 1400 : 900, entering ? 2200 : 600, 0.08);
             },
             playGunshot(type) {
                 this.init();
                 if (!this.ctx) return;
                 const now = this.ctx.currentTime;
+
+                // 1. 火藥爆燃高頻撕裂聲 (Noise Crack)
+                if (type === 'sniper') {
+                    this.playNoiseBurst(0.28, 'bandpass', 1800, 320, 0.42);
+                    this.playNoiseBurst(0.45, 'lowpass', 600, 120, 0.35);
+                } else if (type === 'shotgun') {
+                    this.playNoiseBurst(0.22, 'bandpass', 1350, 260, 0.44);
+                    this.playNoiseBurst(0.32, 'lowpass', 520, 110, 0.36);
+                } else {
+                    this.playNoiseBurst(0.13, 'bandpass', 2100, 480, 0.32);
+                }
+
+                // 2. 槍口低頻胸腔衝擊波 (Punch)
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 osc.type = type === 'sniper' ? 'sawtooth' : 'triangle';
-                osc.frequency.setValueAtTime(type === 'sniper' ? 160 : (type === 'shotgun' ? 130 : 210), now);
-                osc.frequency.exponentialRampToValueAtTime(38, now + 0.14);
-                gain.gain.setValueAtTime(0.28, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+                osc.frequency.setValueAtTime(type === 'sniper' ? 145 : (type === 'shotgun' ? 125 : 195), now);
+                osc.frequency.exponentialRampToValueAtTime(34, now + (type === 'sniper' ? 0.22 : 0.13));
+                gain.gain.setValueAtTime(0.34, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + (type === 'sniper' ? 0.24 : 0.15));
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.17);
+                osc.stop(now + 0.25);
+
+                // 3. 金屬槍機復進咔噠聲
+                this.playNoiseBurst(0.035, 'highpass', 3200, 3800, 0.12, 0.045);
             },
-            playKnifeSlash(isStab) {
+            playPumpAction() {
+                this.init();
+                if (!this.ctx) return;
+                // M870 護木後拉＋前推雙段清脆金屬機械聲
+                this.playNoiseBurst(0.07, 'bandpass', 2400, 1800, 0.2, 0.02);
+                this.playNoiseBurst(0.08, 'bandpass', 2800, 3400, 0.22, 0.17);
+            },
+            playBoltAction() {
+                this.init();
+                if (!this.ctx) return;
+                // M24 槍機解鎖上抬 -> 後拉退殼 -> 前推閉鎖三段聲
+                this.playNoiseBurst(0.05, 'highpass', 3400, 4000, 0.18, 0.02);
+                this.playNoiseBurst(0.08, 'bandpass', 2200, 1600, 0.2, 0.16);
+                this.playNoiseBurst(0.06, 'highpass', 3600, 4200, 0.22, 0.34);
+            },
+            playReloadClick(stage) {
+                this.init();
+                if (!this.ctx) return;
+                if (stage === 'out') {
+                    this.playNoiseBurst(0.06, 'bandpass', 1900, 1200, 0.18);
+                } else if (stage === 'in') {
+                    this.playNoiseBurst(0.07, 'bandpass', 2600, 3200, 0.24);
+                } else {
+                    // 拍擊槍機釋放鈕
+                    this.playNoiseBurst(0.05, 'highpass', 3500, 4400, 0.24);
+                }
+            },
+            playShellCasingClink() {
                 this.init();
                 if (!this.ctx) return;
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(isStab ? 680 : 520, now);
-                osc.frequency.exponentialRampToValueAtTime(140, now + 0.14);
-                gain.gain.setValueAtTime(0.18, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                const baseFreq = 4200 + Math.random() * 1400;
+                osc.frequency.setValueAtTime(baseFreq, now);
+                osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.85, now + 0.045);
+                gain.gain.setValueAtTime(0.045, now);
+                gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.05);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.16);
+                osc.stop(now + 0.055);
+            },
+            playKnifeSlash(isStab) {
+                this.init();
+                if (!this.ctx) return;
+                this.playNoiseBurst(0.13, 'bandpass', isStab ? 3200 : 2400, 800, 0.2);
             },
             playHitTick() {
                 this.init();
@@ -656,13 +752,13 @@
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 osc.type = 'square';
-                osc.frequency.setValueAtTime(920, now);
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                osc.frequency.setValueAtTime(980, now);
+                gain.gain.setValueAtTime(0.11, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.06);
+                osc.stop(now + 0.055);
             },
             playHeadshotDing() {
                 this.init();
@@ -671,14 +767,14 @@
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(1480, now);
-                osc.frequency.setValueAtTime(1960, now + 0.05);
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+                osc.frequency.setValueAtTime(1580, now);
+                osc.frequency.setValueAtTime(2120, now + 0.045);
+                gain.gain.setValueAtTime(0.24, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.23);
+                osc.stop(now + 0.25);
             },
             playRicochet() {
                 this.init();
@@ -687,30 +783,31 @@
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(1250 + Math.random() * 500, now);
-                osc.frequency.exponentialRampToValueAtTime(420, now + 0.12);
+                osc.frequency.setValueAtTime(1450 + Math.random() * 600, now);
+                osc.frequency.exponentialRampToValueAtTime(420, now + 0.13);
                 gain.gain.setValueAtTime(0.08, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.14);
+                osc.stop(now + 0.15);
             },
             playExplosion() {
                 this.init();
                 if (!this.ctx) return;
+                this.playNoiseBurst(0.65, 'lowpass', 480, 55, 0.5);
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(95, now);
-                osc.frequency.exponentialRampToValueAtTime(22, now + 0.55);
-                gain.gain.setValueAtTime(0.38, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.58);
+                osc.frequency.setValueAtTime(92, now);
+                osc.frequency.exponentialRampToValueAtTime(20, now + 0.58);
+                gain.gain.setValueAtTime(0.42, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.6);
+                osc.stop(now + 0.62);
             },
             playSacredBell() {
                 this.init();
@@ -748,7 +845,7 @@
         };
 
         // ==========================================
-        // 3. Three.js 3D 沙塵廢墟巷戰地圖（含 4 座鋼鐵樓梯二樓狙擊高台）
+        // 3. Three.js 3D 沙塵廢墟巷戰地圖（含 4 座鋼鐵樓梯二樓狙擊高台、彈藥箱、沙塵粒子）
         // ==========================================
         const canvas = document.getElementById('game-canvas');
         const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -759,28 +856,33 @@
 
         const scene = new THREE.Scene();
         scene.background = new THREE.Color('#c8a97e');
-        scene.fog = new THREE.FogExp2('#c8a97e', 0.0115);
+        scene.fog = new THREE.FogExp2('#c8a97e', 0.0112);
 
         const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.04, 280);
         camera.rotation.order = 'YXZ';
         scene.add(camera);
 
-        const hemiLight = new THREE.HemisphereLight('#fff2d6', '#5c4934', 0.95);
+        const hemiLight = new THREE.HemisphereLight('#fff2d6', '#5c4934', 0.98);
         scene.add(hemiLight);
-        const dirLight = new THREE.DirectionalLight('#ffe4b5', 1.15);
+        const dirLight = new THREE.DirectionalLight('#ffe4b5', 1.2);
         dirLight.position.set(18, 34, 15);
         dirLight.castShadow = true;
         scene.add(dirLight);
 
-        const darkMetalMat = new THREE.MeshStandardMaterial({ color: '#1f2328', metalness: 0.8, roughness: 0.3 });
-        const gunMetalMat = new THREE.MeshStandardMaterial({ color: '#383d45', metalness: 0.72, roughness: 0.36 });
-        const tanRailMat = new THREE.MeshStandardMaterial({ color: '#9c8665', metalness: 0.45, roughness: 0.55 });
-        const woodStockMat = new THREE.MeshStandardMaterial({ color: '#5c3d28', roughness: 0.75 });
-        const oliveStockMat = new THREE.MeshStandardMaterial({ color: '#4b5842', roughness: 0.7 });
-        const silverBladeMat = new THREE.MeshStandardMaterial({ color: '#e5e7eb', metalness: 0.9, roughness: 0.2 });
+        // 槍械與戰場專用高擬真 PBR 材質
+        const darkMetalMat = new THREE.MeshStandardMaterial({ color: '#1a1d21', metalness: 0.85, roughness: 0.26 });
+        const gunMetalMat = new THREE.MeshStandardMaterial({ color: '#333840', metalness: 0.78, roughness: 0.32 });
+        const polymerMat = new THREE.MeshStandardMaterial({ color: '#22252a', metalness: 0.25, roughness: 0.68 });
+        const tanRailMat = new THREE.MeshStandardMaterial({ color: '#a38b66', metalness: 0.45, roughness: 0.52 });
+        const woodStockMat = new THREE.MeshStandardMaterial({ color: '#5c3a24', roughness: 0.72 });
+        const oliveStockMat = new THREE.MeshStandardMaterial({ color: '#45523d', roughness: 0.68 });
+        const silverBladeMat = new THREE.MeshStandardMaterial({ color: '#e5e7eb', metalness: 0.92, roughness: 0.18 });
+        const brassShellMat = new THREE.MeshStandardMaterial({ color: '#f59e0b', emissive: '#78350f', emissiveIntensity: 0.2, metalness: 0.92, roughness: 0.2 });
+        const redShellMat = new THREE.MeshStandardMaterial({ color: '#b91c1c', roughness: 0.45 });
         const goldMat = new THREE.MeshStandardMaterial({ color: '#facc15', emissive: '#ca8a04', emissiveIntensity: 0.45, metalness: 0.85, roughness: 0.25 });
         const redDotEmissiveMat = new THREE.MeshBasicMaterial({ color: '#ff2a2a' });
         const greenFiberEmissiveMat = new THREE.MeshBasicMaterial({ color: '#22ff66' });
+        const laserBeamMat = new THREE.MeshBasicMaterial({ color: '#22ff66', transparent: true, opacity: 0.38 });
         const opticGlassMat = new THREE.MeshBasicMaterial({
             color: '#38bdf8',
             transparent: true,
@@ -792,6 +894,7 @@
         const wallRayMeshes = [];
         const walkablePlatforms = [];
         const fuelBarrels = [];
+        const supplyCrates = [];
         const obstacleRaycaster = new THREE.Raycaster();
 
         function addSolidBox(x, y, z, w, h, d, mat, registerRay = true) {
@@ -937,6 +1040,7 @@
             const concreteMat = new THREE.MeshStandardMaterial({ color: '#78716c', roughness: 0.85 });
             const sandbagMat = new THREE.MeshStandardMaterial({ color: '#b59e72', roughness: 0.9 });
             const humveeMat = new THREE.MeshStandardMaterial({ color: '#555d42', roughness: 0.72 });
+            const crateMat = new THREE.MeshStandardMaterial({ color: '#365314', roughness: 0.65, metalness: 0.3 });
             const buddhaPosterMat = createStreetBlessingPoster('buddha');
             const crossPosterMat = createStreetBlessingPoster('cross');
 
@@ -983,16 +1087,32 @@
             addSolidBox(4.5, 0.55, -66.0, 3.6, 1.1, 0.85, sandbagMat);
             addSolidBox(-3.8, 0.55, -74.0, 3.6, 1.1, 0.85, sandbagMat);
 
+            // 戰地彈藥與護甲補給箱（走近自動補充彈藥與護甲）
+            [
+                { x: -3.2, z: 18.2 },
+                { x: 5.5, z: -14.2 },
+                { x: -5.2, z: -54.2 },
+                { x: 3.2, z: -72.2 }
+            ].forEach(pos => {
+                const crate = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.55, 0.65), crateMat);
+                crate.position.set(pos.x, 0.28, pos.z);
+                crate.castShadow = true;
+                const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.97, 0.08, 0.22), goldMat);
+                stripe.position.set(0, 0.25, 0);
+                crate.add(stripe);
+                scene.add(crate);
+                supplyCrates.push({ mesh: crate, pos: new THREE.Vector3(pos.x, 0.3, pos.z), cooldown: 0 });
+            });
+
             const barrelMat = new THREE.MeshStandardMaterial({ color: '#dc2626', roughness: 0.45, metalness: 0.4 });
-            const barrelCoords = [
+            [
                 { x: -7.2, z: 2.0 },
                 { x: 7.0, z: -12.5 },
                 { x: -16.8, z: -18.0 },
                 { x: 16.8, z: -36.0 },
                 { x: -6.8, z: -48.0 },
                 { x: 6.8, z: -60.0 }
-            ];
-            barrelCoords.forEach(c => {
+            ].forEach(c => {
                 const bMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 1.15, 14), barrelMat);
                 bMesh.position.set(c.x, 0.58, c.z);
                 bMesh.castShadow = true;
@@ -1003,12 +1123,28 @@
         }
         buildUrbanStreetMap();
 
+        // 沙塵微粒系統（營造中東戰場空氣感）
+        const dustCount = 260;
+        const dustGeo = new THREE.BufferGeometry();
+        const dustPositions = new Float32Array(dustCount * 3);
+        for (let i = 0; i < dustCount; i++) {
+            dustPositions[i * 3] = (Math.random() - 0.5) * 42;
+            dustPositions[i * 3 + 1] = 0.4 + Math.random() * 7.5;
+            dustPositions[i * 3 + 2] = 30 - Math.random() * 115;
+        }
+        dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+        const dustPoints = new THREE.Points(
+            dustGeo,
+            new THREE.PointsMaterial({ color: '#e6cfa3', size: 0.11, transparent: true, opacity: 0.48 })
+        );
+        scene.add(dustPoints);
+
         function getFirstObstacleDistance(origin, dir, maxDist = 180) {
             obstacleRaycaster.set(origin, dir);
             obstacleRaycaster.near = 0.02;
             obstacleRaycaster.far = maxDist;
             const hits = obstacleRaycaster.intersectObjects(wallRayMeshes, false);
-            return hits.length > 0 ? hits[0].distance : maxDist;
+            return hits.length > 0 ? hits[0] : null;
         }
 
         function resolvesCollision(pos, radius = 0.45, feetY = 0) {
@@ -1032,45 +1168,81 @@
         }
 
         // ==========================================
-        // 4. 擬真第一人稱光學與機械瞄具武器模組（同步 3d.html 槍皮膚）
+        // 4. 高擬真現代戰術第一人稱武器模組（含可動部件引用：泵動護木、M24槍機拉柄、M249彈鏈、PEQ-15雷射）
         // ==========================================
         const weaponHolder = new THREE.Group();
         camera.add(weaponHolder);
         const weaponMeshes = [];
+        const weaponAnimParts = {
+            m4LaserBeam: null,
+            m870PumpGroup: null,
+            m249AmmoBelt: null,
+            m24BoltGroup: null
+        };
 
         const muzzleFlashGroup = new THREE.Group();
         const flashPlane1 = new THREE.Mesh(
-            new THREE.PlaneGeometry(0.16, 0.16),
-            new THREE.MeshBasicMaterial({ color: '#fde047', transparent: true, opacity: 0.9, side: THREE.DoubleSide })
+            new THREE.PlaneGeometry(0.18, 0.18),
+            new THREE.MeshBasicMaterial({ color: '#fde047', transparent: true, opacity: 0.92, side: THREE.DoubleSide })
         );
         const flashPlane2 = flashPlane1.clone();
         flashPlane2.rotation.z = Math.PI / 4;
-        const muzzleLight = new THREE.PointLight('#fbbf24', 0, 5.5);
+        const muzzleLight = new THREE.PointLight('#fbbf24', 0, 6.2);
         muzzleFlashGroup.add(flashPlane1, flashPlane2, muzzleLight);
         muzzleFlashGroup.visible = false;
         weaponHolder.add(muzzleFlashGroup);
 
         function createFirstPersonWeapons() {
-            // [0] M4A1：皮卡汀尼沙色戰術導軌 + EOTech 全息紅點光學鏡框 + 摺疊鬼環照門 + 準星護翼
+            // [0] M4A1 SOPMOD：伸縮槍托 + 雙側導軌 + PEQ-15 雷射指示器 + 垂直前握把 + 弧形彈匣 + EOTech 全息鏡 + 準星護翼
             const m4 = new THREE.Group();
-            const m4Upper = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.054, 0.34), darkMetalMat);
+            const m4StockTube = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.16, 10), gunMetalMat);
+            m4StockTube.rotation.x = Math.PI / 2;
+            m4StockTube.position.set(0, 0.004, 0.22);
+            const m4StockPad = new THREE.Mesh(new THREE.BoxGeometry(0.042, 0.095, 0.12), polymerMat);
+            m4StockPad.position.set(0, -0.015, 0.26);
+
+            const m4Upper = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.054, 0.32), darkMetalMat);
             const m4Lower = new THREE.Mesh(new THREE.BoxGeometry(0.048, 0.036, 0.22), gunMetalMat);
             m4Lower.position.set(0, -0.036, 0.04);
-            const m4Mag = new THREE.Mesh(new THREE.BoxGeometry(0.036, 0.12, 0.068), darkMetalMat);
-            m4Mag.position.set(0, -0.095, -0.03);
-            m4Mag.rotation.x = -0.18;
+            const m4Grip = new THREE.Mesh(new THREE.BoxGeometry(0.034, 0.095, 0.046), polymerMat);
+            m4Grip.position.set(0, -0.085, 0.11);
+            m4Grip.rotation.x = 0.26;
+
+            // 弧形 30 發戰術彈匣（兩段微彎）
+            const m4MagTop = new THREE.Mesh(new THREE.BoxGeometry(0.036, 0.075, 0.066), polymerMat);
+            m4MagTop.position.set(0, -0.078, -0.025);
+            m4MagTop.rotation.x = -0.12;
+            const m4MagBot = new THREE.Mesh(new THREE.BoxGeometry(0.036, 0.075, 0.066), polymerMat);
+            m4MagBot.position.set(0, -0.142, -0.045);
+            m4MagBot.rotation.x = -0.32;
+
+            // 沙色皮卡汀尼護木＋垂直握把＋右側 PEQ-15 雷射箱
             const m4Handguard = new THREE.Mesh(new THREE.BoxGeometry(0.048, 0.052, 0.28), tanRailMat);
             m4Handguard.position.set(0, 0.002, -0.28);
+            const m4VertGrip = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.017, 0.085, 10), polymerMat);
+            m4VertGrip.position.set(0, -0.065, -0.29);
+
+            const peqBox = new THREE.Mesh(new THREE.BoxGeometry(0.034, 0.024, 0.078), tanRailMat);
+            peqBox.position.set(0.038, 0.012, -0.33);
+            const peqLaserLens = new THREE.Mesh(new THREE.CircleGeometry(0.005, 8), greenFiberEmissiveMat);
+            peqLaserLens.position.set(0.044, 0.012, -0.371);
+            const laserBeam = new THREE.Mesh(new THREE.CylinderGeometry(0.0012, 0.0025, 18, 6), laserBeamMat);
+            laserBeam.rotation.x = Math.PI / 2;
+            laserBeam.position.set(0.044, 0.012, -9.37);
+            laserBeam.visible = false;
+            weaponAnimParts.m4LaserBeam = laserBeam;
+
             const m4Barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.24, 10), darkMetalMat);
             m4Barrel.rotation.x = Math.PI / 2;
             m4Barrel.position.set(0, 0.008, -0.48);
-            const m4FlashHider = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.045, 10), gunMetalMat);
+            const m4FlashHider = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.048, 10), gunMetalMat);
             m4FlashHider.rotation.x = Math.PI / 2;
             m4FlashHider.position.set(0, 0.008, -0.59);
 
             const m4TopRail = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.008, 0.56), gunMetalMat);
             m4TopRail.position.set(0, 0.031, -0.14);
 
+            // EOTech EXPS3 全息紅點鏡
             const rearRing = new THREE.Mesh(new THREE.TorusGeometry(0.015, 0.0032, 8, 20), darkMetalMat);
             rearRing.position.set(0, 0.078, 0.09);
             const rearBase = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.032, 0.022), darkMetalMat);
@@ -1103,7 +1275,9 @@
             frontWingR.rotation.z = 0.14;
 
             m4.add(
-                m4Upper, m4Lower, m4Mag, m4Handguard, m4Barrel, m4FlashHider, m4TopRail,
+                m4StockTube, m4StockPad, m4Upper, m4Lower, m4Grip, m4MagTop, m4MagBot,
+                m4Handguard, m4VertGrip, peqBox, peqLaserLens, laserBeam,
+                m4Barrel, m4FlashHider, m4TopRail,
                 rearRing, rearBase,
                 holoBase, holoLeftWall, holoRightWall, holoTopHood, holoGlass, holoReticleRing, holoCenterDot,
                 frontBase, frontPost, frontWingL, frontWingR
@@ -1111,18 +1285,35 @@
             weaponHolder.add(m4);
             weaponMeshes.push(m4);
 
-            // [1] M870 散彈槍：雙管彈倉＋散熱肋條＋U型後照門＋發光綠色光纖前準星
+            // [1] M870 戰術泵動散彈槍：可動泵動護木群組 + 機匣側掛紅色 12-Gauge 散彈殼架 + 綠色光纖前準星
             const m870 = new THREE.Group();
+            const sgStock = new THREE.Mesh(new THREE.BoxGeometry(0.044, 0.082, 0.22), woodStockMat);
+            sgStock.position.set(0, -0.025, 0.22);
+            sgStock.rotation.x = 0.18;
             const sgReceiver = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.062, 0.28), gunMetalMat);
+            // 機匣左側備用紅殼散彈架
+            for (let s = 0; s < 4; s++) {
+                const shell = new THREE.Mesh(new THREE.CylinderGeometry(0.0085, 0.0085, 0.052, 8), redShellMat);
+                shell.position.set(-0.032, 0.004, -0.05 + s * 0.024);
+                const brassCap = new THREE.Mesh(new THREE.CylinderGeometry(0.0088, 0.0088, 0.012, 8), brassShellMat);
+                brassCap.position.set(-0.032, -0.024, -0.05 + s * 0.024);
+                m870.add(shell, brassCap);
+            }
             const sgBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.013, 0.44, 12), darkMetalMat);
             sgBarrel.rotation.x = Math.PI / 2;
             sgBarrel.position.set(0, 0.016, -0.34);
             const sgMagTube = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, 0.38, 10), gunMetalMat);
             sgMagTube.rotation.x = Math.PI / 2;
             sgMagTube.position.set(0, -0.012, -0.31);
-            const sgPump = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.19, 12), woodStockMat);
+
+            // 可前後滑動的泵動護木
+            const sgPumpGroup = new THREE.Group();
+            const sgPump = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.19, 12), woodStockMat);
             sgPump.rotation.x = Math.PI / 2;
             sgPump.position.set(0, -0.012, -0.26);
+            sgPumpGroup.add(sgPump);
+            weaponAnimParts.m870PumpGroup = sgPumpGroup;
+
             const sgRib = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.006, 0.42), darkMetalMat);
             sgRib.position.set(0, 0.032, -0.33);
             const sgRearLeft = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.016, 0.012), darkMetalMat);
@@ -1135,22 +1326,38 @@
             sgFiberRod.rotation.x = Math.PI / 2;
             sgFiberRod.position.set(0, 0.044, -0.53);
 
-            m870.add(sgReceiver, sgBarrel, sgMagTube, sgPump, sgRib, sgRearLeft, sgRearRight, sgFiberBase, sgFiberRod);
+            m870.add(sgStock, sgReceiver, sgBarrel, sgMagTube, sgPumpGroup, sgRib, sgRearLeft, sgRearRight, sgFiberBase, sgFiberRod);
             m870.visible = false;
             weaponHolder.add(m870);
             weaponMeshes.push(m870);
 
-            // [2] M249 輕機槍：重型機匣＋黃銅彈鏈盒＋階梯照門框＋準星護環
+            // [2] M249 SAW 輕機槍：重型機匣 + 可抖動進彈黃銅彈鏈 + 摺疊兩腳架 + 階梯照門
             const m249 = new THREE.Group();
             const lmgBody = new THREE.Mesh(new THREE.BoxGeometry(0.072, 0.082, 0.46), gunMetalMat);
-            const lmgBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.015, 0.34, 12), darkMetalMat);
+            const lmgTopCover = new THREE.Mesh(new THREE.BoxGeometry(0.068, 0.016, 0.22), darkMetalMat);
+            lmgTopCover.position.set(0, 0.048, -0.02);
+            const lmgBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.015, 0.36, 12), darkMetalMat);
             lmgBarrel.rotation.x = Math.PI / 2;
             lmgBarrel.position.set(0, 0.014, -0.38);
+            const lmgBipodL = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.22, 8), darkMetalMat);
+            lmgBipodL.rotation.x = Math.PI / 2;
+            lmgBipodL.position.set(-0.032, -0.025, -0.42);
+            const lmgBipodR = lmgBipodL.clone();
+            lmgBipodR.position.set(0.032, -0.025, -0.42);
+
             const lmgDrum = new THREE.Mesh(new THREE.BoxGeometry(0.095, 0.115, 0.14), oliveStockMat);
             lmgDrum.position.set(-0.072, -0.055, -0.02);
-            const lmgAmmoBelt = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.032, 0.08), goldMat);
-            lmgAmmoBelt.position.set(-0.042, 0.005, -0.02);
-            lmgAmmoBelt.rotation.z = -0.35;
+
+            // 逐顆黃銅子彈構成的真實彈鏈
+            const beltGroup = new THREE.Group();
+            for (let b = 0; b < 6; b++) {
+                const bullet = new THREE.Mesh(new THREE.CylinderGeometry(0.0045, 0.0045, 0.044, 6), brassShellMat);
+                bullet.rotation.z = Math.PI / 2;
+                bullet.position.set(-0.058 + b * 0.007, -0.01 + b * 0.006, -0.04 + b * 0.012);
+                beltGroup.add(bullet);
+            }
+            weaponAnimParts.m249AmmoBelt = beltGroup;
+
             const lmgRearL = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.032, 0.016), darkMetalMat);
             lmgRearL.position.set(-0.013, 0.064, 0.12);
             const lmgRearR = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.032, 0.016), darkMetalMat);
@@ -1162,23 +1369,38 @@
             const lmgFrontPin = new THREE.Mesh(new THREE.BoxGeometry(0.0026, 0.013, 0.004), darkMetalMat);
             lmgFrontPin.position.set(0, 0.061, -0.49);
 
-            m249.add(lmgBody, lmgBarrel, lmgDrum, lmgAmmoBelt, lmgRearL, lmgRearR, lmgRearCross, lmgFrontHood, lmgFrontPin);
+            m249.add(lmgBody, lmgTopCover, lmgBarrel, lmgBipodL, lmgBipodR, lmgDrum, beltGroup, lmgRearL, lmgRearR, lmgRearCross, lmgFrontHood, lmgFrontPin);
             m249.visible = false;
             weaponHolder.add(m249);
             weaponMeshes.push(m249);
 
-            // [3] M24 狙擊步槍：浮動重型槍管＋槍栓拉柄＋8倍光學狙擊鏡筒與調節旋鈕
+            // [3] M24 8倍光學狙擊步槍：浮動重型槍管 + 可旋轉後拉槍機拉柄群組 + 8倍鏡筒與旋鈕
             const m24 = new THREE.Group();
             const snpStock = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.068, 0.56), oliveStockMat);
             const snpReceiver = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.24, 12), darkMetalMat);
             snpReceiver.rotation.x = Math.PI / 2;
             snpReceiver.position.set(0, 0.028, 0.02);
-            const snpBoltHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.048, 8), gunMetalMat);
+
+            // 可動槍機與拉栓球頭
+            const boltGroup = new THREE.Group();
+            boltGroup.position.set(0, 0.028, 0.08);
+            const snpBoltBody = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.11, 10), silverBladeMat);
+            snpBoltBody.rotation.x = Math.PI / 2;
+            const snpBoltHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.0045, 0.0045, 0.048, 8), gunMetalMat);
             snpBoltHandle.rotation.z = Math.PI / 3;
-            snpBoltHandle.position.set(0.028, 0.022, 0.08);
+            snpBoltHandle.position.set(0.026, -0.006, 0.01);
+            const snpBoltKnob = new THREE.Mesh(new THREE.SphereGeometry(0.009, 10, 10), darkMetalMat);
+            snpBoltKnob.position.set(0.044, -0.016, 0.01);
+            boltGroup.add(snpBoltBody, snpBoltHandle, snpBoltKnob);
+            weaponAnimParts.m24BoltGroup = boltGroup;
+
             const snpBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.015, 0.52, 12), darkMetalMat);
             snpBarrel.rotation.x = Math.PI / 2;
             snpBarrel.position.set(0, 0.028, -0.42);
+            const snpMuzzleBrake = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.014, 0.048, 10), gunMetalMat);
+            snpMuzzleBrake.rotation.x = Math.PI / 2;
+            snpMuzzleBrake.position.set(0, 0.028, -0.68);
+
             const scopeRing1 = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.032, 0.018), gunMetalMat);
             scopeRing1.position.set(0, 0.054, 0.06);
             const scopeRing2 = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.032, 0.018), gunMetalMat);
@@ -1198,22 +1420,27 @@
             scopeLens.position.set(0, 0.072, -0.15);
 
             m24.add(
-                snpStock, snpReceiver, snpBoltHandle, snpBarrel,
+                snpStock, snpReceiver, boltGroup, snpBarrel, snpMuzzleBrake,
                 scopeRing1, scopeRing2, scopeTube, scopeObjective, scopeTurretTop, scopeTurretSide, scopeLens
             );
             m24.visible = false;
             weaponHolder.add(m24);
             weaponMeshes.push(m24);
 
-            // [4] 戰術軍刀
+            // [4] M9 鋸齒戰術軍刀
             const knife = new THREE.Group();
-            const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.02, 0.14, 10), darkMetalMat);
+            const pommel = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.018, 0.02, 10), gunMetalMat);
+            pommel.rotation.x = Math.PI / 2;
+            pommel.position.set(0, 0, 0.075);
+            const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.02, 0.14, 10), oliveStockMat);
             grip.rotation.x = Math.PI / 2;
             const guard = new THREE.Mesh(new THREE.BoxGeometry(0.068, 0.018, 0.016), gunMetalMat);
             guard.position.set(0, 0, -0.072);
-            const blade = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.032, 0.24), silverBladeMat);
+            const blade = new THREE.Mesh(new THREE.BoxGeometry(0.007, 0.032, 0.24), silverBladeMat);
             blade.position.set(0, 0.004, -0.195);
-            knife.add(grip, guard, blade);
+            const fuller = new THREE.Mesh(new THREE.BoxGeometry(0.009, 0.007, 0.16), darkMetalMat);
+            fuller.position.set(0, 0.004, -0.18);
+            knife.add(pommel, grip, guard, blade, fuller);
             knife.visible = false;
             weaponHolder.add(knife);
             weaponMeshes.push(knife);
@@ -1236,6 +1463,17 @@
         buddhaFormMesh.visible = false;
         camera.add(buddhaFormMesh);
 
+        // 本地玩家第三人稱 3D 特戰兵模型（第一人稱時隱藏，按 C 切換第三人稱時顯示）
+        let localSoldier = null;
+        function ensureLocalSoldierMesh() {
+            if (localSoldier) return localSoldier;
+            const built = buildSoldierMesh('ally');
+            built.group.visible = false;
+            scene.add(built.group);
+            localSoldier = built;
+            return localSoldier;
+        }
+
         // ==========================================
         // 5. 鍵盤與滑鼠操控系統
         // ==========================================
@@ -1253,6 +1491,9 @@
             if (player.isADS !== nextState) {
                 player.isADS = nextState;
                 player.isInspecting = false;
+                if (weaponAnimParts.m4LaserBeam) {
+                    weaponAnimParts.m4LaserBeam.visible = (nextState && player.currentWeaponIdx === 0);
+                }
                 audio.playAdsToggle(nextState);
             }
         }
@@ -1264,6 +1505,7 @@
             player.isADS = false;
             player.adsProgress = 0;
             player.isInspecting = false;
+            if (weaponAnimParts.m4LaserBeam) weaponAnimParts.m4LaserBeam.visible = false;
             weaponMeshes.forEach((m, i) => { m.visible = (i === idx); });
             document.querySelectorAll('.wpn-slot').forEach((btn, i) => {
                 btn.className = i === idx
@@ -1280,13 +1522,33 @@
             setADSState(false);
             player.isInspecting = false;
             player.reloadTimer = wpn.reloadTime;
+            player.reloadTotal = wpn.reloadTime;
+            audio.playReloadClick('out');
+            setTimeout(() => { if (player.isReloading) audio.playReloadClick('in'); }, wpn.reloadTime * 480);
+            setTimeout(() => { if (player.isReloading) audio.playReloadClick('bolt'); }, wpn.reloadTime * 820);
             updateHUD();
         }
 
         function toggleCrouch() {
             player.isCrouching = !player.isCrouching;
             const btn = document.getElementById('btn-crouch');
-            if (btn) btn.textContent = player.isCrouching ? '🧍 站起 [C]' : '🧎 蹲伏 [C]';
+            if (btn) btn.textContent = player.isCrouching ? '🧍 站起 [X/Ctrl]' : '🧎 蹲伏 [X/Ctrl]';
+        }
+
+        function toggleCameraPerspective() {
+            player.isThirdPerson = !player.isThirdPerson;
+            const btn = document.getElementById('btn-camera-view');
+            if (btn) {
+                btn.textContent = player.isThirdPerson ? '🎥 第三人稱 [C]' : '🎥 第一人稱 [C]';
+                btn.className = player.isThirdPerson
+                    ? 'px-2 py-1 rounded-lg bg-amber-600/80 hover:bg-amber-500 border border-amber-300 text-[11px] font-black text-white cursor-pointer'
+                    : 'px-2 py-1 rounded-lg bg-cyan-900/80 hover:bg-cyan-800 border border-cyan-400/70 text-[11px] font-black text-cyan-200 cursor-pointer';
+            }
+            audio.playAdsToggle(player.isThirdPerson);
+            showStreakBanner(
+                player.isThirdPerson ? '🎥 已切換為第三人稱越肩視角' : '👁️ 已切換為第一人稱視角',
+                player.isThirdPerson ? '按 [C] 隨時切回第一人稱，右鍵可肩射瞄準' : '按 [C] 隨時切換第三人稱觀察全身戰術動作'
+            );
         }
 
         function toggleWeaponInspect() {
@@ -1310,7 +1572,8 @@
             else if (e.code === 'KeyR') startReload();
             else if (e.code === 'KeyG') throwFragGrenade();
             else if (e.code === 'KeyF') toggleWeaponInspect();
-            else if (e.code === 'KeyC' || e.code === 'ControlLeft' || e.code === 'ControlRight') toggleCrouch();
+            else if (e.code === 'KeyC') toggleCameraPerspective();
+            else if (e.code === 'KeyX' || e.code === 'ControlLeft' || e.code === 'ControlRight') toggleCrouch();
             else if (e.code === 'KeyQ') setADSState(!player.isADS);
             else if (e.code === 'Space' && player.onGround && gameState === 'PLAYING') {
                 if (player.isCrouching) toggleCrouch();
@@ -1360,7 +1623,7 @@
         window.addEventListener('mousemove', (e) => {
             if (gameState !== 'PLAYING') return;
             const curWpn = WEAPONS[player.currentWeaponIdx];
-            const sens = player.isADS ? (curWpn.type === 'sniper' ? 0.00075 : 0.0013) : 0.0024;
+            const sens = player.isADS ? (curWpn.type === 'sniper' ? 0.00072 : 0.0013) : 0.0024;
             if (document.pointerLockElement === canvas) {
                 player.yaw -= e.movementX * sens;
                 player.pitch = Math.max(-1.25, Math.min(1.25, player.pitch - e.movementY * sens));
@@ -1378,7 +1641,6 @@
 
         // ==========================================
         // 6. 全球跨電腦真實連線系統（三引擎併發：全球 MQTT 即時中繼 ＋ Firebase 雲端 ＋ 跨分頁通道）
-        //    解決不同電腦／不同網路在沒有登入帳號時無法互通的問題！
         // ==========================================
         const urlParams = new URLSearchParams(window.location.search);
         let currentRoom = (urlParams.get('room') || '7788').replace(/\s+/g, '').toUpperCase() || '7788';
@@ -1387,7 +1649,6 @@
         let roleLocked = false;
         let isPvpEnabled = true;
 
-        // MQTT 全球跨電腦即時通道變數（雙全球公共 WSS 伺服器自動備援切換）
         let mqttClient = null;
         let mqttConnected = false;
         let mqttTopic = '';
@@ -1398,7 +1659,6 @@
             { name: 'EMQX 全球備援線', url: 'wss://broker.emqx.io:8084/mqtt' }
         ];
 
-        // Firebase / BroadcastChannel 變數
         let db = null;
         let auth = null;
         let unsubPlayers = null;
@@ -1483,13 +1743,8 @@
                     } catch (e) {}
                 });
 
-                mqttClient.on('error', () => {
-                    mqttConnected = false;
-                });
-
-                mqttClient.on('close', () => {
-                    mqttConnected = false;
-                });
+                mqttClient.on('error', () => { mqttConnected = false; });
+                mqttClient.on('close', () => { mqttConnected = false; });
             } catch (err) {
                 clearTimeout(connectWatchdog);
                 brokerIndex++;
@@ -1549,7 +1804,6 @@
             }
             if (forceMove) {
                 if (battleMode === 'coop3') {
-                    // 三台電腦合作模式：全體並肩出生在南方特戰出發陣地，共同向北推進！
                     const offsetX = role === 'host' ? -3.2 : (role === 'guest2' ? 3.2 : 0);
                     player.pos.set(offsetX, 1.72, 24.5);
                     player.yaw = 0;
@@ -1610,35 +1864,58 @@
 
             const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c) }));
             sprite.scale.set(1.5, 0.38, 1);
-            sprite.position.set(0, 2.15, 0);
+            sprite.position.set(0, 2.22, 0);
             return sprite;
         }
 
-        function buildSoldierMesh() {
+        // 現代戰術特戰兵 3D 造型（頭盔＋夜視儀支架＋戰術背心＋護膝＋雙手持槍）
+        function buildSoldierMesh(variant = 'ally') {
             const group = new THREE.Group();
-            const camoMat = new THREE.MeshStandardMaterial({ color: '#4d5d42', roughness: 0.8 });
-            const helmetMat = new THREE.MeshStandardMaterial({ color: '#3b4232', roughness: 0.7 });
+            const uniformColor = variant === 'enemy_heavy' ? '#7f1d1d'
+                : (variant === 'enemy_rusher' ? '#9a3412'
+                : (variant === 'enemy' ? '#57534e' : '#4d5d42'));
+            const vestColor = variant.startsWith('enemy') ? '#292524' : '#365314';
+
+            const camoMat = new THREE.MeshStandardMaterial({ color: uniformColor, roughness: 0.78 });
+            const vestMat = new THREE.MeshStandardMaterial({ color: vestColor, roughness: 0.65, metalness: 0.25 });
+            const helmetMat = new THREE.MeshStandardMaterial({ color: '#2b3026', roughness: 0.62 });
+            const visorMat = new THREE.MeshStandardMaterial({ color: '#0ea5e9', emissive: '#0369a1', emissiveIntensity: 0.35, roughness: 0.2 });
 
             const torso = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.92, 0.36), camoMat);
             torso.position.y = 1.05;
             torso.castShadow = true;
 
+            const vest = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.62, 0.41), vestMat);
+            vest.position.y = 1.12;
+            const pouch1 = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.2, 0.08), darkMetalMat);
+            pouch1.position.set(-0.16, 0.98, 0.22);
+            const pouch2 = pouch1.clone();
+            pouch2.position.set(0.16, 0.98, 0.22);
+
             const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 12), helmetMat);
             head.position.y = 1.72;
             head.castShadow = true;
+            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.08, 0.12), visorMat);
+            visor.position.set(0, 1.73, 0.17);
+            const nvgMount = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, 0.08), darkMetalMat);
+            nvgMount.position.set(0, 1.84, 0.19);
 
             const legs = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.62, 0.32), camoMat);
             legs.position.y = 0.31;
             legs.castShadow = true;
+            const kneePadL = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.14, 0.08), darkMetalMat);
+            kneePadL.position.set(-0.15, 0.34, 0.18);
+            const kneePadR = kneePadL.clone();
+            kneePadR.position.set(0.15, 0.34, 0.18);
 
-            const gun = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.1, 0.55), darkMetalMat);
-            gun.position.set(0.22, 1.25, 0.25);
+            const gun = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.11, 0.62), darkMetalMat);
+            gun.position.set(0.22, 1.24, 0.28);
 
             const buddhaHalo = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.04, 8, 24), goldMat);
             buddhaHalo.position.set(0, 1.45, -0.22);
             buddhaHalo.visible = false;
 
-            group.add(torso, head, legs, gun, buddhaHalo);
+            group.add(torso, vest, pouch1, pouch2, head, visor, nvgMount, legs, kneePadL, kneePadR, gun, buddhaHalo);
             return { group, torso, head, buddhaHalo };
         }
 
@@ -1646,7 +1923,7 @@
             let rp = remotePlayers.get(uid);
             const isCoopAlly = (battleMode === 'coop3');
             if (!rp) {
-                const built = buildSoldierMesh();
+                const built = buildSoldierMesh(isCoopAlly ? 'ally' : 'enemy');
                 built.torso.userData = { remoteUid: uid, part: 'body' };
                 built.head.userData = { remoteUid: uid, part: 'head' };
                 remoteHitMeshes.push(built.torso, built.head);
@@ -1704,7 +1981,6 @@
                 return;
             }
             if (ev.type === 'state_sync' && ev.state) {
-                // 若對方切換了戰場模式（例如切換為 3台電腦打機器人），自動同步模式
                 if (ev.state.battleMode && ev.state.battleMode !== battleMode && gameState === 'MENU') {
                     setBattleMode(ev.state.battleMode, true);
                 }
@@ -1725,16 +2001,14 @@
                 if (rp && ev.dir) {
                     const origin = rp.group.position.clone().add(new THREE.Vector3(0, 1.45, 0));
                     const dir = new THREE.Vector3(ev.dir.x, ev.dir.y, ev.dir.z).normalize();
-                    spawnTracerBullet(origin, dir, 90, 0, !!ev.isBuddha);
+                    spawnTracerBullet(origin, dir, 95, 0, !!ev.isBuddha);
                 }
             } else if (ev.type === 'coop_bot_kill') {
-                // 隊友擊殺機器人時同步計分與清場檢查
                 totalKills++;
                 score += 100;
                 updateHUD();
-                showStreakBanner(`🤝 隊友 ${ev.from.slice(0, 5)} 擊斃敵軍！`, '全隊獲得 +100 協作積分');
+                pushKillFeed(`隊友 ${ev.from.slice(0, 5)}`, '敵軍特戰兵', ev.wpnId || 'M4A1', !!ev.isHead, true);
             } else if (ev.type === 'pvp_hit' && (!ev.target || ev.target === myUid)) {
-                // 三台電腦合作打機器人模式關閉隊友誤傷
                 if (battleMode === 'coop3') return;
                 if (isPvpEnabled && gameState === 'PLAYING') {
                     const src = ev.origin ? new THREE.Vector3(ev.origin.x, ev.origin.y, ev.origin.z) : null;
@@ -1746,9 +2020,8 @@
                     if (willDie && player.hp <= 0) {
                         duelLosses++;
                         updateSideRoomUI(remotePlayers.size + 1);
-                        broadcastRoomEvent({ type: 'pvp_kill', killer: ev.from });
-                    } else {
-                        showStreakBanner('⚔️ 遭到對手命中！', `來自對手 ${ev.from.slice(0, 5)} 的攻擊 (-${rawDmg})`);
+                        pushKillFeed(`對手 ${ev.from.slice(0, 5)}`, '你', ev.wpnId || 'M4A1', !!ev.isHead, false);
+                        broadcastRoomEvent({ type: 'pvp_kill', killer: ev.from, wpnId: ev.wpnId || 'M4A1', isHead: !!ev.isHead });
                     }
                 }
             } else if (ev.type === 'pvp_kill' && (!ev.killer || ev.killer === myUid)) {
@@ -1759,6 +2032,7 @@
                 if (killstreak >= 3) airstrikeReady = true;
                 updateSideRoomUI(remotePlayers.size + 1);
                 updateHUD();
+                pushKillFeed('你', `對手 ${ev.from.slice(0, 5)}`, ev.wpnId || WEAPONS[player.currentWeaponIdx].id, !!ev.isHead, true);
                 showStreakBanner('🏆 1v1 單挑擊殺獲勝！', `你擊敗了對手 ${ev.from.slice(0, 5)} (+500 分)`);
             } else if (ev.type === 'sacred_cross') {
                 showStreakBanner(
@@ -1783,17 +2057,14 @@
             clearRemotePlayers();
             updateSideRoomUI(1);
 
-            // 更新網址列參數（方便直接複製網址分享給另一台電腦）
             try {
                 const newUrl = new URL(window.location.href);
                 newUrl.searchParams.set('room', currentRoom);
                 window.history.replaceState({}, '', newUrl.toString());
             } catch (e) {}
 
-            // 0. 切換全球 MQTT 跨電腦房間頻道
             subscribeMqttRoom(currentRoom);
 
-            // 1. 啟動同瀏覽器跨分頁 BroadcastChannel 同步
             if (localChannel) {
                 try { localChannel.close(); } catch (e) {}
             }
@@ -1803,7 +2074,6 @@
                 localChannel.postMessage({ type: 'ping_hello', from: myUid, tsMs: Date.now() });
             }
 
-            // 2. 啟動 Firebase Firestore 雲端資料庫即時同步（支援跨電腦且不被 Canvas CSP 阻擋）
             if (!db || !window.__FB_SDK__ || !auth?.currentUser) {
                 setNetDiagText(
                     mqttConnected
@@ -1897,8 +2167,6 @@
             };
 
             const packet = { type: 'state_sync', from: myUid, state: statePayload, tsMs: nowMs };
-
-            // 0. 透過全球 MQTT 中繼伺服器發送給所有不同電腦上的同房玩家
             publishMqttPacket(packet);
 
             if (localChannel) {
@@ -1919,8 +2187,6 @@
 
         async function broadcastRoomEvent(payload) {
             const fullEvent = { ...payload, from: myUid, tsMs: Date.now() };
-
-            // 0. 透過全球 MQTT 中繼伺服器即時廣播開火／命中／復活／變佛事件
             publishMqttPacket(fullEvent);
 
             if (localChannel) {
@@ -1971,21 +2237,90 @@
         else window.addEventListener('fb-sdk-ready', initMultiplayerService);
 
         // ==========================================
-        // 7. 戰鬥系統（1v1 跨電腦交火 ＋ 可選人機波次 AI）
+        // 7. 戰鬥系統（1v1 跨電腦交火 ＋ 彈殼拋出 ＋ 彈孔貼花 ＋ 人機 AI）
         // ==========================================
         const allies = [];
         const enemies = [];
         const enemyHitMeshes = [];
         const tracers = [];
+        const shellCasings = [];
+        const bulletDecals = [];
         const grenades = [];
         const particles = [];
         const raycaster = new THREE.Raycaster();
 
+        const shellGeo = new THREE.CylinderGeometry(0.006, 0.006, 0.028, 6);
+        const decalGeo = new THREE.CircleGeometry(0.048, 8);
+        const decalMat = new THREE.MeshBasicMaterial({
+            color: '#111111',
+            transparent: true,
+            opacity: 0.78,
+            polygonOffset: true,
+            polygonOffsetFactor: -2
+        });
+
+        function spawnShellCasing() {
+            const shell = new THREE.Mesh(shellGeo, brassShellMat);
+            const rightVec = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
+            const fwdVec = new THREE.Vector3(-Math.sin(player.yaw), 0, -Math.cos(player.yaw));
+            shell.position.copy(camera.position)
+                .addScaledVector(rightVec, 0.24)
+                .addScaledVector(fwdVec, 0.32)
+                .add(new THREE.Vector3(0, -0.14, 0));
+            scene.add(shell);
+
+            const ejectVel = rightVec.multiplyScalar(2.4 + Math.random() * 1.1)
+                .add(new THREE.Vector3(0, 2.2 + Math.random() * 0.8, 0))
+                .addScaledVector(fwdVec, (Math.random() - 0.5) * 0.8);
+
+            shellCasings.push({
+                mesh: shell,
+                vel: ejectVel,
+                rotVel: new THREE.Vector3(18 + Math.random() * 12, 14, 22),
+                bounced: false,
+                life: 2.2
+            });
+        }
+
+        function spawnBulletDecal(hitInfo) {
+            if (!hitInfo || !hitInfo.face) return;
+            const decal = new THREE.Mesh(decalGeo, decalMat);
+            const normal = hitInfo.face.normal.clone().transformDirection(hitInfo.object.matrixWorld);
+            decal.position.copy(hitInfo.point).addScaledVector(normal, 0.008);
+            decal.lookAt(decal.position.clone().add(normal));
+            scene.add(decal);
+            bulletDecals.push({ mesh: decal, life: 14.0 });
+            if (bulletDecals.length > 55) {
+                const oldest = bulletDecals.shift();
+                scene.remove(oldest.mesh);
+            }
+        }
+
+        function pushKillFeed(killer, victim, wpnLabel, isHead, isFriendly = true) {
+            const container = document.getElementById('kill-feed-container');
+            if (!container) return;
+            const item = document.createElement('div');
+            item.className = `kill-feed-item hud-glass rounded-lg px-2.5 py-1 text-[11px] font-bold flex items-center gap-1.5 border ${isFriendly ? 'border-emerald-400/50' : 'border-red-500/60'}`;
+            item.innerHTML = `
+                <span class="${isFriendly ? 'text-emerald-300' : 'text-red-400'} font-black">${killer}</span>
+                <span class="px-1 py-0.2 rounded bg-stone-800 text-amber-300 font-mono text-[10px]">[${wpnLabel}]</span>
+                ${isHead ? '<span class="text-red-400 font-black">🎯爆頭</span>' : ''}
+                <span class="text-stone-200">${victim}</span>
+            `;
+            container.appendChild(item);
+            if (container.children.length > 4) {
+                container.removeChild(container.firstChild);
+            }
+            setTimeout(() => {
+                if (item.parentNode) item.parentNode.removeChild(item);
+            }, 4200);
+        }
+
         const radioMessages = [
-            '「已啟用 PeerJS 全球 WebRTC P2P 直連，兩台不同電腦輸入同房號即可秒連！」',
-            '「沿著街道兩側鋼鐵樓梯可登上二樓狙擊高台，居高臨下架設 M24 狙擊！」',
-            '「危機時刻按 [6] 舉起十字架可滿血復活，按 [0] 可變身金剛佛陀！」',
-            '「M24 無鏡狙擊槍爆頭一擊必殺，所有子彈嚴格遵循牆體防穿牆！」'
+            '「街道掩體旁設有綠色彈藥補給箱，走近可補充備彈與護甲！M870 泵動與 M24 拉栓皆已實裝真槍機械循環！」',
+            '「沿著街道兩側鋼鐵樓梯可登上二樓狙擊高台，開鏡按 Shift 屏息可穩定 M24 8倍鏡準心！」',
+            '「危機時刻按 [6] 舉起十字架可滿血復活，按 [0] 可變身金剛佛陀施展如來神掌！」',
+            '「M4A1 開鏡時自動開啟 PEQ-15 綠色戰術雷射，所有子彈嚴格遵循牆體防穿牆！」'
         ];
         let radioTimer = 9;
 
@@ -2005,7 +2340,6 @@
         function spawnAllies() {
             allies.forEach(a => scene.remove(a.group));
             allies.length = 0;
-            // 純 1v1 單挑不生成 AI 隊友；3台電腦合作模式若尚未滿 3 人則自動派 AI 特戰隊友補位！
             if (battleMode === 'pure1v1') return;
             if (battleMode === 'coop3' && remotePlayers.size >= 2) return;
 
@@ -2016,8 +2350,7 @@
                     { x: 3.8, z: 21.0, name: '遊騎兵 2 號' }
                 ];
             allyOffsets.forEach(cfg => {
-                const built = buildSoldierMesh();
-                built.torso.material = new THREE.MeshStandardMaterial({ color: '#3b593f', roughness: 0.75 });
+                const built = buildSoldierMesh('ally');
                 const tag = createPlayerNameTag(`🛡️ ${cfg.name}`, false);
                 built.group.add(tag);
                 built.group.position.set(cfg.x, 0, cfg.z);
@@ -2038,18 +2371,13 @@
                 return;
             }
 
-            // 3台電腦合作打機器人模式：敵軍數量加倍強化，考驗三台電腦火力配合！
             const coopBonus = battleMode === 'coop3' ? (3 + remotePlayers.size * 2) : 0;
             const count = Math.min(16, 3 + waveNum * 2 + coopBonus);
             for (let i = 0; i < count; i++) {
                 const isHeavy = (waveNum >= 2 && i % 4 === 3);
                 const isRusher = (!isHeavy && i % 3 === 1);
-                const built = buildSoldierMesh();
-
-                built.torso.material = new THREE.MeshStandardMaterial({
-                    color: isHeavy ? '#7f1d1d' : (isRusher ? '#9a3412' : '#57534e'),
-                    roughness: 0.78
-                });
+                const variant = isHeavy ? 'enemy_heavy' : (isRusher ? 'enemy_rusher' : 'enemy');
+                const built = buildSoldierMesh(variant);
                 if (isHeavy) built.group.scale.set(1.16, 1.12, 1.16);
 
                 const spawnX = (Math.random() - 0.5) * 34;
@@ -2061,6 +2389,7 @@
                 const maxHp = Math.round((isHeavy ? 180 : (isRusher ? 75 : 100)) * hpScale);
                 const enemyObj = {
                     ...built,
+                    label: isHeavy ? '重裝突擊兵' : (isRusher ? '衝鋒偵察兵' : '沙塵傭兵'),
                     hp: maxHp,
                     maxHp,
                     speed: isHeavy ? 2.1 : (isRusher ? 4.3 : 3.0),
@@ -2077,10 +2406,10 @@
             updateHUD();
         }
 
-        function damageBotEnemy(enemyObj, dmg, isHead, hitPoint) {
+        function damageBotEnemy(enemyObj, dmg, isHead, hitPoint, wpnLabel = null) {
             if (!enemyObj || enemyObj.hp <= 0) return;
             enemyObj.hp -= dmg;
-            spawnImpactParticles(hitPoint, true, isHead ? 14 : 7);
+            spawnImpactParticles(hitPoint, true, isHead ? 15 : 8);
             spawnFloatingDamage(hitPoint.clone().add(new THREE.Vector3(0, 0.25, 0)), dmg, isHead);
             triggerHitmarker(isHead);
             if (isHead) audio.playHeadshotDing();
@@ -2098,8 +2427,11 @@
                 totalKills++;
                 killstreak++;
                 score += isHead ? 200 : 120;
+                const usedWpn = wpnLabel || (player.isBuddhaForm ? '如來神掌' : WEAPONS[player.currentWeaponIdx].id);
+                pushKillFeed('你', enemyObj.label, usedWpn, isHead, true);
+
                 if (battleMode === 'coop3') {
-                    broadcastRoomEvent({ type: 'coop_bot_kill' });
+                    broadcastRoomEvent({ type: 'coop_bot_kill', wpnId: usedWpn, isHead });
                 }
                 if (killstreak >= 4 && !airstrikeReady) {
                     airstrikeReady = true;
@@ -2147,17 +2479,58 @@
 
             wpn.mag--;
             player.fireCooldown = wpn.fireRate;
-            player.recoilKick = wpn.type === 'sniper' ? 0.085 : (player.isADS ? 0.022 : 0.032);
-            player.weaponRecoilZ = wpn.type === 'sniper' ? 0.075 : (wpn.type === 'shotgun' ? 0.068 : 0.036);
+            player.recoilKick = wpn.type === 'sniper' ? 0.095 : (player.isADS ? 0.022 : 0.032);
+            player.recoilYawKick = (Math.random() - 0.5) * (player.isADS ? 0.008 : 0.015);
+            player.weaponRecoilZ = wpn.type === 'sniper' ? 0.082 : (wpn.type === 'shotgun' ? 0.072 : 0.038);
             player.muzzleFlashTimer = 0.045;
             player.isInspecting = false;
+            player.crosshairSpread = Math.min(34, player.crosshairSpread + (wpn.type === 'shotgun' ? 14 : 6.5));
             audio.playGunshot(wpn.type);
+
+            // 觸發真實槍械機械循環與拋殼
+            if (wpn.type === 'rifle') {
+                spawnShellCasing();
+                if (wpn.id === 'M249') player.beltJitterTimer = 0.14;
+            } else if (wpn.type === 'shotgun') {
+                player.pumpActionTimer = 0.34;
+                setTimeout(() => {
+                    if (gameState === 'PLAYING' && player.currentWeaponIdx === 1) {
+                        audio.playPumpAction();
+                        spawnShellCasing();
+                    }
+                }, 220);
+            } else if (wpn.type === 'sniper') {
+                player.boltActionTimer = 0.48;
+                setTimeout(() => {
+                    if (gameState === 'PLAYING' && player.currentWeaponIdx === 3) {
+                        audio.playBoltAction();
+                        spawnShellCasing();
+                    }
+                }, 280);
+            }
 
             const origin = camera.position.clone();
             const baseDir = new THREE.Vector3();
             camera.getWorldDirection(baseDir);
 
-            const spreadScale = player.isADS ? 0.14 : 1.0;
+            // 第三人稱視差校正：計算攝影機中心準星瞄準的 3D 世界目標點，讓槍口子彈精準飛向準星所指之處
+            let muzzleOrigin = origin.clone();
+            if (player.isThirdPerson && localSoldier) {
+                const aimWallHit = getFirstObstacleDistance(origin, baseDir, 160);
+                const aimDist = aimWallHit ? aimWallHit.distance : 120;
+                const aimTargetPoint = origin.clone().addScaledVector(baseDir, aimDist);
+
+                const rightVec = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
+                const fwdVec = new THREE.Vector3(-Math.sin(player.yaw), 0, -Math.cos(player.yaw));
+                muzzleOrigin = player.pos.clone()
+                    .add(new THREE.Vector3(0, player.isCrouching ? -0.25 : -0.32, 0))
+                    .addScaledVector(rightVec, 0.24)
+                    .addScaledVector(fwdVec, 0.55);
+
+                baseDir.copy(aimTargetPoint).sub(muzzleOrigin).normalize();
+            }
+
+            const spreadScale = player.isADS ? (player.isCrouching ? 0.09 : 0.14) : (player.isCrouching ? 0.72 : 1.0);
 
             for (let p = 0; p < wpn.pellets; p++) {
                 const dir = baseDir.clone();
@@ -2166,8 +2539,10 @@
                 dir.z += (Math.random() - 0.5) * wpn.spread * spreadScale;
                 dir.normalize();
 
-                const wallDist = getFirstObstacleDistance(origin, dir, 160);
-                raycaster.set(origin, dir);
+                const rayStart = player.isThirdPerson ? muzzleOrigin : origin;
+                const wallHit = getFirstObstacleDistance(rayStart, dir, 160);
+                const wallDist = wallHit ? wallHit.distance : 160;
+                raycaster.set(rayStart, dir);
                 raycaster.near = 0.02;
                 raycaster.far = wallDist;
 
@@ -2179,13 +2554,12 @@
                     const dmg = Math.round(wpn.dmg * (isHead ? wpn.headMult : 1));
 
                     if (hit.object.userData.remoteUid) {
-                        // 三台電腦合作打機器人模式：禁止誤傷同房隊友！
                         if (battleMode === 'coop3') {
                             spawnImpactParticles(hit.point, false, 4);
                             continue;
                         }
                         const uid = hit.object.userData.remoteUid;
-                        spawnImpactParticles(hit.point, true, isHead ? 14 : 7);
+                        spawnImpactParticles(hit.point, true, isHead ? 15 : 8);
                         spawnFloatingDamage(hit.point.clone().add(new THREE.Vector3(0, 0.25, 0)), dmg, isHead);
                         triggerHitmarker(isHead);
                         if (isHead) audio.playHeadshotDing();
@@ -2195,18 +2569,20 @@
                             type: 'pvp_hit',
                             target: uid,
                             dmg,
+                            wpnId: wpn.id,
+                            isHead,
                             origin: { x: player.pos.x, y: player.pos.y, z: player.pos.z }
                         });
                     } else if (hit.object.userData.enemyObj) {
-                        damageBotEnemy(hit.object.userData.enemyObj, dmg, isHead, hit.point);
+                        damageBotEnemy(hit.object.userData.enemyObj, dmg, isHead, hit.point, wpn.id);
                     }
-                } else if (wallDist < 159) {
-                    const wallHitPt = origin.clone().addScaledVector(dir, wallDist);
-                    spawnImpactParticles(wallHitPt, false, 4);
+                } else if (wallHit && wallDist < 159) {
+                    spawnImpactParticles(wallHit.point, false, 5);
+                    if (p === 0) spawnBulletDecal(wallHit);
                     if (Math.random() < 0.35) audio.playRicochet();
 
                     fuelBarrels.forEach(fb => {
-                        if (fb.alive && fb.mesh.position.distanceTo(wallHitPt) < 0.95) {
+                        if (fb.alive && fb.mesh.position.distanceTo(wallHit.point) < 0.95) {
                             fb.hp -= wpn.dmg;
                             if (fb.hp <= 0) detonateFuelBarrel(fb);
                         }
@@ -2214,7 +2590,13 @@
                 }
             }
 
-            spawnTracerBullet(origin.clone().addScaledVector(baseDir, 0.65).add(new THREE.Vector3(player.isADS ? 0 : 0.08, -0.05, 0)), baseDir, 145);
+            spawnTracerBullet(
+                player.isThirdPerson
+                    ? muzzleOrigin.clone()
+                    : origin.clone().addScaledVector(baseDir, 0.65).add(new THREE.Vector3(player.isADS ? 0 : 0.08, -0.05, 0)),
+                baseDir,
+                150
+            );
             broadcastRoomEvent({ type: 'shoot', dir: { x: baseDir.x, y: baseDir.y, z: baseDir.z }, isBuddha: false });
             updateHUD();
         }
@@ -2236,7 +2618,8 @@
             palmOrb.position.copy(origin).addScaledVector(dir, 0.7);
             scene.add(palmOrb);
 
-            const maxWallDist = getFirstObstacleDistance(origin, dir, 140);
+            const wallHit = getFirstObstacleDistance(origin, dir, 140);
+            const maxWallDist = wallHit ? wallHit.distance : 140;
             raycaster.set(origin, dir);
             raycaster.near = 0.01;
             raycaster.far = maxWallDist;
@@ -2262,6 +2645,8 @@
                             type: 'pvp_hit',
                             target: uid,
                             dmg,
+                            wpnId: '如來神掌',
+                            isHead: true,
                             origin: { x: player.pos.x, y: player.pos.y, z: player.pos.z }
                         });
                     }
@@ -2272,7 +2657,7 @@
                 const en = enemies[i];
                 const targetCenter = en.group.position.clone().add(new THREE.Vector3(0, 1.2, 0));
                 if (targetCenter.distanceTo(impactPoint) < 5.2) {
-                    damageBotEnemy(en, 110, true, targetCenter);
+                    damageBotEnemy(en, 110, true, targetCenter, '如來神掌');
                 }
             }
         }
@@ -2299,7 +2684,8 @@
                     const dist = toTarget.length();
                     if (dist <= maxRange) {
                         const dirToTarget = toTarget.clone().normalize();
-                        const wallDist = getFirstObstacleDistance(camera.position, dirToTarget, dist);
+                        const wallHit = getFirstObstacleDistance(camera.position, dirToTarget, dist);
+                        const wallDist = wallHit ? wallHit.distance : dist;
                         const angle = forwardDir.angleTo(dirToTarget);
                         if (wallDist >= dist - 0.1 && angle < (isStab ? 0.42 : 0.72)) {
                             const dmg = isStab ? 135 : 68;
@@ -2310,6 +2696,8 @@
                                 type: 'pvp_hit',
                                 target: uid,
                                 dmg,
+                                wpnId: 'M9軍刀',
+                                isHead: isStab,
                                 origin: { x: player.pos.x, y: player.pos.y, z: player.pos.z }
                             });
                         }
@@ -2324,11 +2712,12 @@
                 const dist = toTarget.length();
                 if (dist <= maxRange) {
                     const dirToTarget = toTarget.clone().normalize();
-                    const wallDist = getFirstObstacleDistance(camera.position, dirToTarget, dist);
+                    const wallHit = getFirstObstacleDistance(camera.position, dirToTarget, dist);
+                    const wallDist = wallHit ? wallHit.distance : dist;
                     const angle = forwardDir.angleTo(dirToTarget);
                     if (wallDist >= dist - 0.1 && angle < (isStab ? 0.42 : 0.72)) {
                         const dmg = isStab ? 140 : 95;
-                        damageBotEnemy(en, dmg, isStab, targetCenter);
+                        damageBotEnemy(en, dmg, isStab, targetCenter, 'M9軍刀');
                     }
                 }
             }
@@ -2358,6 +2747,8 @@
                             type: 'pvp_hit',
                             target: uid,
                             dmg,
+                            wpnId: '油桶爆破',
+                            isHead: false,
                             origin: { x: pos.x, y: pos.y, z: pos.z }
                         });
                     }
@@ -2368,7 +2759,7 @@
                 const d = en.group.position.distanceTo(pos);
                 if (d <= blastRadius) {
                     const dmg = Math.max(35, Math.round(150 * (1 - d / blastRadius)));
-                    damageBotEnemy(en, dmg, true, en.group.position.clone().add(new THREE.Vector3(0, 1.3, 0)));
+                    damageBotEnemy(en, dmg, true, en.group.position.clone().add(new THREE.Vector3(0, 1.3, 0)), '油桶爆破');
                 }
             }
         }
@@ -2410,6 +2801,8 @@
                             type: 'pvp_hit',
                             target: uid,
                             dmg,
+                            wpnId: 'M67手雷',
+                            isHead: false,
                             origin: { x: pos.x, y: pos.y, z: pos.z }
                         });
                     }
@@ -2420,7 +2813,7 @@
                 const d = en.group.position.distanceTo(pos);
                 if (d <= blastRadius) {
                     const dmg = Math.max(35, Math.round(160 * (1 - d / blastRadius)));
-                    damageBotEnemy(en, dmg, true, en.group.position.clone().add(new THREE.Vector3(0, 1.3, 0)));
+                    damageBotEnemy(en, dmg, true, en.group.position.clone().add(new THREE.Vector3(0, 1.3, 0)), 'M67手雷');
                 }
             }
         }
@@ -2493,6 +2886,20 @@
             updateHUD();
         }
 
+        function showHitDirection(sourcePos) {
+            if (!sourcePos) return;
+            const ind = document.getElementById('hit-direction-indicator');
+            const arrow = document.getElementById('hit-dir-arrow');
+            if (!ind || !arrow) return;
+            const dx = sourcePos.x - player.pos.x;
+            const dz = sourcePos.z - player.pos.z;
+            const angleToSource = Math.atan2(-dx, -dz);
+            const relAngle = (angleToSource - player.yaw) * (180 / Math.PI);
+            arrow.style.transform = `rotate(${-relAngle}deg)`;
+            ind.style.opacity = '1';
+            setTimeout(() => { ind.style.opacity = '0'; }, 360);
+        }
+
         function damagePlayer(amount, sourcePos = null) {
             if (gameState !== 'PLAYING' || player.isBuddhaForm) return;
             if (player.armor > 0) {
@@ -2501,6 +2908,8 @@
                 amount -= absorbed;
             }
             player.hp = Math.max(0, player.hp - amount);
+            player.recoilKick = Math.min(0.08, player.recoilKick + 0.025);
+            showHitDirection(sourcePos);
 
             const vig = document.getElementById('damage-vignette');
             if (vig) {
@@ -2525,9 +2934,9 @@
         // ==========================================
         // 8. 特效、浮動傷害與 HUD 繪製
         // ==========================================
-        function spawnTracerBullet(origin, dir, speed = 130, _unused = 0, isBuddha = false) {
+        function spawnTracerBullet(origin, dir, speed = 135, _unused = 0, isBuddha = false) {
             const mesh = new THREE.Mesh(
-                new THREE.BoxGeometry(isBuddha ? 0.14 : 0.035, isBuddha ? 0.14 : 0.035, isBuddha ? 1.4 : 0.9),
+                new THREE.BoxGeometry(isBuddha ? 0.14 : 0.032, isBuddha ? 0.14 : 0.032, isBuddha ? 1.4 : 1.05),
                 new THREE.MeshBasicMaterial({ color: isBuddha ? '#fde047' : '#fbbf24' })
             );
             mesh.position.copy(origin);
@@ -2539,14 +2948,14 @@
         function spawnImpactParticles(pos, isBlood = false, count = 8) {
             for (let i = 0; i < count; i++) {
                 const p = new THREE.Mesh(
-                    new THREE.BoxGeometry(0.06, 0.06, 0.06),
-                    new THREE.MeshBasicMaterial({ color: isBlood ? '#dc2626' : '#f59e0b' })
+                    new THREE.BoxGeometry(0.055, 0.055, 0.055),
+                    new THREE.MeshBasicMaterial({ color: isBlood ? '#dc2626' : '#fbbf24' })
                 );
                 p.position.copy(pos);
                 scene.add(p);
                 particles.push({
                     mesh: p,
-                    vel: new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 4.5, (Math.random() - 0.5) * 6),
+                    vel: new THREE.Vector3((Math.random() - 0.5) * 6.5, Math.random() * 4.8, (Math.random() - 0.5) * 6.5),
                     life: 0.42
                 });
             }
@@ -2564,7 +2973,7 @@
             el.style.top = `${y}px`;
             el.style.color = isCrit ? '#fde047' : '#ffffff';
             el.style.fontSize = isCrit ? '18px' : '14px';
-            el.textContent = customLabel || (isCrit ? `CRIT -${dmg}` : `-${dmg}`);
+            el.textContent = customLabel || (isCrit ? `HEADSHOT -${dmg}` : `-${dmg}`);
             document.getElementById('floating-dmg-layer').appendChild(el);
             setTimeout(() => el.remove(), 860);
         }
@@ -2716,6 +3125,7 @@
         document.querySelectorAll('.wpn-slot').forEach(btn => {
             btn.addEventListener('click', () => switchWeapon(Number(btn.dataset.wpn)));
         });
+        document.getElementById('btn-camera-view').addEventListener('click', toggleCameraPerspective);
         document.getElementById('btn-crouch').addEventListener('click', toggleCrouch);
         document.getElementById('btn-inspect').addEventListener('click', toggleWeaponInspect);
         document.getElementById('btn-reload').addEventListener('click', startReload);
@@ -2824,9 +3234,7 @@
                 ? lobbyInput.value.trim().toUpperCase()
                 : ((sideInput && sideInput.value.trim()) ? sideInput.value.trim().toUpperCase() : currentRoom);
 
-            if (chosenCode !== currentRoom) {
-                subscribeToRoom(chosenCode);
-            }
+            if (chosenCode !== currentRoom) subscribeToRoom(chosenCode);
             setBattleMode('coop3', true);
             gameState = 'MENU';
             startOrResetGame();
@@ -2840,9 +3248,7 @@
                 ? lobbyInput.value.trim().toUpperCase()
                 : ((sideInput && sideInput.value.trim()) ? sideInput.value.trim().toUpperCase() : currentRoom);
 
-            if (chosenCode !== currentRoom) {
-                subscribeToRoom(chosenCode);
-            }
+            if (chosenCode !== currentRoom) subscribeToRoom(chosenCode);
             setBattleMode('pure1v1', true);
             gameState = 'MENU';
             startOrResetGame();
@@ -2929,11 +3335,23 @@
             startOrResetGame();
         });
 
+        // ==========================================
+        // 10. 主渲染與物理循環（含動態準星、拋殼落地物理、槍機泵動/拉栓、彈藥箱補給）
+        // ==========================================
         let lastFrameTime = performance.now();
         function animate(now) {
             requestAnimationFrame(animate);
             const dt = Math.min(0.05, Math.max(0.001, (now - lastFrameTime) / 1000));
             lastFrameTime = now;
+
+            // 沙塵粒子微風飄動
+            const posAttr = dustGeo.attributes.position;
+            for (let i = 0; i < dustCount; i++) {
+                let x = posAttr.getX(i) + dt * 0.65;
+                if (x > 21) x = -21;
+                posAttr.setX(i, x);
+            }
+            posAttr.needsUpdate = true;
 
             if (gameState === 'PLAYING') {
                 const forward = new THREE.Vector3(-Math.sin(player.yaw), 0, -Math.cos(player.yaw));
@@ -2945,13 +3363,35 @@
                 if (keys['KeyA'] || keys['ArrowLeft']) moveDir.sub(right);
 
                 const isMoving = moveDir.lengthSq() > 0.001;
+                const isSprinting = isMoving && (keys['ShiftLeft'] || keys['ShiftRight']) && !player.isCrouching && !player.isADS;
+                const isHoldingBreath = player.isADS && (keys['ShiftLeft'] || keys['ShiftRight']);
+
                 if (isMoving) {
                     moveDir.normalize();
-                    const isSprinting = (keys['ShiftLeft'] || keys['ShiftRight']) && !player.isCrouching && !player.isADS;
                     const moveSpeed = player.isCrouching ? 3.2 : (isSprinting ? 8.2 : (player.isADS ? 3.6 : 5.6));
                     player.pos.addScaledVector(moveDir, moveSpeed * dt);
                     player.walkBobTimer += dt * (isSprinting ? 14 : (player.isADS ? 7.5 : 10.5));
                 }
+
+                // 檢查是否靠近彈藥與護甲補給箱
+                supplyCrates.forEach(sc => {
+                    if (sc.cooldown > 0) {
+                        sc.cooldown -= dt;
+                        return;
+                    }
+                    if (player.pos.distanceTo(sc.pos) < 1.65) {
+                        sc.cooldown = 16.0;
+                        WEAPONS[0].reserve = Math.min(240, WEAPONS[0].reserve + 60);
+                        WEAPONS[1].reserve = Math.min(64, WEAPONS[1].reserve + 16);
+                        WEAPONS[2].reserve = Math.min(300, WEAPONS[2].reserve + 100);
+                        WEAPONS[3].reserve = Math.min(45, WEAPONS[3].reserve + 10);
+                        player.armor = Math.min(player.maxArmor, player.armor + 35);
+                        player.grenades = Math.min(4, player.grenades + 1);
+                        audio.playReloadClick('in');
+                        showStreakBanner('📦 戰地彈藥箱補給完成！', '全武器備彈、破片手雷與護甲已補充');
+                        updateHUD();
+                    }
+                });
 
                 const eyeOffset = player.isCrouching ? 0.92 : 1.72;
                 const currentFeetY = Math.max(0, player.pos.y - eyeOffset);
@@ -2976,14 +3416,61 @@
                 }
 
                 resolvesCollision(player.pos, 0.45, Math.max(0, player.pos.y - eyeOffset));
-                camera.position.copy(player.pos);
-                camera.rotation.y = player.yaw;
+
+                // 平滑過渡第一人稱 <-> 第三人稱越肩視角攝影機與防穿牆碰撞
+                const targetTp = player.isThirdPerson ? 1 : 0;
+                player.tpProgress += (targetTp - player.tpProgress) * Math.min(1, dt * 14);
+
+                camera.rotation.y = player.yaw + player.recoilYawKick;
                 camera.rotation.x = player.pitch + player.recoilKick;
+
+                const curWpn = WEAPONS[player.currentWeaponIdx];
+                const isSniperScoped = (curWpn.type === 'sniper' && player.adsProgress > 0.72);
+
+                if (player.tpProgress > 0.01 && !isSniperScoped) {
+                    const rightVec = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
+                    const backVec = new THREE.Vector3(Math.sin(player.yaw), 0, Math.cos(player.yaw));
+                    const shoulderDist = 3.1 - player.adsProgress * 1.55;
+                    const shoulderRight = 0.68 - player.adsProgress * 0.12;
+                    const shoulderUp = (player.isCrouching ? 0.36 : 0.44) - player.adsProgress * 0.16;
+
+                    const desiredCamPos = player.pos.clone()
+                        .add(new THREE.Vector3(0, shoulderUp, 0))
+                        .addScaledVector(rightVec, shoulderRight)
+                        .addScaledVector(backVec, shoulderDist);
+
+                    // 攝影機防穿牆射線檢測：若背後有牆壁則自動拉近攝影機距離
+                    const headPivot = player.pos.clone().add(new THREE.Vector3(0, 0.1, 0));
+                    const toCam = desiredCamPos.clone().sub(headPivot);
+                    const maxCamDist = toCam.length();
+                    const camDir = toCam.normalize();
+                    const camWallHit = getFirstObstacleDistance(headPivot, camDir, maxCamDist + 0.25);
+                    const safeDist = camWallHit ? Math.max(0.45, camWallHit.distance - 0.25) : maxCamDist;
+                    const finalTpPos = headPivot.clone().addScaledVector(camDir, safeDist);
+
+                    camera.position.lerpVectors(player.pos, finalTpPos, player.tpProgress);
+                } else {
+                    camera.position.copy(player.pos);
+                }
+
+                // 同步本地 3D 特戰兵模型位置、蹲伏高度、走路擺動與金剛佛光環
+                const soldier = ensureLocalSoldierMesh();
+                const showLocalBody = (player.tpProgress > 0.15 && !isSniperScoped);
+                soldier.group.visible = showLocalBody;
+                if (showLocalBody) {
+                    const feetWorldY = Math.max(0, player.pos.y - eyeOffset);
+                    soldier.group.position.set(player.pos.x, feetWorldY, player.pos.z);
+                    soldier.group.rotation.y = player.yaw + Math.PI;
+                    soldier.group.scale.y = player.isCrouching ? 0.68 : 1.0;
+                    soldier.buddhaHalo.visible = player.isBuddhaForm;
+                    if (player.isBuddhaForm) soldier.buddhaHalo.rotation.z += dt * 3;
+                }
+
                 player.recoilKick = Math.max(0, player.recoilKick - dt * 0.42);
+                player.recoilYawKick *= Math.pow(0.05, dt);
                 player.weaponRecoilZ = Math.max(0, player.weaponRecoilZ - dt * 0.45);
 
                 if (player.fireCooldown > 0) player.fireCooldown -= dt;
-                const curWpn = WEAPONS[player.currentWeaponIdx];
                 if (isMouseDown && (curWpn.type === 'rifle' || player.isBuddhaForm) && player.fireCooldown <= 0) {
                     handlePrimaryFire();
                 }
@@ -3000,7 +3487,22 @@
                     }
                 }
 
-                // 平滑開鏡插值進度 (0 = 腰射, 1 = 完全開鏡)
+                // 動態十字準星擴散計算
+                const baseSpread = !player.onGround ? 26 : (isSprinting ? 22 : (isMoving ? 15 : (player.isCrouching ? 7.5 : 10.5)));
+                player.crosshairSpread += (baseSpread - player.crosshairSpread) * Math.min(1, dt * 12);
+                const chTop = document.getElementById('ch-top');
+                const chBottom = document.getElementById('ch-bottom');
+                const chLeft = document.getElementById('ch-left');
+                const chRight = document.getElementById('ch-right');
+                if (chTop && chBottom && chLeft && chRight) {
+                    const offset = Math.round(player.crosshairSpread);
+                    chTop.style.transform = `translateY(-${offset}px)`;
+                    chBottom.style.transform = `translateY(${offset}px)`;
+                    chLeft.style.transform = `translateX(-${offset}px)`;
+                    chRight.style.transform = `translateX(${offset}px)`;
+                }
+
+                // 平滑開鏡插值進度
                 const targetAdsProg = player.isADS ? 1 : 0;
                 player.adsProgress += (targetAdsProg - player.adsProgress) * Math.min(1, dt * 15);
 
@@ -3008,33 +3510,57 @@
                 camera.fov = targetFov;
                 camera.updateProjectionMatrix();
 
-                // 動態切換腰射準星漸隱、開鏡景深暗角與狙擊鏡光學分化線
                 const chBars = document.getElementById('ch-bars');
-                if (chBars) {
-                    chBars.style.opacity = `${Math.max(0, 1 - player.adsProgress * 1.45)}`;
-                }
+                if (chBars) chBars.style.opacity = `${player.isThirdPerson && !isSniperScoped ? 1 : Math.max(0, 1 - player.adsProgress * 1.45)}`;
                 const adsVig = document.getElementById('ads-vignette');
-                if (adsVig) {
-                    adsVig.style.opacity = `${(player.adsProgress * 0.85).toFixed(2)}`;
-                }
+                if (adsVig) adsVig.style.opacity = `${(player.adsProgress * 0.85).toFixed(2)}`;
                 const scopeOverlay = document.getElementById('sniper-scope-overlay');
-                const isSniperScoped = (curWpn.type === 'sniper' && player.adsProgress > 0.72);
                 if (scopeOverlay) {
                     scopeOverlay.style.opacity = isSniperScoped ? `${Math.min(1, (player.adsProgress - 0.72) / 0.25)}` : '0';
                 }
 
-                // 呼吸晃動與行走動態擺動計算
-                player.swayTimer += dt * (player.isCrouching ? 1.4 : 2.2);
-                const swayScale = player.isADS ? (player.isCrouching ? 0.00055 : 0.0014) : 0.0032;
+                // 呼吸晃動與行走動態擺動（Shift 屏息時穩定呼吸晃動）
+                player.swayTimer += dt * (isHoldingBreath ? 0.5 : (player.isCrouching ? 1.4 : 2.2));
+                const swayScale = isHoldingBreath ? 0.00018 : (player.isADS ? (player.isCrouching ? 0.00055 : 0.0014) : 0.0032);
                 const swayX = Math.cos(player.swayTimer) * swayScale;
                 const swayY = Math.sin(player.swayTimer * 2) * swayScale * 0.85;
                 const bobScale = isMoving ? (player.isADS ? 0.0022 : 0.0085) : 0;
                 const bobX = Math.cos(player.walkBobTimer * 0.5) * bobScale;
                 const bobY = Math.abs(Math.sin(player.walkBobTimer)) * bobScale;
 
+                // 武器可動機械零件動畫：M870 泵動護木、M249 進彈彈鏈、M24 右手拉栓
+                if (weaponAnimParts.m870PumpGroup) {
+                    if (player.pumpActionTimer > 0) {
+                        player.pumpActionTimer = Math.max(0, player.pumpActionTimer - dt);
+                        const pCycle = Math.sin((1 - player.pumpActionTimer / 0.34) * Math.PI);
+                        weaponAnimParts.m870PumpGroup.position.z = pCycle * 0.075;
+                    } else {
+                        weaponAnimParts.m870PumpGroup.position.z = 0;
+                    }
+                }
+                if (weaponAnimParts.m249AmmoBelt) {
+                    if (player.beltJitterTimer > 0) {
+                        player.beltJitterTimer = Math.max(0, player.beltJitterTimer - dt);
+                        weaponAnimParts.m249AmmoBelt.position.y = Math.sin(now * 0.08) * 0.007;
+                    } else {
+                        weaponAnimParts.m249AmmoBelt.position.y = 0;
+                    }
+                }
+                if (weaponAnimParts.m24BoltGroup) {
+                    if (player.boltActionTimer > 0) {
+                        player.boltActionTimer = Math.max(0, player.boltActionTimer - dt);
+                        const bCycle = Math.sin((1 - player.boltActionTimer / 0.48) * Math.PI);
+                        weaponAnimParts.m24BoltGroup.rotation.z = bCycle * 0.85;
+                        weaponAnimParts.m24BoltGroup.position.z = 0.08 + bCycle * 0.065;
+                    } else {
+                        weaponAnimParts.m24BoltGroup.rotation.z = 0;
+                        weaponAnimParts.m24BoltGroup.position.z = 0.08;
+                    }
+                }
+
                 const activeMesh = weaponMeshes[player.currentWeaponIdx];
                 if (activeMesh) {
-                    activeMesh.visible = !isSniperScoped;
+                    activeMesh.visible = (!isSniperScoped && player.tpProgress < 0.35);
 
                     if (player.isInspecting) {
                         player.inspectTimer += dt;
@@ -3047,8 +3573,10 @@
                         activeMesh.position.set(0.12 - Math.sin(prog * Math.PI) * 0.18, -0.18, -0.52);
                         activeMesh.rotation.y = -0.35 + Math.sin(prog * Math.PI) * 1.4 * player.knifeComboFlip;
                     } else if (player.isReloading) {
-                        activeMesh.position.lerp(new THREE.Vector3(0.18, -0.27, -0.40), Math.min(1, dt * 12));
-                        activeMesh.rotation.set(-0.35, 0.25, -0.45);
+                        const rProg = 1 - (player.reloadTimer / player.reloadTotal);
+                        const magTilt = Math.sin(rProg * Math.PI);
+                        activeMesh.position.lerp(new THREE.Vector3(0.16, -0.25 - magTilt * 0.04, -0.38), Math.min(1, dt * 14));
+                        activeMesh.rotation.set(-0.28 * magTilt, 0.25 * magTilt, -0.52 * magTilt);
                     } else {
                         const hp = curWpn.hipPos;
                         const ap = curWpn.adsPos;
@@ -3078,7 +3606,7 @@
                         activeMesh.position.z - 0.62
                     );
                     muzzleFlashGroup.rotation.z = Math.random() * Math.PI;
-                    muzzleLight.intensity = 2.6;
+                    muzzleLight.intensity = 2.8;
                 } else {
                     muzzleFlashGroup.visible = false;
                     muzzleLight.intensity = 0;
@@ -3132,11 +3660,12 @@
                                 al.fireCooldown = 1.1 + Math.random() * 0.7;
                                 const muzzle = al.group.position.clone().add(new THREE.Vector3(0, 1.35, 0));
                                 const shotDir = targetEn.group.position.clone().add(new THREE.Vector3(0, 1.2, 0)).sub(muzzle).normalize();
-                                const wallDist = getFirstObstacleDistance(muzzle, shotDir, 90);
+                                const wallHit = getFirstObstacleDistance(muzzle, shotDir, 90);
+                                const wallDist = wallHit ? wallHit.distance : 90;
                                 const distToEn = muzzle.distanceTo(targetEn.group.position);
                                 spawnTracerBullet(muzzle, shotDir, 110);
                                 if (wallDist >= distToEn - 0.3 && Math.random() < 0.45) {
-                                    damageBotEnemy(targetEn, 18, false, targetEn.group.position.clone().add(new THREE.Vector3(0, 1.2, 0)));
+                                    damageBotEnemy(targetEn, 18, false, targetEn.group.position.clone().add(new THREE.Vector3(0, 1.2, 0)), '隊友支援');
                                 }
                             }
                         }
@@ -3168,7 +3697,8 @@
                             const targetEye = player.pos.clone().add(new THREE.Vector3(0, -0.15, 0));
                             const shotDir = targetEye.clone().sub(muzzle).normalize();
                             const distToP = muzzle.distanceTo(targetEye);
-                            const wallDist = getFirstObstacleDistance(muzzle, shotDir, distToP + 1);
+                            const wallHit = getFirstObstacleDistance(muzzle, shotDir, distToP + 1);
+                            const wallDist = wallHit ? wallHit.distance : distToP + 1;
                             spawnTracerBullet(muzzle, shotDir, 95);
 
                             if (wallDist >= distToP - 0.25) {
@@ -3204,6 +3734,41 @@
                 rp.group.rotation.y = rp.targetYaw;
                 if (rp.buddhaHalo.visible) rp.buddhaHalo.rotation.z += dt * 3;
             });
+
+            // 黃銅彈殼拋出物理與落地金屬叮噹聲
+            for (let i = shellCasings.length - 1; i >= 0; i--) {
+                const sc = shellCasings[i];
+                sc.vel.y -= 13.5 * dt;
+                sc.mesh.position.addScaledVector(sc.vel, dt);
+                sc.mesh.rotation.x += sc.rotVel.x * dt;
+                sc.mesh.rotation.y += sc.rotVel.y * dt;
+                sc.mesh.rotation.z += sc.rotVel.z * dt;
+                if (sc.mesh.position.y < 0.02) {
+                    sc.mesh.position.y = 0.02;
+                    if (!sc.bounced) {
+                        sc.bounced = true;
+                        audio.playShellCasingClink();
+                    }
+                    sc.vel.y *= -0.35;
+                    sc.vel.x *= 0.55;
+                    sc.vel.z *= 0.55;
+                    sc.rotVel.multiplyScalar(0.5);
+                }
+                sc.life -= dt;
+                if (sc.life <= 0) {
+                    scene.remove(sc.mesh);
+                    shellCasings.splice(i, 1);
+                }
+            }
+
+            // 牆面彈孔漸隱清理
+            for (let i = bulletDecals.length - 1; i >= 0; i--) {
+                bulletDecals[i].life -= dt;
+                if (bulletDecals[i].life <= 0) {
+                    scene.remove(bulletDecals[i].mesh);
+                    bulletDecals.splice(i, 1);
+                }
+            }
 
             for (let i = tracers.length - 1; i >= 0; i--) {
                 const t = tracers[i];
