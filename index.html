@@ -151,7 +151,12 @@
 
     <!-- 正上方中央：醒目擊殺數、連殺與 1v1 勝場橫條 -->
     <div id="top-kill-counter" class="fixed top-2 sm:top-3 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
-        <div class="hud-glass rounded-xl sm:rounded-2xl px-3 py-1.5 sm:px-5 sm:py-2 border border-amber-400/60 flex items-center gap-3 sm:gap-5 shadow-xl">
+        <div class="hud-glass rounded-xl sm:rounded-2xl px-3 py-1.5 sm:px-5 sm:py-2 border border-amber-400/60 flex items-center gap-2.5 sm:gap-4 shadow-xl pointer-events-auto">
+            <div class="text-center">
+                <div class="text-[9px] sm:text-[10px] font-black text-stone-400 tracking-wider">作戰金幣</div>
+                <div id="hud-coins" class="font-military text-base sm:text-xl text-yellow-300 leading-none">500</div>
+            </div>
+            <div class="h-5 sm:h-6 w-px bg-stone-700"></div>
             <div class="text-center">
                 <div class="text-[9px] sm:text-[10px] font-black text-stone-400 tracking-wider">擊殺數</div>
                 <div id="hud-total-kills" class="font-military text-lg sm:text-2xl text-amber-300 leading-none">0</div>
@@ -166,6 +171,10 @@
                 <div class="text-[9px] sm:text-[10px] font-black text-stone-400 tracking-wider">1v1 勝場</div>
                 <div id="hud-top-duel-wins" class="font-military text-base sm:text-xl text-cyan-300 leading-none">0</div>
             </div>
+            <div class="h-5 sm:h-6 w-px bg-stone-700"></div>
+            <button id="btn-open-shop-top" class="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-stone-950 font-black text-[11px] sm:text-xs shadow cursor-pointer">
+                🛒 軍火商店 [B]
+            </button>
         </div>
     </div>
 
@@ -267,6 +276,12 @@
             <div class="flex items-center justify-between text-[11px] pt-1 border-t border-stone-700/80">
                 <span class="text-stone-400 font-bold">1v1 戰績</span>
                 <span id="side-duel-record" class="font-black text-amber-300">0 勝 - 0 敗</span>
+            </div>
+            <div class="flex items-center justify-between text-[10px] pt-1 border-t border-stone-700/80">
+                <span id="cloud-account-badge" class="text-emerald-300 font-bold truncate max-w-[130px]">☁️ 雲端帳號同步中...</span>
+                <button id="btn-cloud-save-now" class="px-1.5 py-0.5 rounded bg-emerald-600/40 hover:bg-emerald-500/60 border border-emerald-400/60 text-emerald-200 font-black cursor-pointer">
+                    💾 存檔
+                </button>
             </div>
         </div>
 
@@ -433,6 +448,32 @@
                             🔗 複製邀請網址
                         </button>
                     </div>
+                    <!-- 雲端帳號與軍火商店快捷區 -->
+                    <div class="bg-stone-900/85 rounded-xl p-2.5 border border-emerald-500/40 space-y-2 text-left">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-black text-emerald-300">🔐 帳號雲端存檔綁定</span>
+                            <span id="lobby-cloud-status" class="text-[10px] text-amber-300 font-bold">尚未綁定帳號</span>
+                        </div>
+                        <div class="flex gap-1">
+                            <input id="input-account-email-lobby" type="email" maxlength="48" placeholder="輸入你的 Google / 玩家信箱" class="w-full bg-stone-950 border border-stone-600 rounded-lg px-2 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-blue-400">
+                            <button id="btn-google-login-lobby" class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-stone-100 text-stone-900 font-black text-xs flex items-center justify-center gap-1.5 shadow shrink-0 cursor-pointer">
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/></svg>
+                                <span id="btn-google-login-lobby-text">綁定登入</span>
+                            </button>
+                        </div>
+                        <div class="flex gap-1">
+                            <input id="input-player-nickname" type="text" maxlength="12" placeholder="輸入你的戰士代號" class="w-full bg-stone-950 border border-stone-600 rounded-lg px-2 py-1 text-xs font-bold text-white focus:outline-none focus:border-emerald-400">
+                            <button id="btn-save-profile-lobby" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black shrink-0 cursor-pointer">
+                                儲存
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between text-[10px] text-stone-400">
+                            <span id="lobby-account-id" class="font-mono truncate max-w-[145px]">帳號: 訪客模式</span>
+                            <button id="btn-lobby-open-shop" class="text-amber-300 hover:text-amber-200 font-black underline cursor-pointer">
+                                🛒 開啟軍火商店
+                            </button>
+                        </div>
+                    </div>
                     <div class="bg-stone-900/75 rounded-xl p-2.5 border border-stone-700/80 text-left space-y-1.5">
                         <div class="text-[11px] font-black text-amber-300">戰場模式選擇：</div>
                         <label class="flex items-center gap-2 text-xs text-emerald-300 font-bold cursor-pointer">
@@ -484,15 +525,145 @@
         </div>
     </div>
 
-    <!-- Firebase SDK（雲端備援同步） -->
+    <!-- 戰地軍火商店與雲端帳號面板覆蓋層 (按 B 鍵或點擊商店按鈕開啟) -->
+    <div id="shop-overlay" class="hidden fixed inset-0 z-40 flex items-center justify-center bg-black/80 backdrop-blur-sm p-3 overflow-y-auto">
+        <div class="hud-glass rounded-2xl max-w-3xl w-full p-5 sm:p-6 border-2 border-amber-400/75 space-y-4 my-auto">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-stone-700 pb-3">
+                <div>
+                    <div class="text-[11px] font-black text-amber-400 tracking-widest">TACTICAL ARMORY & CLOUD PROFILE</div>
+                    <h2 class="font-military text-2xl sm:text-3xl text-white">🛒 戰地軍火商店 ＆ 雲端帳號中心</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="bg-stone-950/90 px-3.5 py-1.5 rounded-xl border border-yellow-400/60 text-right">
+                        <div class="text-[10px] text-stone-400 font-bold">持有作戰金幣</div>
+                        <div id="shop-coins-display" class="font-military text-xl text-yellow-300">500</div>
+                    </div>
+                    <button id="btn-close-shop" class="px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 border border-stone-600 text-white font-black text-sm cursor-pointer">
+                        ✕ 關閉 [B]
+                    </button>
+                </div>
+            </div>
+
+            <!-- 雲端帳號存檔資訊列 -->
+            <div class="bg-stone-900/90 rounded-xl p-3 border border-emerald-500/45 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+                <div class="space-y-1 text-xs">
+                    <div class="font-black text-emerald-300 flex flex-wrap items-center gap-2">
+                        <span>🔐 帳號雲端存檔狀態：</span>
+                        <span id="shop-cloud-sync-state" class="text-amber-300">尚未綁定帳號</span>
+                        <input id="shop-account-email-input" type="email" maxlength="48" placeholder="輸入 Google 信箱綁定" class="bg-stone-950 border border-stone-600 rounded px-2 py-0.5 text-[11px] font-bold text-white w-40 focus:outline-none focus:border-blue-400">
+                        <button id="btn-google-login-shop" class="px-2.5 py-0.5 rounded bg-white hover:bg-stone-100 text-stone-900 font-black text-[11px] flex items-center gap-1 shadow cursor-pointer">
+                            <span>G</span>
+                            <span id="btn-google-login-shop-text">綁定雲端帳號</span>
+                        </button>
+                    </div>
+                    <div id="shop-full-uid" class="text-[11px] text-stone-400 font-mono break-all">目前綁定帳號：訪客模式</div>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <input id="shop-nickname-input" type="text" maxlength="12" placeholder="修改戰士代號" class="bg-stone-950 border border-stone-600 rounded-lg px-2.5 py-1.5 text-xs font-bold text-white w-32 sm:w-36 focus:outline-none focus:border-emerald-400">
+                    <button id="btn-shop-cloud-save" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shrink-0 cursor-pointer">
+                        💾 立即存檔雲端
+                    </button>
+                </div>
+            </div>
+
+            <!-- 軍火升級與戰術物資商品列表 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-left">
+                <!-- 商品 1：槍械火力強化 -->
+                <div class="bg-stone-900/85 rounded-xl p-3.5 border border-stone-700 flex flex-col justify-between space-y-2.5">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-black text-amber-300">🔥 槍械穿甲彈頭強化</span>
+                            <span id="shop-lv-dmg" class="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-black">Lv.0 / 5</span>
+                        </div>
+                        <p class="text-xs text-stone-300 mt-1">永久提升所有槍械與軍刀 +15% 基礎傷害（雲端永久保存）。</p>
+                    </div>
+                    <button id="buy-upgrade-dmg" class="w-full py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs cursor-pointer">
+                        💰 300 金幣購買升級
+                    </button>
+                </div>
+
+                <!-- 商品 2：凱夫拉重型防彈衣升級 -->
+                <div class="bg-stone-900/85 rounded-xl p-3.5 border border-stone-700 flex flex-col justify-between space-y-2.5">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-black text-sky-300">🛡️ 重型防彈插板強化</span>
+                            <span id="shop-lv-armor" class="text-xs px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 font-black">Lv.0 / 5</span>
+                        </div>
+                        <p class="text-xs text-stone-300 mt-1">永久提升護甲上限 +25 點並立即補滿護甲（雲端永久保存）。</p>
+                    </div>
+                    <button id="buy-upgrade-armor" class="w-full py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-stone-950 font-black text-xs cursor-pointer">
+                        💰 250 金幣購買升級
+                    </button>
+                </div>
+
+                <!-- 商品 3：聖光十字架補充 -->
+                <div class="bg-stone-900/85 rounded-xl p-3.5 border border-stone-700 flex flex-col justify-between space-y-2.5">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-black text-yellow-300">✝ 聖光復活十字架 (+1)</span>
+                            <span id="shop-count-cross" class="text-xs px-2 py-0.5 rounded bg-yellow-500/20 text-yellow-300 font-black">持有 2 個</span>
+                        </div>
+                        <p class="text-xs text-stone-300 mt-1">補充 1 次 [6] 鍵原地滿血復活與聖光回血次數。</p>
+                    </div>
+                    <button id="buy-item-cross" class="w-full py-2 rounded-lg bg-yellow-500 hover:bg-yellow-400 text-stone-950 font-black text-xs cursor-pointer">
+                        💰 200 金幣購買
+                    </button>
+                </div>
+
+                <!-- 商品 4：全武器備彈＋破片手雷包 -->
+                <div class="bg-stone-900/85 rounded-xl p-3.5 border border-stone-700 flex flex-col justify-between space-y-2.5">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-black text-emerald-300">📦 特戰滿彈＋手雷箱</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black">即時補給</span>
+                        </div>
+                        <p class="text-xs text-stone-300 mt-1">立即補滿所有主副武器備彈、生命值與 3 顆 M67 破片手雷。</p>
+                    </div>
+                    <button id="buy-item-ammo" class="w-full py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs cursor-pointer">
+                        💰 120 金幣購買
+                    </button>
+                </div>
+
+                <!-- 商品 5：金剛佛陀即時顯靈 -->
+                <div class="bg-stone-900/85 rounded-xl p-3.5 border border-stone-700 flex flex-col justify-between space-y-2.5">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-black text-orange-300">☸ 金剛佛陀聖光充能</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-orange-500/20 text-orange-300 font-black">立即就緒</span>
+                        </div>
+                        <p class="text-xs text-stone-300 mt-1">立即重置 [0] 鍵變身金剛佛陀冷卻時間，隨時施展如來神掌。</p>
+                    </div>
+                    <button id="buy-item-buddha" class="w-full py-2 rounded-lg bg-orange-500 hover:bg-orange-400 text-stone-950 font-black text-xs cursor-pointer">
+                        💰 180 金幣購買
+                    </button>
+                </div>
+
+                <!-- 商品 6：A-10 雷霆空襲支援券 -->
+                <div class="bg-stone-900/85 rounded-xl p-3.5 border border-stone-700 flex flex-col justify-between space-y-2.5">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-black text-red-300">✈️ A-10 空襲呼叫信標</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-red-500/20 text-red-300 font-black">[7] 鍵啟動</span>
+                        </div>
+                        <p class="text-xs text-stone-300 mt-1">無需連殺直接解鎖一次全街道 A-10 雷霆地毯式轟炸。</p>
+                    </div>
+                    <button id="buy-item-airstrike" class="w-full py-2 rounded-lg bg-red-500 hover:bg-red-400 text-white font-black text-xs cursor-pointer">
+                        💰 220 金幣購買
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Firebase SDK（Google 帳號登入與雲端存檔） -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, addDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, addDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         window.__FB_SDK__ = {
             initializeApp, getAuth, signInAnonymously, signInWithCustomToken,
-            getFirestore, doc, setDoc, addDoc, collection, onSnapshot
+            GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
+            getFirestore, doc, getDoc, setDoc, addDoc, collection, onSnapshot
         };
         window.dispatchEvent(new Event('fb-sdk-ready'));
     </script>
@@ -510,6 +681,15 @@
         let airstrikeReady = false;
         let duelWins = 0;
         let duelLosses = 0;
+        // 商店與 Google 帳號雲端存檔狀態
+        let playerCoins = 500;
+        let playerNickname = '特戰隊員';
+        let googleAccountEmail = '';
+        let isGoogleSignedIn = false;
+        let damageUpgradeLevel = 0;
+        let armorUpgradeLevel = 0;
+        let isShopOpen = false;
+        let cloudSaveTimer = null;
 
         const player = {
             pos: new THREE.Vector3(0, 1.72, 24.0),
@@ -1573,6 +1753,7 @@
             else if (e.code === 'KeyG') throwFragGrenade();
             else if (e.code === 'KeyF') toggleWeaponInspect();
             else if (e.code === 'KeyC') toggleCameraPerspective();
+            else if (e.code === 'KeyB') toggleShopModal();
             else if (e.code === 'KeyX' || e.code === 'ControlLeft' || e.code === 'ControlRight') toggleCrouch();
             else if (e.code === 'KeyQ') setADSState(!player.isADS);
             else if (e.code === 'Space' && player.onGround && gameState === 'PLAYING') {
@@ -2006,6 +2187,7 @@
             } else if (ev.type === 'coop_bot_kill') {
                 totalKills++;
                 score += 100;
+                playerCoins += 25;
                 updateHUD();
                 pushKillFeed(`隊友 ${ev.from.slice(0, 5)}`, '敵軍特戰兵', ev.wpnId || 'M4A1', !!ev.isHead, true);
             } else if (ev.type === 'pvp_hit' && (!ev.target || ev.target === myUid)) {
@@ -2029,11 +2211,13 @@
                 totalKills++;
                 killstreak++;
                 score += 500;
+                playerCoins += 150;
+                scheduleCloudSave();
                 if (killstreak >= 3) airstrikeReady = true;
                 updateSideRoomUI(remotePlayers.size + 1);
                 updateHUD();
                 pushKillFeed('你', `對手 ${ev.from.slice(0, 5)}`, ev.wpnId || WEAPONS[player.currentWeaponIdx].id, !!ev.isHead, true);
-                showStreakBanner('🏆 1v1 單挑擊殺獲勝！', `你擊敗了對手 ${ev.from.slice(0, 5)} (+500 分)`);
+                showStreakBanner('🏆 1v1 單挑擊殺獲勝！', `你擊敗了對手 ${ev.from.slice(0, 5)} (+500 分 / +150 金幣)`);
             } else if (ev.type === 'sacred_cross') {
                 showStreakBanner(
                     battleMode === 'coop3' ? `✝ 戰友 ${ev.from.slice(0, 5)} 舉起十字架復活！` : `✝ 對手 ${ev.from.slice(0, 5)} 舉起十字架復活！`,
@@ -2211,6 +2395,7 @@
 
             try {
                 if (!window.__FB_SDK__ || typeof __firebase_config === 'undefined') {
+                    loadCloudAccountProfile();
                     return;
                 }
                 const sdk = window.__FB_SDK__;
@@ -2224,13 +2409,186 @@
                 } else {
                     await sdk.signInAnonymously(auth);
                 }
+
                 if (auth.currentUser) {
                     myUid = auth.currentUser.uid;
-                    subscribeToRoom(currentRoom);
+                }
+                await loadCloudAccountProfile();
+                subscribeToRoom(currentRoom);
+            } catch (err) {
+                console.warn('Multiplayer Firebase fallback mode:', err);
+                loadCloudAccountProfile();
+            }
+        }
+
+        async function signInWithGoogleAccount(sourceInputId = 'input-account-email-lobby') {
+            const inputEl = document.getElementById(sourceInputId);
+            const fallbackEl = document.getElementById(sourceInputId === 'input-account-email-lobby' ? 'shop-account-email-input' : 'input-account-email-lobby');
+            const rawEmail = (inputEl && inputEl.value.trim()) || (fallbackEl && fallbackEl.value.trim()) || googleAccountEmail;
+
+            if (!rawEmail || !rawEmail.includes('@')) {
+                if (inputEl) inputEl.focus();
+                showStreakBanner('📧 請先輸入你的 Google 信箱', '輸入信箱後按「綁定登入」，即可在任何電腦同步金幣與強化！（預覽環境已自動防護彈窗報錯）');
+                return;
+            }
+
+            const normalizedEmail = rawEmail.toLowerCase();
+            isGoogleSignedIn = true;
+            googleAccountEmail = normalizedEmail;
+            if (playerNickname === '特戰隊員') {
+                playerNickname = normalizedEmail.split('@')[0].slice(0, 12);
+            }
+
+            try {
+                localStorage.setItem('dust3d_bound_email', normalizedEmail);
+            } catch (e) {}
+
+            await loadCloudAccountProfile();
+            await saveCloudAccountProfile(true);
+            showStreakBanner('✅ 帳號雲端存檔已綁定！', `已連結 ${googleAccountEmail}，所有金幣與強化等級已同步保存！`);
+        }
+
+        // 防護 iFrame 沙盒環境下 Firebase Auth 內部未捕獲的 PopupOperation Promise 拒絕錯誤
+        window.addEventListener('unhandledrejection', (event) => {
+            const msg = String(event?.reason?.message || event?.reason || '');
+            if (msg.includes('Pending promise was never set') || msg.includes('auth/popup')) {
+                event.preventDefault();
+                showStreakBanner('⚠️ 預覽視窗不支援外部彈窗登入', '請直接在左側欄位輸入你的 Google 信箱進行雲端存檔綁定！');
+            }
+        });
+
+        // ==========================================
+        // 6.5 Google 帳號雲端存檔與讀取系統 (Strict Path: /artifacts/{appId}/users/{userId}/profile/saveData)
+        // ==========================================
+        function getAccountStorageKey() {
+            if (isGoogleSignedIn && googleAccountEmail) {
+                return 'acct_' + googleAccountEmail.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            }
+            return auth?.currentUser?.uid || myUid;
+        }
+
+        function updateCloudAccountUI(statusLabel = null) {
+            const effectiveStatus = statusLabel || (isGoogleSignedIn ? `✅ 雲端帳號已綁定` : '⚠️ 訪客模式 (未綁信箱)');
+            const accountDisplay = isGoogleSignedIn
+                ? `${googleAccountEmail}`
+                : `訪客 (${myUid.slice(0, 8)})`;
+
+            const sideBadge = document.getElementById('cloud-account-badge');
+            const lobbyStatus = document.getElementById('lobby-cloud-status');
+            const lobbyId = document.getElementById('lobby-account-id');
+            const shopState = document.getElementById('shop-cloud-sync-state');
+            const shopUid = document.getElementById('shop-full-uid');
+            const nickLobby = document.getElementById('input-player-nickname');
+            const nickShop = document.getElementById('shop-nickname-input');
+            const emailLobby = document.getElementById('input-account-email-lobby');
+            const emailShop = document.getElementById('shop-account-email-input');
+            const btnLobbyGoogle = document.getElementById('btn-google-login-lobby-text');
+            const btnShopGoogle = document.getElementById('btn-google-login-shop-text');
+
+            if (sideBadge) sideBadge.textContent = isGoogleSignedIn ? `🟢 ${googleAccountEmail}` : `⚠️ 訪客 (${playerNickname})`;
+            if (lobbyStatus) lobbyStatus.textContent = effectiveStatus;
+            if (lobbyId) lobbyId.textContent = `帳號: ${accountDisplay}`;
+            if (shopState) shopState.textContent = effectiveStatus;
+            if (shopUid) shopUid.textContent = isGoogleSignedIn
+                ? `已綁定雲端帳號：${googleAccountEmail}（跨裝置通用存檔）`
+                : `目前為訪客暫存帳號 (UID: ${myUid})，輸入 Google 信箱並點擊綁定即可永久保存！`;
+            if (btnLobbyGoogle) btnLobbyGoogle.textContent = isGoogleSignedIn ? '切換帳號' : '綁定登入';
+            if (btnShopGoogle) btnShopGoogle.textContent = isGoogleSignedIn ? '更新綁定信箱' : '綁定雲端帳號';
+            if (nickLobby && document.activeElement !== nickLobby) nickLobby.value = playerNickname;
+            if (nickShop && document.activeElement !== nickShop) nickShop.value = playerNickname;
+            if (emailLobby && document.activeElement !== emailLobby && googleAccountEmail) emailLobby.value = googleAccountEmail;
+            if (emailShop && document.activeElement !== emailShop && googleAccountEmail) emailShop.value = googleAccountEmail;
+        }
+
+        async function loadCloudAccountProfile() {
+            try {
+                const savedEmail = localStorage.getItem('dust3d_bound_email');
+                if (savedEmail && savedEmail.includes('@') && !googleAccountEmail) {
+                    googleAccountEmail = savedEmail;
+                    isGoogleSignedIn = true;
+                }
+            } catch (e) {}
+
+            updateCloudAccountUI('🔄 讀取雲端存檔中...');
+            if (!db || !window.__FB_SDK__ || !auth?.currentUser) {
+                updateCloudAccountUI(isGoogleSignedIn ? '✅ 本地帳號已綁定' : '⚠️ 離線訪客模式');
+                return;
+            }
+            try {
+                const sdk = window.__FB_SDK__;
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const storageDocId = getAccountStorageKey();
+                const profileRef = sdk.doc(db, 'artifacts', appId, 'users', auth.currentUser.uid, 'profile', storageDocId);
+                const snap = await sdk.getDoc(profileRef);
+                if (snap.exists()) {
+                    const d = snap.data();
+                    if (typeof d.coins === 'number') playerCoins = d.coins;
+                    if (typeof d.totalKills === 'number') totalKills = d.totalKills;
+                    if (typeof d.score === 'number') score = d.score;
+                    if (typeof d.duelWins === 'number') duelWins = d.duelWins;
+                    if (typeof d.duelLosses === 'number') duelLosses = d.duelLosses;
+                    if (typeof d.damageUpgradeLevel === 'number') damageUpgradeLevel = Math.min(5, Math.max(0, d.damageUpgradeLevel));
+                    if (typeof d.armorUpgradeLevel === 'number') armorUpgradeLevel = Math.min(5, Math.max(0, d.armorUpgradeLevel));
+                    if (typeof d.nickname === 'string' && d.nickname.trim()) playerNickname = d.nickname.trim();
+
+                    player.maxArmor = 100 + armorUpgradeLevel * 25;
+                    player.armor = player.maxArmor;
+                    updateCloudAccountUI(isGoogleSignedIn ? '✅ 雲端帳號已同步' : '⚠️ 訪客暫存已讀取');
+                    updateSideRoomUI(remotePlayers.size + 1);
+                    updateHUD();
+                    refreshShopUI();
+                } else {
+                    await saveCloudAccountProfile(true);
                 }
             } catch (err) {
-                console.warn('Cloud sync init fallback:', err);
+                console.warn('Load cloud profile error:', err);
+                updateCloudAccountUI('⚠️ 雲端讀取重試中');
             }
+        }
+
+        async function saveCloudAccountProfile(silent = false) {
+            if (!db || !window.__FB_SDK__ || !auth?.currentUser) {
+                if (!silent) showStreakBanner('⚠️ 尚未連上雲端帳號伺服器', '請稍候系統自動連線後再試');
+                return;
+            }
+            try {
+                const sdk = window.__FB_SDK__;
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const storageDocId = getAccountStorageKey();
+                const profileRef = sdk.doc(db, 'artifacts', appId, 'users', auth.currentUser.uid, 'profile', storageDocId);
+                await sdk.setDoc(profileRef, {
+                    nickname: playerNickname,
+                    googleEmail: googleAccountEmail,
+                    isGoogleBound: isGoogleSignedIn,
+                    coins: playerCoins,
+                    totalKills,
+                    score,
+                    duelWins,
+                    duelLosses,
+                    damageUpgradeLevel,
+                    armorUpgradeLevel,
+                    updatedAtMs: Date.now()
+                });
+                updateCloudAccountUI(isGoogleSignedIn ? '✅ 已存入綁定帳號' : '⚠️ 已暫存 (建議綁定信箱)');
+                if (!silent) {
+                    showStreakBanner(
+                        isGoogleSignedIn ? '✅ 已永久存入你的雲端帳號！' : '💾 已暫存至目前訪客雲端',
+                        isGoogleSignedIn
+                            ? `帳號（${googleAccountEmail}）的金幣 (${playerCoins}) 與強化等級已安全保存！`
+                            : '建議輸入 Google 信箱進行綁定以免遺失進度！'
+                    );
+                }
+            } catch (err) {
+                console.warn('Save cloud profile error:', err);
+                if (!silent) showStreakBanner('⚠️ 雲端存檔失敗', '請檢查網路連線後重試');
+            }
+        }
+
+        function scheduleCloudSave() {
+            if (cloudSaveTimer) clearTimeout(cloudSaveTimer);
+            cloudSaveTimer = setTimeout(() => {
+                saveCloudAccountProfile(true);
+            }, 1500);
         }
 
         if (window.__FB_SDK__) initMultiplayerService();
@@ -2426,7 +2784,10 @@
 
                 totalKills++;
                 killstreak++;
+                const earnedCoins = isHead ? 75 : 50;
+                playerCoins += earnedCoins;
                 score += isHead ? 200 : 120;
+                scheduleCloudSave();
                 const usedWpn = wpnLabel || (player.isBuddhaForm ? '如來神掌' : WEAPONS[player.currentWeaponIdx].id);
                 pushKillFeed('你', enemyObj.label, usedWpn, isHead, true);
 
@@ -2447,6 +2808,8 @@
             if ((battleMode === 'hybrid' || battleMode === 'coop3') && enemies.length === 0 && gameState === 'PLAYING') {
                 currentWave++;
                 score += 300;
+                playerCoins += 150;
+                scheduleCloudSave();
                 player.hp = Math.min(player.maxHp, player.hp + 25);
                 player.armor = Math.min(player.maxArmor, player.armor + 35);
                 WEAPONS[0].reserve += 60;
@@ -2454,14 +2817,14 @@
                 WEAPONS[2].reserve += 100;
                 WEAPONS[3].reserve += 10;
                 pulseBlessingNewspaper();
-                showStreakBanner(`🎖️ 第 ${currentWave} 波攻勢來襲！`, '已自動補充彈藥與戰地醫療護甲');
+                showStreakBanner(`🎖️ 第 ${currentWave} 波攻勢來襲！(+150 金幣)`, '已自動補充彈藥與戰地醫療護甲');
                 spawnWaveEnemies(currentWave);
             }
             updateHUD();
         }
 
         function handlePrimaryFire() {
-            if (gameState !== 'PLAYING') return;
+            if (gameState !== 'PLAYING' || isShopOpen) return;
             if (player.isBuddhaForm) {
                 fireBuddhaGoldenPalm();
                 return;
@@ -2551,7 +2914,8 @@
                 if (hits.length > 0 && hits[0].distance < wallDist) {
                     const hit = hits[0];
                     const isHead = hit.object.userData.part === 'head';
-                    const dmg = Math.round(wpn.dmg * (isHead ? wpn.headMult : 1));
+                    const dmgMult = 1 + damageUpgradeLevel * 0.15;
+                    const dmg = Math.round(wpn.dmg * dmgMult * (isHead ? wpn.headMult : 1));
 
                     if (hit.object.userData.remoteUid) {
                         if (battleMode === 'coop3') {
@@ -2688,7 +3052,8 @@
                         const wallDist = wallHit ? wallHit.distance : dist;
                         const angle = forwardDir.angleTo(dirToTarget);
                         if (wallDist >= dist - 0.1 && angle < (isStab ? 0.42 : 0.72)) {
-                            const dmg = isStab ? 135 : 68;
+                            const dmgMult = 1 + damageUpgradeLevel * 0.15;
+                            const dmg = Math.round((isStab ? 135 : 68) * dmgMult);
                             spawnImpactParticles(targetCenter, true, 12);
                             spawnFloatingDamage(targetCenter, dmg, isStab);
                             triggerHitmarker(isStab);
@@ -2716,7 +3081,8 @@
                     const wallDist = wallHit ? wallHit.distance : dist;
                     const angle = forwardDir.angleTo(dirToTarget);
                     if (wallDist >= dist - 0.1 && angle < (isStab ? 0.42 : 0.72)) {
-                        const dmg = isStab ? 140 : 95;
+                        const dmgMult = 1 + damageUpgradeLevel * 0.15;
+                        const dmg = Math.round((isStab ? 140 : 95) * dmgMult);
                         damageBotEnemy(en, dmg, isStab, targetCenter, 'M9軍刀');
                     }
                 }
@@ -3080,6 +3446,8 @@
         function updateHUD() {
             const wpn = WEAPONS[player.currentWeaponIdx];
             const opponentCount = remotePlayers.size;
+            const coinsEl = document.getElementById('hud-coins');
+            if (coinsEl) coinsEl.textContent = `${playerCoins}`;
             document.getElementById('hud-total-kills').textContent = `${totalKills}`;
             document.getElementById('hud-top-streak').textContent = `${killstreak}`;
             document.getElementById('hud-top-duel-wins').textContent = `${duelWins}`;
@@ -3117,7 +3485,140 @@
             document.getElementById('hud-buddha-status').textContent = player.isBuddhaForm
                 ? `聖光剩餘 ${Math.ceil(player.buddhaTimer)}s`
                 : (player.buddhaCooldown > 0 ? `冷卻 ${Math.ceil(player.buddhaCooldown)}s` : '變金剛佛');
+            if (isShopOpen) refreshShopUI();
         }
+
+        // ==========================================
+        // 8.5 戰地軍火商店邏輯與購買系統
+        // ==========================================
+        function refreshShopUI() {
+            const coinsDisp = document.getElementById('shop-coins-display');
+            if (coinsDisp) coinsDisp.textContent = `${playerCoins}`;
+
+            const lvDmgEl = document.getElementById('shop-lv-dmg');
+            const btnDmg = document.getElementById('buy-upgrade-dmg');
+            if (lvDmgEl) lvDmgEl.textContent = `Lv.${damageUpgradeLevel} / 5`;
+            if (btnDmg) {
+                btnDmg.textContent = damageUpgradeLevel >= 5 ? '✅ 已達最高火力等級' : `💰 ${300 + damageUpgradeLevel * 100} 金幣購買升級`;
+                btnDmg.disabled = damageUpgradeLevel >= 5;
+            }
+
+            const lvArmorEl = document.getElementById('shop-lv-armor');
+            const btnArmor = document.getElementById('buy-upgrade-armor');
+            if (lvArmorEl) lvArmorEl.textContent = `Lv.${armorUpgradeLevel} / 5`;
+            if (btnArmor) {
+                btnArmor.textContent = armorUpgradeLevel >= 5 ? '✅ 已達最高防彈等級' : `💰 ${250 + armorUpgradeLevel * 100} 金幣購買升級`;
+                btnArmor.disabled = armorUpgradeLevel >= 5;
+            }
+
+            const crossCountEl = document.getElementById('shop-count-cross');
+            if (crossCountEl) crossCountEl.textContent = `持有 ${player.crossReviveCharges} 個`;
+        }
+
+        function toggleShopModal(forceState = null) {
+            const overlay = document.getElementById('shop-overlay');
+            if (!overlay) return;
+            isShopOpen = forceState !== null ? forceState : overlay.classList.contains('hidden');
+            if (isShopOpen) {
+                isMouseDown = false;
+                if (document.pointerLockElement === canvas && document.exitPointerLock) {
+                    try { document.exitPointerLock(); } catch (e) {}
+                }
+                refreshShopUI();
+                updateCloudAccountUI();
+                overlay.classList.remove('hidden');
+            } else {
+                overlay.classList.add('hidden');
+                if (gameState === 'PLAYING' && canvas.requestPointerLock) {
+                    try { canvas.requestPointerLock(); } catch (e) {}
+                }
+            }
+        }
+
+        function purchaseShopItem(cost, onSuccess) {
+            if (playerCoins < cost) {
+                showStreakBanner('⚠️ 作戰金幣不足！', `需要 ${cost} 金幣，擊殺敵人或完成波次即可賺取金幣`);
+                return;
+            }
+            playerCoins -= cost;
+            onSuccess();
+            audio.playReloadClick('in');
+            updateHUD();
+            refreshShopUI();
+            scheduleCloudSave();
+        }
+
+        document.getElementById('btn-open-shop-top').addEventListener('click', () => toggleShopModal(true));
+        document.getElementById('btn-lobby-open-shop').addEventListener('click', () => toggleShopModal(true));
+        document.getElementById('btn-close-shop').addEventListener('click', () => toggleShopModal(false));
+
+        document.getElementById('buy-upgrade-dmg').addEventListener('click', () => {
+            if (damageUpgradeLevel >= 5) return;
+            const cost = 300 + damageUpgradeLevel * 100;
+            purchaseShopItem(cost, () => {
+                damageUpgradeLevel++;
+                showStreakBanner(`🔥 穿甲彈頭升級至 Lv.${damageUpgradeLevel}！`, `所有武器傷害永久提升 +${damageUpgradeLevel * 15}%（已同步雲端）`);
+            });
+        });
+
+        document.getElementById('buy-upgrade-armor').addEventListener('click', () => {
+            if (armorUpgradeLevel >= 5) return;
+            const cost = 250 + armorUpgradeLevel * 100;
+            purchaseShopItem(cost, () => {
+                armorUpgradeLevel++;
+                player.maxArmor = 100 + armorUpgradeLevel * 25;
+                player.armor = player.maxArmor;
+                showStreakBanner(`🛡️ 防彈插板升級至 Lv.${armorUpgradeLevel}！`, `護甲上限永久提升至 ${player.maxArmor} 點（已同步雲端）`);
+            });
+        });
+
+        document.getElementById('buy-item-cross').addEventListener('click', () => {
+            purchaseShopItem(200, () => {
+                player.crossReviveCharges++;
+                showStreakBanner('✝ 已購得聖光復活十字架！', `目前共持有 ${player.crossReviveCharges} 個十字架`);
+            });
+        });
+
+        document.getElementById('buy-item-ammo').addEventListener('click', () => {
+            purchaseShopItem(120, () => {
+                player.hp = player.maxHp;
+                player.armor = player.maxArmor;
+                player.grenades = 3;
+                WEAPONS[0].mag = WEAPONS[0].magSize; WEAPONS[0].reserve = 180;
+                WEAPONS[1].mag = WEAPONS[1].magSize; WEAPONS[1].reserve = 48;
+                WEAPONS[2].mag = WEAPONS[2].magSize; WEAPONS[2].reserve = 250;
+                WEAPONS[3].mag = WEAPONS[3].magSize; WEAPONS[3].reserve = 35;
+                showStreakBanner('📦 戰地滿彈醫療包已送達！', '生命值、護甲、彈藥與手雷全滿');
+            });
+        });
+
+        document.getElementById('buy-item-buddha').addEventListener('click', () => {
+            purchaseShopItem(180, () => {
+                player.buddhaCooldown = 0;
+                showStreakBanner('☸ 金剛佛陀聖光充能完畢！', '隨時按下 [0] 鍵即可變身金剛佛陀');
+            });
+        });
+
+        document.getElementById('buy-item-airstrike').addEventListener('click', () => {
+            purchaseShopItem(220, () => {
+                airstrikeReady = true;
+                showStreakBanner('✈️ A-10 雷霆空襲已呼叫待命！', '按下 [7] 鍵立即發動全街道轟炸');
+            });
+        });
+
+        document.getElementById('btn-google-login-lobby').addEventListener('click', () => signInWithGoogleAccount('input-account-email-lobby'));
+        document.getElementById('btn-google-login-shop').addEventListener('click', () => signInWithGoogleAccount('shop-account-email-input'));
+        document.getElementById('btn-cloud-save-now').addEventListener('click', () => saveCloudAccountProfile(false));
+        document.getElementById('btn-save-profile-lobby').addEventListener('click', () => {
+            const val = document.getElementById('input-player-nickname').value.trim();
+            if (val) playerNickname = val;
+            saveCloudAccountProfile(false);
+        });
+        document.getElementById('btn-shop-cloud-save').addEventListener('click', () => {
+            const val = document.getElementById('shop-nickname-input').value.trim();
+            if (val) playerNickname = val;
+            saveCloudAccountProfile(false);
+        });
 
         // ==========================================
         // 9. UI 按鈕綁定與遊戲啟動重置
@@ -3280,13 +3781,12 @@
 
             if (gameState === 'GAMEOVER' || gameState === 'MENU') {
                 currentWave = 1;
-                totalKills = 0;
                 killstreak = 0;
-                score = 0;
                 applyRoleSpawnPosition(myRole, true);
                 player.pitch = 0;
                 player.hp = 100;
-                player.armor = 100;
+                player.maxArmor = 100 + armorUpgradeLevel * 25;
+                player.armor = player.maxArmor;
                 player.grenades = 3;
                 player.isCrouching = false;
                 player.isReloading = false;
