@@ -468,12 +468,15 @@
                             <span class="text-[11px] font-black text-emerald-300">🔐 帳號雲端存檔綁定</span>
                             <span id="lobby-cloud-status" class="text-[10px] text-amber-300 font-bold">尚未綁定帳號</span>
                         </div>
-                        <div class="flex gap-1">
+                        <div class="space-y-1">
                             <input id="input-account-email-lobby" type="email" maxlength="48" placeholder="輸入你的 Google / 玩家信箱" class="w-full bg-stone-950 border border-stone-600 rounded-lg px-2 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-blue-400">
-                            <button id="btn-google-login-lobby" class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-stone-100 text-stone-900 font-black text-xs flex items-center justify-center gap-1.5 shadow shrink-0 cursor-pointer">
-                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/></svg>
-                                <span id="btn-google-login-lobby-text">綁定登入</span>
-                            </button>
+                            <div class="flex gap-1">
+                                <input id="input-account-pin-lobby" type="password" maxlength="20" placeholder="設定雲端存檔密碼" class="w-full bg-stone-950 border border-stone-600 rounded-lg px-2 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-blue-400">
+                                <button id="btn-google-login-lobby" class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-stone-100 text-stone-900 font-black text-xs flex items-center justify-center gap-1.5 shadow shrink-0 cursor-pointer">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/></svg>
+                                    <span id="btn-google-login-lobby-text">綁定登入</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="flex gap-1">
                             <input id="input-player-nickname" type="text" maxlength="12" placeholder="輸入你的戰士代號" class="w-full bg-stone-950 border border-stone-600 rounded-lg px-2 py-1 text-xs font-bold text-white focus:outline-none focus:border-emerald-400">
@@ -564,7 +567,8 @@
                     <div class="font-black text-emerald-300 flex flex-wrap items-center gap-2">
                         <span>🔐 帳號雲端存檔狀態：</span>
                         <span id="shop-cloud-sync-state" class="text-amber-300">尚未綁定帳號</span>
-                        <input id="shop-account-email-input" type="email" maxlength="48" placeholder="輸入 Google 信箱綁定" class="bg-stone-950 border border-stone-600 rounded px-2 py-0.5 text-[11px] font-bold text-white w-40 focus:outline-none focus:border-blue-400">
+                        <input id="shop-account-email-input" type="email" maxlength="48" placeholder="輸入信箱" class="bg-stone-950 border border-stone-600 rounded px-2 py-0.5 text-[11px] font-bold text-white w-32 focus:outline-none focus:border-blue-400">
+                        <input id="shop-account-pin-input" type="password" maxlength="20" placeholder="存檔密碼" class="bg-stone-950 border border-stone-600 rounded px-2 py-0.5 text-[11px] font-bold text-white w-24 focus:outline-none focus:border-blue-400">
                         <button id="btn-google-login-shop" class="px-2.5 py-0.5 rounded bg-white hover:bg-stone-100 text-stone-900 font-black text-[11px] flex items-center gap-1 shadow cursor-pointer">
                             <span>G</span>
                             <span id="btn-google-login-shop-text">綁定雲端帳號</span>
@@ -743,6 +747,7 @@
         let playerCoins = 500;
         let playerNickname = '特戰隊員';
         let googleAccountEmail = '';
+        let googleAccountPin = '';
         let isGoogleSignedIn = false;
         let damageUpgradeLevel = 0;
         let armorUpgradeLevel = 0;
@@ -2524,53 +2529,134 @@
             }
         }
 
+        let cloudProfileTopic = '';
+
+        function hashPinSimple(str) {
+            let h = 2166136261;
+            for (let i = 0; i < str.length; i++) {
+                h ^= str.charCodeAt(i);
+                h = Math.imul(h, 16777619);
+            }
+            return (h >>> 0).toString(36);
+        }
+
+        function getAccountStorageKey() {
+            if (isGoogleSignedIn && googleAccountEmail) {
+                const emailKey = googleAccountEmail.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                const pinKey = googleAccountPin ? '_' + hashPinSimple(googleAccountPin) : '';
+                return 'acct_' + emailKey + pinKey;
+            }
+            return auth?.currentUser?.uid || myUid;
+        }
+
+        function applyProfileData(d) {
+            if (!d || typeof d !== 'object') return;
+            if (typeof d.coins === 'number') playerCoins = d.coins;
+            if (typeof d.totalKills === 'number') totalKills = d.totalKills;
+            if (typeof d.score === 'number') score = d.score;
+            if (typeof d.duelWins === 'number') duelWins = d.duelWins;
+            if (typeof d.duelLosses === 'number') duelLosses = d.duelLosses;
+            if (typeof d.damageUpgradeLevel === 'number') damageUpgradeLevel = Math.min(5, Math.max(0, d.damageUpgradeLevel));
+            if (typeof d.armorUpgradeLevel === 'number') armorUpgradeLevel = Math.min(5, Math.max(0, d.armorUpgradeLevel));
+            if (typeof d.hasUnlockedRPG === 'boolean') hasUnlockedRPG = d.hasUnlockedRPG;
+            if (typeof d.hasUnlockedNVG === 'boolean') hasUnlockedNVG = d.hasUnlockedNVG;
+            if (typeof d.turretCharges === 'number') turretCharges = Math.max(0, d.turretCharges);
+            if (typeof d.nickname === 'string' && d.nickname.trim()) playerNickname = d.nickname.trim();
+
+            player.maxArmor = 100 + armorUpgradeLevel * 25;
+            player.armor = player.maxArmor;
+            updateSideRoomUI(remotePlayers.size + 1);
+            updateHUD();
+            refreshShopUI();
+        }
+
+        function subscribeCloudAccountTopic() {
+            if (!isGoogleSignedIn || !googleAccountEmail || !mqttClient || !mqttConnected) return;
+            const storageDocId = getAccountStorageKey();
+            const targetTopic = `dust_storm_3d_cloud_profile_v2/${storageDocId}`;
+            if (cloudProfileTopic && cloudProfileTopic !== targetTopic) {
+                try { mqttClient.unsubscribe(cloudProfileTopic); } catch (e) {}
+            }
+            cloudProfileTopic = targetTopic;
+            mqttClient.subscribe(cloudProfileTopic, { qos: 1 });
+        }
+
+        window.addEventListener('load', () => {
+            const waitMqtt = setInterval(() => {
+                if (mqttClient) {
+                    clearInterval(waitMqtt);
+                    mqttClient.on('connect', () => subscribeCloudAccountTopic());
+                    mqttClient.on('message', (topic, buf) => {
+                        if (cloudProfileTopic && topic === cloudProfileTopic) {
+                            try {
+                                const cloudData = JSON.parse(buf.toString());
+                                if (cloudData && cloudData.updatedAtMs) {
+                                    applyProfileData(cloudData);
+                                    try {
+                                        localStorage.setItem(`dust3d_save_${getAccountStorageKey()}`, JSON.stringify(cloudData));
+                                    } catch (e) {}
+                                    updateCloudAccountUI('✅ 全球雲端存檔已同步');
+                                }
+                            } catch (e) {}
+                        }
+                    });
+                    if (mqttConnected) subscribeCloudAccountTopic();
+                }
+            }, 350);
+        });
+
         async function signInWithGoogleAccount(sourceInputId = 'input-account-email-lobby') {
+            const isLobby = (sourceInputId === 'input-account-email-lobby');
             const inputEl = document.getElementById(sourceInputId);
-            const fallbackEl = document.getElementById(sourceInputId === 'input-account-email-lobby' ? 'shop-account-email-input' : 'input-account-email-lobby');
+            const fallbackEl = document.getElementById(isLobby ? 'shop-account-email-input' : 'input-account-email-lobby');
+            const pinEl = document.getElementById(isLobby ? 'input-account-pin-lobby' : 'shop-account-pin-input');
+            const fallbackPinEl = document.getElementById(isLobby ? 'shop-account-pin-input' : 'input-account-pin-lobby');
+
             const rawEmail = (inputEl && inputEl.value.trim()) || (fallbackEl && fallbackEl.value.trim()) || googleAccountEmail;
+            const rawPin = (pinEl && pinEl.value.trim()) || (fallbackPinEl && fallbackPinEl.value.trim()) || googleAccountPin;
 
             if (!rawEmail || !rawEmail.includes('@')) {
                 if (inputEl) inputEl.focus();
-                showStreakBanner('📧 請先輸入你的 Google 信箱', '輸入信箱後按「綁定登入」，即可在任何電腦同步金幣與強化！');
+                showStreakBanner('📧 請輸入完整信箱格式', '例如 player@gmail.com（必須包含 @ 符號）');
+                return;
+            }
+            if (!rawPin || rawPin.length < 4) {
+                if (pinEl) pinEl.focus();
+                showStreakBanner('🔑 請設定至少 4 碼存檔密碼', '換台電腦時輸入相同信箱＋密碼，即可讀取你的金幣與武器！');
                 return;
             }
 
             const normalizedEmail = rawEmail.toLowerCase();
             isGoogleSignedIn = true;
             googleAccountEmail = normalizedEmail;
+            googleAccountPin = rawPin;
             if (playerNickname === '特戰隊員') {
                 playerNickname = normalizedEmail.split('@')[0].slice(0, 12);
             }
 
             try {
                 localStorage.setItem('dust3d_bound_email', normalizedEmail);
+                localStorage.setItem('dust3d_bound_pin', rawPin);
             } catch (e) {}
 
             await loadCloudAccountProfile();
             await saveCloudAccountProfile(true);
-            showStreakBanner('✅ 帳號雲端存檔已綁定！', `已連結 ${googleAccountEmail}，所有金幣與強化等級已同步保存！`);
+            updateCloudAccountUI('✅ 全球雲端帳號已綁定！');
+            showStreakBanner('✅ 雲端帳號綁定成功！', `已連結 ${googleAccountEmail}，在任何電腦輸入同信箱＋密碼都能同步進度！`);
         }
 
         window.addEventListener('unhandledrejection', (event) => {
             const msg = String(event?.reason?.message || event?.reason || '');
             if (msg.includes('Pending promise was never set') || msg.includes('auth/popup')) {
                 event.preventDefault();
-                showStreakBanner('⚠️ 預覽視窗不支援外部彈窗登入', '請直接在左側欄位輸入你的 Google 信箱進行雲端存檔綁定！');
             }
         });
 
         // ==========================================
-        // 6.5 Google 帳號雲端存檔與讀取系統
+        // 6.5 全球雲端帳號存檔與讀取系統（MQTT 全球雲端保留 ＋ 本機雙重備份）
         // ==========================================
-        function getAccountStorageKey() {
-            if (isGoogleSignedIn && googleAccountEmail) {
-                return 'acct_' + googleAccountEmail.toLowerCase().replace(/[^a-z0-9]/g, '_');
-            }
-            return auth?.currentUser?.uid || myUid;
-        }
-
         function updateCloudAccountUI(statusLabel = null) {
-            const effectiveStatus = statusLabel || (isGoogleSignedIn ? `✅ 雲端帳號已綁定` : '⚠️ 訪客模式 (未綁信箱)');
+            const effectiveStatus = statusLabel || (isGoogleSignedIn ? '✅ 雲端帳號已綁定' : '⚠️ 訪客模式 (輸入信箱+密碼綁定)');
             const accountDisplay = isGoogleSignedIn
                 ? `${googleAccountEmail}`
                 : `訪客 (${myUid.slice(0, 8)})`;
@@ -2584,6 +2670,8 @@
             const nickShop = document.getElementById('shop-nickname-input');
             const emailLobby = document.getElementById('input-account-email-lobby');
             const emailShop = document.getElementById('shop-account-email-input');
+            const pinLobby = document.getElementById('input-account-pin-lobby');
+            const pinShop = document.getElementById('shop-account-pin-input');
             const btnLobbyGoogle = document.getElementById('btn-google-login-lobby-text');
             const btnShopGoogle = document.getElementById('btn-google-login-shop-text');
 
@@ -2592,103 +2680,86 @@
             if (lobbyId) lobbyId.textContent = `帳號: ${accountDisplay}`;
             if (shopState) shopState.textContent = effectiveStatus;
             if (shopUid) shopUid.textContent = isGoogleSignedIn
-                ? `已綁定雲端帳號：${googleAccountEmail}（跨裝置通用存檔）`
-                : `目前為訪客暫存帳號 (UID: ${myUid})，輸入 Google 信箱並點擊綁定即可永久保存！`;
+                ? `已綁定雲端帳號：${googleAccountEmail}（跨電腦輸入同信箱＋密碼即可同步）`
+                : `目前為訪客模式，輸入信箱並設定 4 碼以上密碼後點擊「綁定登入」即可雲端存檔！`;
             if (btnLobbyGoogle) btnLobbyGoogle.textContent = isGoogleSignedIn ? '切換帳號' : '綁定登入';
-            if (btnShopGoogle) btnShopGoogle.textContent = isGoogleSignedIn ? '更新綁定信箱' : '綁定雲端帳號';
+            if (btnShopGoogle) btnShopGoogle.textContent = isGoogleSignedIn ? '更新綁定' : '綁定雲端帳號';
             if (nickLobby && document.activeElement !== nickLobby) nickLobby.value = playerNickname;
             if (nickShop && document.activeElement !== nickShop) nickShop.value = playerNickname;
             if (emailLobby && document.activeElement !== emailLobby && googleAccountEmail) emailLobby.value = googleAccountEmail;
             if (emailShop && document.activeElement !== emailShop && googleAccountEmail) emailShop.value = googleAccountEmail;
+            if (pinLobby && document.activeElement !== pinLobby && googleAccountPin) pinLobby.value = googleAccountPin;
+            if (pinShop && document.activeElement !== pinShop && googleAccountPin) pinShop.value = googleAccountPin;
         }
 
         async function loadCloudAccountProfile() {
             try {
                 const savedEmail = localStorage.getItem('dust3d_bound_email');
+                const savedPin = localStorage.getItem('dust3d_bound_pin');
                 if (savedEmail && savedEmail.includes('@') && !googleAccountEmail) {
                     googleAccountEmail = savedEmail;
+                    googleAccountPin = savedPin || '';
                     isGoogleSignedIn = true;
                 }
             } catch (e) {}
 
-            updateCloudAccountUI('🔄 讀取雲端存檔中...');
-            if (!db || !window.__FB_SDK__ || !auth?.currentUser) {
-                updateCloudAccountUI(isGoogleSignedIn ? '✅ 本地帳號已綁定' : '⚠️ 離線訪客模式');
-                return;
-            }
+            const storageDocId = getAccountStorageKey();
             try {
-                const sdk = window.__FB_SDK__;
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const storageDocId = getAccountStorageKey();
-                const profileRef = sdk.doc(db, 'artifacts', appId, 'users', auth.currentUser.uid, 'profile', storageDocId);
-                const snap = await sdk.getDoc(profileRef);
-                if (snap.exists()) {
-                    const d = snap.data();
-                    if (typeof d.coins === 'number') playerCoins = d.coins;
-                    if (typeof d.totalKills === 'number') totalKills = d.totalKills;
-                    if (typeof d.score === 'number') score = d.score;
-                    if (typeof d.duelWins === 'number') duelWins = d.duelWins;
-                    if (typeof d.duelLosses === 'number') duelLosses = d.duelLosses;
-                    if (typeof d.damageUpgradeLevel === 'number') damageUpgradeLevel = Math.min(5, Math.max(0, d.damageUpgradeLevel));
-                    if (typeof d.armorUpgradeLevel === 'number') armorUpgradeLevel = Math.min(5, Math.max(0, d.armorUpgradeLevel));
-                    if (typeof d.hasUnlockedRPG === 'boolean') hasUnlockedRPG = d.hasUnlockedRPG;
-                    if (typeof d.hasUnlockedNVG === 'boolean') hasUnlockedNVG = d.hasUnlockedNVG;
-                    if (typeof d.turretCharges === 'number') turretCharges = Math.max(0, d.turretCharges);
-                    if (typeof d.nickname === 'string' && d.nickname.trim()) playerNickname = d.nickname.trim();
+                const localRaw = localStorage.getItem(`dust3d_save_${storageDocId}`);
+                if (localRaw) applyProfileData(JSON.parse(localRaw));
+            } catch (e) {}
 
-                    player.maxArmor = 100 + armorUpgradeLevel * 25;
-                    player.armor = player.maxArmor;
-                    updateCloudAccountUI(isGoogleSignedIn ? '✅ 雲端帳號已同步' : '⚠️ 訪客暫存已讀取');
-                    updateSideRoomUI(remotePlayers.size + 1);
-                    updateHUD();
-                    refreshShopUI();
-                } else {
-                    await saveCloudAccountProfile(true);
-                }
-            } catch (err) {
-                console.warn('Load cloud profile error:', err);
-                updateCloudAccountUI('⚠️ 雲端讀取重試中');
+            if (isGoogleSignedIn) {
+                subscribeCloudAccountTopic();
+                updateCloudAccountUI(mqttConnected ? '✅ 全球雲端帳號已連線' : '🔄 正在連接全球雲端...');
+            } else {
+                updateCloudAccountUI('⚠️ 訪客模式 (輸入信箱+密碼綁定)');
             }
         }
 
         async function saveCloudAccountProfile(silent = false) {
-            if (!db || !window.__FB_SDK__ || !auth?.currentUser) {
-                if (!silent) showStreakBanner('⚠️ 尚未連上雲端帳號伺服器', '請稍候系統自動連線後再試');
-                return;
-            }
+            const storageDocId = getAccountStorageKey();
+            const payload = {
+                nickname: playerNickname,
+                googleEmail: googleAccountEmail,
+                isGoogleBound: isGoogleSignedIn,
+                coins: playerCoins,
+                totalKills,
+                score,
+                duelWins,
+                duelLosses,
+                damageUpgradeLevel,
+                armorUpgradeLevel,
+                hasUnlockedRPG,
+                hasUnlockedNVG,
+                turretCharges,
+                updatedAtMs: Date.now()
+            };
+
             try {
-                const sdk = window.__FB_SDK__;
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const storageDocId = getAccountStorageKey();
-                const profileRef = sdk.doc(db, 'artifacts', appId, 'users', auth.currentUser.uid, 'profile', storageDocId);
-                await sdk.setDoc(profileRef, {
-                    nickname: playerNickname,
-                    googleEmail: googleAccountEmail,
-                    isGoogleBound: isGoogleSignedIn,
-                    coins: playerCoins,
-                    totalKills,
-                    score,
-                    duelWins,
-                    duelLosses,
-                    damageUpgradeLevel,
-                    armorUpgradeLevel,
-                    hasUnlockedRPG,
-                    hasUnlockedNVG,
-                    turretCharges,
-                    updatedAtMs: Date.now()
-                });
-                updateCloudAccountUI(isGoogleSignedIn ? '✅ 已存入綁定帳號' : '⚠️ 已暫存 (建議綁定信箱)');
+                localStorage.setItem(`dust3d_save_${storageDocId}`, JSON.stringify(payload));
+            } catch (e) {}
+
+            if (isGoogleSignedIn && mqttClient && mqttConnected) {
+                const targetTopic = `dust_storm_3d_cloud_profile_v2/${storageDocId}`;
+                mqttClient.publish(targetTopic, JSON.stringify(payload), { qos: 1, retain: true });
+                updateCloudAccountUI('✅ 已存入全球雲端帳號');
                 if (!silent) {
                     showStreakBanner(
-                        isGoogleSignedIn ? '✅ 已永久存入你的雲端帳號！' : '💾 已暫存至目前訪客雲端',
-                        isGoogleSignedIn
-                            ? `帳號（${googleAccountEmail}）的金幣 (${playerCoins}) 與強化等級已安全保存！`
-                            : '建議輸入 Google 信箱進行綁定以免遺失進度！'
+                        '☁️ 已存入全球雲端帳號！',
+                        `帳號（${googleAccountEmail}）的金幣 (${playerCoins}) 與強化已同步至雲端，換電腦也能讀取！`
                     );
                 }
-            } catch (err) {
-                console.warn('Save cloud profile error:', err);
-                if (!silent) showStreakBanner('⚠️ 雲端存檔失敗', '請檢查網路連線後重試');
+            } else if (isGoogleSignedIn) {
+                updateCloudAccountUI('✅ 已存本機 (等待網路同步)');
+                if (!silent) {
+                    showStreakBanner('💾 已保存帳號進度！', `已綁定 ${googleAccountEmail}，網路就緒後將自動同步雲端`);
+                }
+            } else {
+                updateCloudAccountUI('⚠️ 訪客暫存 (建議綁定信箱)');
+                if (!silent) {
+                    showStreakBanner('📧 尚未綁定帳號', '請輸入你的信箱與密碼並按「綁定登入」，即可跨電腦雲端存檔！');
+                }
             }
         }
 
