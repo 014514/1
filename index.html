@@ -104,6 +104,13 @@
     <!-- 金剛佛陀聖光全螢幕光暈 -->
     <div id="buddha-aura" class="fixed inset-0 pointer-events-none z-10 opacity-0 transition-opacity duration-300 buddha-screen-aura"></div>
 
+    <!-- 戰術夜視儀 (NVG) 全螢幕特戰濾鏡 -->
+    <div id="nvg-overlay" class="fixed inset-0 pointer-events-none z-12 opacity-0 transition-opacity duration-200" style="background: radial-gradient(circle, rgba(16, 185, 129, 0.14) 35%, rgba(6, 78, 59, 0.58) 100%); mix-blend-mode: screen;">
+        <div class="absolute top-14 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-emerald-950/85 border border-emerald-400/70 text-[10px] font-mono font-black text-emerald-300 tracking-widest">
+            NVG GEN-3 THERMAL ACTIVE • [N] 關閉
+        </div>
+    </div>
+
     <!-- 開鏡（ADS）周邊景深暗角遮罩 -->
     <div id="ads-vignette" class="fixed inset-0 pointer-events-none z-11 opacity-0 transition-opacity duration-150" style="background: radial-gradient(circle, transparent 44%, rgba(0, 0, 0, 0.58) 100%);"></div>
 
@@ -353,6 +360,7 @@
             <button data-wpn="2" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-bold bg-stone-800/80 border border-stone-700 text-stone-300 cursor-pointer">[3] M249</button>
             <button data-wpn="3" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-bold bg-stone-800/80 border border-stone-700 text-stone-300 cursor-pointer">[4] M24</button>
             <button data-wpn="4" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-bold bg-stone-800/80 border border-stone-700 text-stone-300 cursor-pointer">[5] 軍刀</button>
+            <button data-wpn="5" class="wpn-slot px-2.5 py-1.5 rounded-lg text-xs font-bold bg-stone-800/80 border border-stone-700 text-stone-400 cursor-pointer">[8] 🔒 RPG-7</button>
         </div>
 
         <div class="hidden sm:flex hud-glass rounded-xl px-3.5 py-2.5 pointer-events-auto flex-col items-end gap-1.5">
@@ -376,6 +384,12 @@
                 <button id="btn-grenade" class="px-2 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 border border-stone-600 text-[11px] font-bold text-orange-300 cursor-pointer">
                     💣 手雷 (<span id="hud-grenades">3</span>)
                 </button>
+                <button id="btn-turret" class="px-2 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 border border-cyan-500/50 text-[11px] font-bold text-cyan-300 cursor-pointer">
+                    🤖 機槍塔 (<span id="hud-turrets">0</span>) [T]
+                </button>
+                <button id="btn-nvg" class="px-2 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 border border-emerald-500/50 text-[11px] font-bold text-emerald-300 cursor-pointer">
+                    🥽 夜視儀 [N]
+                </button>
                 <button id="btn-help" class="px-2 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 border border-stone-600 text-[11px] font-bold text-stone-300 cursor-pointer">
                     房號/說明
                 </button>
@@ -395,14 +409,14 @@
                         沙塵突圍 3D：硬派槍戰版
                     </h1>
                     <p class="text-xs sm:text-sm text-stone-300 mt-2.5 mb-4 leading-relaxed">
-                        全面重製硬派現代戰術槍械：<strong>M4A1 PEQ-15 綠雷射與全息鏡</strong>、<strong>M870 射擊自動泵動上膛</strong>、<strong>M249 進彈抖動黃銅彈鏈</strong>、<strong>M24 射擊右手拉栓退殼與 8 倍鏡屏息</strong>，搭配<strong>真實黃銅彈殼拋出落地音效、動態擴散準星與彈孔火花</strong>！
+                        全面重製硬派現代戰術槍械：<strong>M4A1 PEQ-15 綠雷射與全息鏡</strong>、<strong>M870 射擊自動泵動上膛</strong>、<strong>M249 進彈抖動黃銅彈鏈</strong>、<strong>M24 射擊右手拉栓退殼與 8 倍鏡屏息</strong>，搭配<strong>真實黃銅彈殼拋出落地音效、動態擴散準星與彈孔火花</strong>！按 <strong>[B] 軍火商店</strong>可用金幣購買解鎖 <strong>RPG-7 火箭筒、哨戒機槍塔與熱成像夜視儀</strong>！
                     </p>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-left text-xs bg-stone-900/85 p-3 rounded-xl border border-stone-700 mb-5">
                         <div><span class="text-amber-400 font-black">WASD / Shift</span>：移動 / 衝刺 / 狙擊屏息</div>
                         <div><span class="text-amber-400 font-black">滑鼠移動</span>：精準瞄準</div>
                         <div><span class="text-amber-400 font-black">左鍵 / 右鍵</span>：射擊 / 開鏡(ADS)</div>
                         <div><span class="text-cyan-300 font-black">[C] 切換視角</span>：第一人稱 / 第三人稱</div>
-                        <div><span class="text-amber-400 font-black">X / Ctrl / Space</span>：蹲伏 / 跳躍</div>
+                        <div><span class="text-amber-400 font-black">[B] 軍火商店</span>：購買 RPG-7 / 機槍塔 / 夜視儀</div>
                         <div><span class="text-yellow-300 font-black">[6] 十字架 / [0] 變佛</span>：復活 / 神掌</div>
                     </div>
                 </div>
@@ -651,9 +665,52 @@
                         💰 220 金幣購買
                     </button>
                 </div>
+
+                <!-- 商品 7：RPG-7 反坦克重型火箭筒（永久解鎖） -->
+                <div class="bg-stone-900/85 rounded-xl p-3.5 border border-orange-500/50 flex flex-col justify-between space-y-2.5">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-black text-orange-300">🚀 RPG-7 重型火箭筒</span>
+                            <span id="shop-status-rpg" class="text-xs px-2 py-0.5 rounded bg-stone-800 text-stone-300 font-black">未解鎖 [8]</span>
+                        </div>
+                        <p class="text-xs text-stone-300 mt-1">購買後永久解鎖 [8] 鍵重型火箭筒（含 6 發高爆火箭彈，可再購彈藥），超大範圍轟炸敵軍與油桶！</p>
+                    </div>
+                    <button id="buy-weapon-rpg" class="w-full py-2 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-black text-xs cursor-pointer">
+                        💰 450 金幣永久購買
+                    </button>
+                </div>
+
+                <!-- 商品 8：全自動哨戒機槍塔 -->
+                <div class="bg-stone-900/85 rounded-xl p-3.5 border border-cyan-500/50 flex flex-col justify-between space-y-2.5">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-black text-cyan-300">🤖 全自動哨戒機槍塔</span>
+                            <span id="shop-count-turret" class="text-xs px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-black">持有 0 座</span>
+                        </div>
+                        <p class="text-xs text-stone-300 mt-1">購買後按 [T] 鍵在腳下部署 360 度自動索敵重機槍塔（持續 35 秒火力壓制）。</p>
+                    </div>
+                    <button id="buy-item-turret" class="w-full py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-stone-950 font-black text-xs cursor-pointer">
+                        💰 280 金幣購買部署器
+                    </button>
+                </div>
+
+                <!-- 商品 9：戰術熱成像夜視儀 -->
+                <div class="bg-stone-900/85 rounded-xl p-3.5 border border-emerald-500/50 flex flex-col justify-between space-y-2.5">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-black text-emerald-300">🥽 戰術夜視儀 (NVG)</span>
+                            <span id="shop-status-nvg" class="text-xs px-2 py-0.5 rounded bg-stone-800 text-stone-300 font-black">未解鎖 [N]</span>
+                        </div>
+                        <p class="text-xs text-stone-300 mt-1">購買後永久解鎖，按 [N] 鍵切換特戰夜視濾鏡並自動高亮標記全場敵軍輪廓！</p>
+                    </div>
+                    <button id="buy-item-nvg" class="w-full py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs cursor-pointer">
+                        💰 240 金幣永久購買
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+
     <!-- Firebase SDK（Google 帳號登入與雲端存檔） -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -670,7 +727,7 @@
 
     <script>
         // ==========================================
-        // 1. 核心遊戲狀態、玩家數據與五款現代戰術武器配置
+        // 1. 核心遊戲狀態、玩家數據與六款現代戰術武器配置（含可購買解鎖之 RPG-7）
         // ==========================================
         let gameState = 'MENU';
         let battleMode = 'coop3';
@@ -681,13 +738,18 @@
         let airstrikeReady = false;
         let duelWins = 0;
         let duelLosses = 0;
-        // 商店與 Google 帳號雲端存檔狀態
+
+        // 軍火商店金幣與永久購買解鎖狀態
         let playerCoins = 500;
         let playerNickname = '特戰隊員';
         let googleAccountEmail = '';
         let isGoogleSignedIn = false;
         let damageUpgradeLevel = 0;
         let armorUpgradeLevel = 0;
+        let hasUnlockedRPG = false;
+        let hasUnlockedNVG = false;
+        let isNVGActive = false;
+        let turretCharges = 0;
         let isShopOpen = false;
         let cloudSaveTimer = null;
 
@@ -717,9 +779,9 @@
             walkBobTimer: 0,
             swayTimer: 0,
             crosshairSpread: 12,
-            pumpActionTimer: 0,     // M870 射擊後泵動上膛動畫計時
-            boltActionTimer: 0,     // M24 射擊後右手拉栓退殼動畫計時
-            beltJitterTimer: 0,     // M249 黃銅彈鏈進彈抖動計時
+            pumpActionTimer: 0,
+            boltActionTimer: 0,
+            beltJitterTimer: 0,
             currentWeaponIdx: 0,
             grenades: 3,
             isInspecting: false,
@@ -790,11 +852,22 @@
                 adsFov: 68,
                 hipPos: { x: 0.24, y: -0.21, z: -0.42 },
                 adsPos: { x: 0.16, y: -0.17, z: -0.36 }
+            },
+            {
+                id: 'RPG7',
+                name: 'RPG-7V2 反坦克高爆火箭筒',
+                type: 'launcher',
+                mag: 1, magSize: 1, reserve: 5,
+                fireRate: 1.35, dmg: 260, headMult: 1.5,
+                spread: 0.005, pellets: 1, reloadTime: 2.2,
+                adsFov: 46,
+                hipPos: { x: 0.25, y: -0.19, z: -0.38 },
+                adsPos: { x: 0.06, y: -0.11, z: -0.30 }
             }
         ];
 
         // ==========================================
-        // 2. 硬派多層次戰場擬真音效引擎（白噪音火藥爆燃＋金屬槍機循環＋彈殼落地叮噹）
+        // 2. 硬派多層次戰場擬真音效引擎
         // ==========================================
         const audio = {
             ctx: null,
@@ -849,7 +922,6 @@
                 if (!this.ctx) return;
                 const now = this.ctx.currentTime;
 
-                // 1. 火藥爆燃高頻撕裂聲 (Noise Crack)
                 if (type === 'sniper') {
                     this.playNoiseBurst(0.28, 'bandpass', 1800, 320, 0.42);
                     this.playNoiseBurst(0.45, 'lowpass', 600, 120, 0.35);
@@ -860,7 +932,6 @@
                     this.playNoiseBurst(0.13, 'bandpass', 2100, 480, 0.32);
                 }
 
-                // 2. 槍口低頻胸腔衝擊波 (Punch)
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 osc.type = type === 'sniper' ? 'sawtooth' : 'triangle';
@@ -873,20 +944,17 @@
                 osc.start(now);
                 osc.stop(now + 0.25);
 
-                // 3. 金屬槍機復進咔噠聲
                 this.playNoiseBurst(0.035, 'highpass', 3200, 3800, 0.12, 0.045);
             },
             playPumpAction() {
                 this.init();
                 if (!this.ctx) return;
-                // M870 護木後拉＋前推雙段清脆金屬機械聲
                 this.playNoiseBurst(0.07, 'bandpass', 2400, 1800, 0.2, 0.02);
                 this.playNoiseBurst(0.08, 'bandpass', 2800, 3400, 0.22, 0.17);
             },
             playBoltAction() {
                 this.init();
                 if (!this.ctx) return;
-                // M24 槍機解鎖上抬 -> 後拉退殼 -> 前推閉鎖三段聲
                 this.playNoiseBurst(0.05, 'highpass', 3400, 4000, 0.18, 0.02);
                 this.playNoiseBurst(0.08, 'bandpass', 2200, 1600, 0.2, 0.16);
                 this.playNoiseBurst(0.06, 'highpass', 3600, 4200, 0.22, 0.34);
@@ -899,7 +967,6 @@
                 } else if (stage === 'in') {
                     this.playNoiseBurst(0.07, 'bandpass', 2600, 3200, 0.24);
                 } else {
-                    // 拍擊槍機釋放鈕
                     this.playNoiseBurst(0.05, 'highpass', 3500, 4400, 0.24);
                 }
             },
@@ -1025,7 +1092,7 @@
         };
 
         // ==========================================
-        // 3. Three.js 3D 沙塵廢墟巷戰地圖（含 4 座鋼鐵樓梯二樓狙擊高台、彈藥箱、沙塵粒子）
+        // 3. Three.js 3D 沙塵廢墟巷戰地圖
         // ==========================================
         const canvas = document.getElementById('game-canvas');
         const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -1049,7 +1116,6 @@
         dirLight.castShadow = true;
         scene.add(dirLight);
 
-        // 槍械與戰場專用高擬真 PBR 材質
         const darkMetalMat = new THREE.MeshStandardMaterial({ color: '#1a1d21', metalness: 0.85, roughness: 0.26 });
         const gunMetalMat = new THREE.MeshStandardMaterial({ color: '#333840', metalness: 0.78, roughness: 0.32 });
         const polymerMat = new THREE.MeshStandardMaterial({ color: '#22252a', metalness: 0.25, roughness: 0.68 });
@@ -1267,7 +1333,6 @@
             addSolidBox(4.5, 0.55, -66.0, 3.6, 1.1, 0.85, sandbagMat);
             addSolidBox(-3.8, 0.55, -74.0, 3.6, 1.1, 0.85, sandbagMat);
 
-            // 戰地彈藥與護甲補給箱（走近自動補充彈藥與護甲）
             [
                 { x: -3.2, z: 18.2 },
                 { x: 5.5, z: -14.2 },
@@ -1303,7 +1368,6 @@
         }
         buildUrbanStreetMap();
 
-        // 沙塵微粒系統（營造中東戰場空氣感）
         const dustCount = 260;
         const dustGeo = new THREE.BufferGeometry();
         const dustPositions = new Float32Array(dustCount * 3);
@@ -1348,7 +1412,7 @@
         }
 
         // ==========================================
-        // 4. 高擬真現代戰術第一人稱武器模組（含可動部件引用：泵動護木、M24槍機拉柄、M249彈鏈、PEQ-15雷射）
+        // 4. 高擬真現代戰術第一人稱武器模組
         // ==========================================
         const weaponHolder = new THREE.Group();
         camera.add(weaponHolder);
@@ -1357,7 +1421,8 @@
             m4LaserBeam: null,
             m870PumpGroup: null,
             m249AmmoBelt: null,
-            m24BoltGroup: null
+            m24BoltGroup: null,
+            rpgWarhead: null
         };
 
         const muzzleFlashGroup = new THREE.Group();
@@ -1373,7 +1438,7 @@
         weaponHolder.add(muzzleFlashGroup);
 
         function createFirstPersonWeapons() {
-            // [0] M4A1 SOPMOD：伸縮槍托 + 雙側導軌 + PEQ-15 雷射指示器 + 垂直前握把 + 弧形彈匣 + EOTech 全息鏡 + 準星護翼
+            // [0] M4A1 SOPMOD
             const m4 = new THREE.Group();
             const m4StockTube = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.16, 10), gunMetalMat);
             m4StockTube.rotation.x = Math.PI / 2;
@@ -1388,7 +1453,6 @@
             m4Grip.position.set(0, -0.085, 0.11);
             m4Grip.rotation.x = 0.26;
 
-            // 弧形 30 發戰術彈匣（兩段微彎）
             const m4MagTop = new THREE.Mesh(new THREE.BoxGeometry(0.036, 0.075, 0.066), polymerMat);
             m4MagTop.position.set(0, -0.078, -0.025);
             m4MagTop.rotation.x = -0.12;
@@ -1396,7 +1460,6 @@
             m4MagBot.position.set(0, -0.142, -0.045);
             m4MagBot.rotation.x = -0.32;
 
-            // 沙色皮卡汀尼護木＋垂直握把＋右側 PEQ-15 雷射箱
             const m4Handguard = new THREE.Mesh(new THREE.BoxGeometry(0.048, 0.052, 0.28), tanRailMat);
             m4Handguard.position.set(0, 0.002, -0.28);
             const m4VertGrip = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.017, 0.085, 10), polymerMat);
@@ -1422,7 +1485,6 @@
             const m4TopRail = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.008, 0.56), gunMetalMat);
             m4TopRail.position.set(0, 0.031, -0.14);
 
-            // EOTech EXPS3 全息紅點鏡
             const rearRing = new THREE.Mesh(new THREE.TorusGeometry(0.015, 0.0032, 8, 20), darkMetalMat);
             rearRing.position.set(0, 0.078, 0.09);
             const rearBase = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.032, 0.022), darkMetalMat);
@@ -1465,13 +1527,12 @@
             weaponHolder.add(m4);
             weaponMeshes.push(m4);
 
-            // [1] M870 戰術泵動散彈槍：可動泵動護木群組 + 機匣側掛紅色 12-Gauge 散彈殼架 + 綠色光纖前準星
+            // [1] M870 戰術泵動散彈槍
             const m870 = new THREE.Group();
             const sgStock = new THREE.Mesh(new THREE.BoxGeometry(0.044, 0.082, 0.22), woodStockMat);
             sgStock.position.set(0, -0.025, 0.22);
             sgStock.rotation.x = 0.18;
             const sgReceiver = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.062, 0.28), gunMetalMat);
-            // 機匣左側備用紅殼散彈架
             for (let s = 0; s < 4; s++) {
                 const shell = new THREE.Mesh(new THREE.CylinderGeometry(0.0085, 0.0085, 0.052, 8), redShellMat);
                 shell.position.set(-0.032, 0.004, -0.05 + s * 0.024);
@@ -1486,7 +1547,6 @@
             sgMagTube.rotation.x = Math.PI / 2;
             sgMagTube.position.set(0, -0.012, -0.31);
 
-            // 可前後滑動的泵動護木
             const sgPumpGroup = new THREE.Group();
             const sgPump = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.19, 12), woodStockMat);
             sgPump.rotation.x = Math.PI / 2;
@@ -1511,7 +1571,7 @@
             weaponHolder.add(m870);
             weaponMeshes.push(m870);
 
-            // [2] M249 SAW 輕機槍：重型機匣 + 可抖動進彈黃銅彈鏈 + 摺疊兩腳架 + 階梯照門
+            // [2] M249 SAW 輕機槍
             const m249 = new THREE.Group();
             const lmgBody = new THREE.Mesh(new THREE.BoxGeometry(0.072, 0.082, 0.46), gunMetalMat);
             const lmgTopCover = new THREE.Mesh(new THREE.BoxGeometry(0.068, 0.016, 0.22), darkMetalMat);
@@ -1528,7 +1588,6 @@
             const lmgDrum = new THREE.Mesh(new THREE.BoxGeometry(0.095, 0.115, 0.14), oliveStockMat);
             lmgDrum.position.set(-0.072, -0.055, -0.02);
 
-            // 逐顆黃銅子彈構成的真實彈鏈
             const beltGroup = new THREE.Group();
             for (let b = 0; b < 6; b++) {
                 const bullet = new THREE.Mesh(new THREE.CylinderGeometry(0.0045, 0.0045, 0.044, 6), brassShellMat);
@@ -1554,14 +1613,13 @@
             weaponHolder.add(m249);
             weaponMeshes.push(m249);
 
-            // [3] M24 8倍光學狙擊步槍：浮動重型槍管 + 可旋轉後拉槍機拉柄群組 + 8倍鏡筒與旋鈕
+            // [3] M24 8倍光學狙擊步槍
             const m24 = new THREE.Group();
             const snpStock = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.068, 0.56), oliveStockMat);
             const snpReceiver = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.24, 12), darkMetalMat);
             snpReceiver.rotation.x = Math.PI / 2;
             snpReceiver.position.set(0, 0.028, 0.02);
 
-            // 可動槍機與拉栓球頭
             const boltGroup = new THREE.Group();
             boltGroup.position.set(0, 0.028, 0.08);
             const snpBoltBody = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.11, 10), silverBladeMat);
@@ -1624,6 +1682,46 @@
             knife.visible = false;
             weaponHolder.add(knife);
             weaponMeshes.push(knife);
+
+            // [5] RPG-7V2 反坦克高爆火箭筒
+            const rpg = new THREE.Group();
+            const rpgTube = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.78, 14), oliveStockMat);
+            rpgTube.rotation.x = Math.PI / 2;
+            rpgTube.position.set(0, 0.01, -0.06);
+            const rpgWoodGuard = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.26, 14), woodStockMat);
+            rpgWoodGuard.rotation.x = Math.PI / 2;
+            rpgWoodGuard.position.set(0, 0.01, -0.02);
+            const rpgVenturi = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.042, 0.14, 14), darkMetalMat);
+            rpgVenturi.rotation.x = Math.PI / 2;
+            rpgVenturi.position.set(0, 0.01, 0.36);
+            const rpgGrip1 = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.085, 0.038), polymerMat);
+            rpgGrip1.position.set(0, -0.048, -0.14);
+            rpgGrip1.rotation.x = 0.2;
+            const rpgGrip2 = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.075, 0.036), polymerMat);
+            rpgGrip2.position.set(0, -0.045, 0.04);
+            const rpgScope = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.13, 12), darkMetalMat);
+            rpgScope.rotation.x = Math.PI / 2;
+            rpgScope.position.set(-0.042, 0.045, -0.08);
+            const rpgScopeMount = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.03, 0.04), gunMetalMat);
+            rpgScopeMount.position.set(-0.024, 0.028, -0.08);
+
+            const warheadGroup = new THREE.Group();
+            const whCone1 = new THREE.Mesh(new THREE.CylinderGeometry(0.044, 0.022, 0.11, 14), oliveStockMat);
+            whCone1.rotation.x = Math.PI / 2;
+            whCone1.position.set(0, 0.01, -0.49);
+            const whCone2 = new THREE.Mesh(new THREE.ConeGeometry(0.044, 0.13, 14), darkMetalMat);
+            whCone2.rotation.x = -Math.PI / 2;
+            whCone2.position.set(0, 0.01, -0.61);
+            const whFuse = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.011, 0.05, 10), brassShellMat);
+            whFuse.rotation.x = Math.PI / 2;
+            whFuse.position.set(0, 0.01, -0.69);
+            warheadGroup.add(whCone1, whCone2, whFuse);
+            weaponAnimParts.rpgWarhead = warheadGroup;
+
+            rpg.add(rpgTube, rpgWoodGuard, rpgVenturi, rpgGrip1, rpgGrip2, rpgScope, rpgScopeMount, warheadGroup);
+            rpg.visible = false;
+            weaponHolder.add(rpg);
+            weaponMeshes.push(rpg);
         }
         createFirstPersonWeapons();
 
@@ -1643,7 +1741,6 @@
         buddhaFormMesh.visible = false;
         camera.add(buddhaFormMesh);
 
-        // 本地玩家第三人稱 3D 特戰兵模型（第一人稱時隱藏，按 C 切換第三人稱時顯示）
         let localSoldier = null;
         function ensureLocalSoldierMesh() {
             if (localSoldier) return localSoldier;
@@ -1680,6 +1777,10 @@
 
         function switchWeapon(idx) {
             if (idx < 0 || idx >= WEAPONS.length) return;
+            if (idx === 5 && !hasUnlockedRPG) {
+                showStreakBanner('🔒 RPG-7 火箭筒尚未購買！', '請按 [B] 鍵開啟軍火商店，花費 450 金幣購買解鎖');
+                return;
+            }
             player.currentWeaponIdx = idx;
             player.isReloading = false;
             player.isADS = false;
@@ -1748,9 +1849,12 @@
             else if (e.code === 'Digit5') switchWeapon(4);
             else if (e.code === 'Digit6') triggerSacredCross();
             else if (e.code === 'Digit7') triggerAirstrike();
+            else if (e.code === 'Digit8') switchWeapon(5);
             else if (e.code === 'Digit0') triggerBuddhaTransform();
             else if (e.code === 'KeyR') startReload();
             else if (e.code === 'KeyG') throwFragGrenade();
+            else if (e.code === 'KeyT') deployAutoTurret();
+            else if (e.code === 'KeyN') toggleNightVision();
             else if (e.code === 'KeyF') toggleWeaponInspect();
             else if (e.code === 'KeyC') toggleCameraPerspective();
             else if (e.code === 'KeyB') toggleShopModal();
@@ -1821,7 +1925,7 @@
         canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
         // ==========================================
-        // 6. 全球跨電腦真實連線系統（三引擎併發：全球 MQTT 即時中繼 ＋ Firebase 雲端 ＋ 跨分頁通道）
+        // 6. 全球跨電腦真實連線系統
         // ==========================================
         const urlParams = new URLSearchParams(window.location.search);
         let currentRoom = (urlParams.get('room') || '7788').replace(/\s+/g, '').toUpperCase() || '7788';
@@ -2049,7 +2153,6 @@
             return sprite;
         }
 
-        // 現代戰術特戰兵 3D 造型（頭盔＋夜視儀支架＋戰術背心＋護膝＋雙手持槍）
         function buildSoldierMesh(variant = 'ally') {
             const group = new THREE.Group();
             const uniformColor = variant === 'enemy_heavy' ? '#7f1d1d'
@@ -2428,7 +2531,7 @@
 
             if (!rawEmail || !rawEmail.includes('@')) {
                 if (inputEl) inputEl.focus();
-                showStreakBanner('📧 請先輸入你的 Google 信箱', '輸入信箱後按「綁定登入」，即可在任何電腦同步金幣與強化！（預覽環境已自動防護彈窗報錯）');
+                showStreakBanner('📧 請先輸入你的 Google 信箱', '輸入信箱後按「綁定登入」，即可在任何電腦同步金幣與強化！');
                 return;
             }
 
@@ -2448,7 +2551,6 @@
             showStreakBanner('✅ 帳號雲端存檔已綁定！', `已連結 ${googleAccountEmail}，所有金幣與強化等級已同步保存！`);
         }
 
-        // 防護 iFrame 沙盒環境下 Firebase Auth 內部未捕獲的 PopupOperation Promise 拒絕錯誤
         window.addEventListener('unhandledrejection', (event) => {
             const msg = String(event?.reason?.message || event?.reason || '');
             if (msg.includes('Pending promise was never set') || msg.includes('auth/popup')) {
@@ -2458,7 +2560,7 @@
         });
 
         // ==========================================
-        // 6.5 Google 帳號雲端存檔與讀取系統 (Strict Path: /artifacts/{appId}/users/{userId}/profile/saveData)
+        // 6.5 Google 帳號雲端存檔與讀取系統
         // ==========================================
         function getAccountStorageKey() {
             if (isGoogleSignedIn && googleAccountEmail) {
@@ -2529,6 +2631,9 @@
                     if (typeof d.duelLosses === 'number') duelLosses = d.duelLosses;
                     if (typeof d.damageUpgradeLevel === 'number') damageUpgradeLevel = Math.min(5, Math.max(0, d.damageUpgradeLevel));
                     if (typeof d.armorUpgradeLevel === 'number') armorUpgradeLevel = Math.min(5, Math.max(0, d.armorUpgradeLevel));
+                    if (typeof d.hasUnlockedRPG === 'boolean') hasUnlockedRPG = d.hasUnlockedRPG;
+                    if (typeof d.hasUnlockedNVG === 'boolean') hasUnlockedNVG = d.hasUnlockedNVG;
+                    if (typeof d.turretCharges === 'number') turretCharges = Math.max(0, d.turretCharges);
                     if (typeof d.nickname === 'string' && d.nickname.trim()) playerNickname = d.nickname.trim();
 
                     player.maxArmor = 100 + armorUpgradeLevel * 25;
@@ -2567,6 +2672,9 @@
                     duelLosses,
                     damageUpgradeLevel,
                     armorUpgradeLevel,
+                    hasUnlockedRPG,
+                    hasUnlockedNVG,
+                    turretCharges,
                     updatedAtMs: Date.now()
                 });
                 updateCloudAccountUI(isGoogleSignedIn ? '✅ 已存入綁定帳號' : '⚠️ 已暫存 (建議綁定信箱)');
@@ -2595,7 +2703,7 @@
         else window.addEventListener('fb-sdk-ready', initMultiplayerService);
 
         // ==========================================
-        // 7. 戰鬥系統（1v1 跨電腦交火 ＋ 彈殼拋出 ＋ 彈孔貼花 ＋ 人機 AI）
+        // 7. 戰鬥系統（1v1 跨電腦交火 ＋ RPG-7 火箭彈 ＋ 自動機槍塔 ＋ 人機 AI）
         // ==========================================
         const allies = [];
         const enemies = [];
@@ -2604,6 +2712,8 @@
         const shellCasings = [];
         const bulletDecals = [];
         const grenades = [];
+        const rockets = [];
+        const activeTurrets = [];
         const particles = [];
         const raycaster = new THREE.Raycaster();
 
@@ -2675,7 +2785,7 @@
         }
 
         const radioMessages = [
-            '「街道掩體旁設有綠色彈藥補給箱，走近可補充備彈與護甲！M870 泵動與 M24 拉栓皆已實裝真槍機械循環！」',
+            '「街道掩體旁設有綠色彈藥補給箱，走近可補充備彈與護甲！按 [B] 可開啟軍火商店購買 RPG-7 與機槍塔！」',
             '「沿著街道兩側鋼鐵樓梯可登上二樓狙擊高台，開鏡按 Shift 屏息可穩定 M24 8倍鏡準心！」',
             '「危機時刻按 [6] 舉起十字架可滿血復活，按 [0] 可變身金剛佛陀施展如來神掌！」',
             '「M4A1 開鏡時自動開啟 PEQ-15 綠色戰術雷射，所有子彈嚴格遵循牆體防穿牆！」'
@@ -2756,6 +2866,10 @@
                     strafeDir: Math.random() < 0.5 ? 1 : -1,
                     strafeTimer: 1.2 + Math.random() * 1.5
                 };
+                if (isNVGActive && built.torso && built.torso.material) {
+                    built.torso.material.emissive = new THREE.Color('#ef4444');
+                    built.torso.material.emissiveIntensity = 0.65;
+                }
                 built.torso.userData = { enemyObj, part: 'body' };
                 built.head.userData = { enemyObj, part: 'head' };
                 enemyHitMeshes.push(built.torso, built.head);
@@ -2839,6 +2953,10 @@
                 startReload();
                 return;
             }
+            if (wpn.type === 'launcher') {
+                fireRPGRocket(wpn);
+                return;
+            }
 
             wpn.mag--;
             player.fireCooldown = wpn.fireRate;
@@ -2850,7 +2968,6 @@
             player.crosshairSpread = Math.min(34, player.crosshairSpread + (wpn.type === 'shotgun' ? 14 : 6.5));
             audio.playGunshot(wpn.type);
 
-            // 觸發真實槍械機械循環與拋殼
             if (wpn.type === 'rifle') {
                 spawnShellCasing();
                 if (wpn.id === 'M249') player.beltJitterTimer = 0.14;
@@ -2876,7 +2993,6 @@
             const baseDir = new THREE.Vector3();
             camera.getWorldDirection(baseDir);
 
-            // 第三人稱視差校正：計算攝影機中心準星瞄準的 3D 世界目標點，讓槍口子彈精準飛向準星所指之處
             let muzzleOrigin = origin.clone();
             if (player.isThirdPerson && localSoldier) {
                 const aimWallHit = getFirstObstacleDistance(origin, baseDir, 160);
@@ -3128,6 +3244,107 @@
                     damageBotEnemy(en, dmg, true, en.group.position.clone().add(new THREE.Vector3(0, 1.3, 0)), '油桶爆破');
                 }
             }
+        }
+
+        function fireRPGRocket(wpn) {
+            wpn.mag--;
+            player.fireCooldown = wpn.fireRate;
+            player.recoilKick = 0.12;
+            player.weaponRecoilZ = 0.11;
+            player.muzzleFlashTimer = 0.08;
+            if (weaponAnimParts.rpgWarhead) weaponAnimParts.rpgWarhead.visible = false;
+            audio.playExplosion();
+
+            const dir = new THREE.Vector3();
+            camera.getWorldDirection(dir);
+            const rGroup = new THREE.Group();
+            const body = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.28, 10), oliveStockMat);
+            body.rotation.x = Math.PI / 2;
+            const nose = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.14, 10), darkMetalMat);
+            nose.rotation.x = Math.PI / 2;
+            nose.position.z = 0.21;
+            const exhaust = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), new THREE.MeshBasicMaterial({ color: '#fb923c' }));
+            exhaust.position.z = -0.18;
+            rGroup.add(body, nose, exhaust);
+
+            const spawnPos = camera.position.clone().addScaledVector(dir, 0.9).add(new THREE.Vector3(0, -0.06, 0));
+            rGroup.position.copy(spawnPos);
+            rGroup.lookAt(spawnPos.clone().add(dir));
+            scene.add(rGroup);
+
+            const dmgMult = 1 + damageUpgradeLevel * 0.15;
+            rockets.push({
+                mesh: rGroup,
+                vel: dir.clone().multiplyScalar(44),
+                dmg: Math.round(wpn.dmg * dmgMult),
+                life: 3.5
+            });
+            updateHUD();
+        }
+
+        function deployAutoTurret() {
+            if (gameState !== 'PLAYING') return;
+            if (turretCharges <= 0) {
+                showStreakBanner('🤖 尚未持有自動機槍塔！', '請按 [B] 鍵開啟軍火商店花費 280 金幣購買');
+                return;
+            }
+            turretCharges--;
+            audio.playReloadClick('bolt');
+
+            const tGroup = new THREE.Group();
+            const tripod = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.36, 0.55, 8), darkMetalMat);
+            tripod.position.y = 0.28;
+            const headGroup = new THREE.Group();
+            headGroup.position.y = 0.68;
+            const turretBox = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.22, 0.38), gunMetalMat);
+            const barrel1 = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.42, 8), darkMetalMat);
+            barrel1.rotation.x = Math.PI / 2;
+            barrel1.position.set(-0.05, 0, 0.32);
+            const barrel2 = barrel1.clone();
+            barrel2.position.set(0.05, 0, 0.32);
+            const sensorEye = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), new THREE.MeshBasicMaterial({ color: '#22d3ee' }));
+            sensorEye.position.set(0, 0.08, 0.2);
+            headGroup.add(turretBox, barrel1, barrel2, sensorEye);
+            tGroup.add(tripod, headGroup);
+
+            const fwd = new THREE.Vector3(-Math.sin(player.yaw), 0, -Math.cos(player.yaw));
+            const deployPos = player.pos.clone().addScaledVector(fwd, 1.4);
+            const groundY = getGroundHeightAt(deployPos.x, deployPos.z, Math.max(0, player.pos.y - 1.5));
+            tGroup.position.set(deployPos.x, groundY, deployPos.z);
+            scene.add(tGroup);
+
+            activeTurrets.push({
+                group: tGroup,
+                headGroup,
+                life: 35.0,
+                fireCooldown: 0.25
+            });
+            showStreakBanner('🤖 全自動哨戒機槍塔已部署！', '35 秒內自動鎖定並掃射周圍敵軍目標！');
+            updateHUD();
+        }
+
+        function toggleNightVision() {
+            if (!hasUnlockedNVG) {
+                showStreakBanner('🔒 戰術夜視儀尚未購買！', '請按 [B] 鍵開啟軍火商店花費 240 金幣購買解鎖');
+                return;
+            }
+            isNVGActive = !isNVGActive;
+            const nvgEl = document.getElementById('nvg-overlay');
+            if (nvgEl) nvgEl.style.opacity = isNVGActive ? '1' : '0';
+            scene.fog.color.set(isNVGActive ? '#14532d' : '#c8a97e');
+            scene.background.set(isNVGActive ? '#052e16' : '#c8a97e');
+            enemies.forEach(en => {
+                if (en.torso && en.torso.material) {
+                    en.torso.material.emissive = new THREE.Color(isNVGActive ? '#ef4444' : '#000000');
+                    en.torso.material.emissiveIntensity = isNVGActive ? 0.65 : 0;
+                }
+            });
+            audio.playAdsToggle(isNVGActive);
+            showStreakBanner(
+                isNVGActive ? '🥽 戰術熱成像夜視儀已啟動' : '👁️ 已關閉夜視儀濾鏡',
+                isNVGActive ? '敵軍熱源輪廓已高亮標記' : '恢復正常戰場視野'
+            );
+            updateHUD();
         }
 
         function throwFragGrenade() {
@@ -3481,6 +3698,16 @@
             document.getElementById('hud-ammo').textContent = ammoStr;
 
             document.getElementById('hud-grenades').textContent = `${player.grenades}`;
+            const turretHud = document.getElementById('hud-turrets');
+            if (turretHud) turretHud.textContent = `${turretCharges}`;
+            const nvgBtn = document.getElementById('btn-nvg');
+            if (nvgBtn) {
+                nvgBtn.textContent = !hasUnlockedNVG ? '🔒 夜視儀 [N]' : (isNVGActive ? '🟢 夜視儀開啟 [N]' : '🥽 夜視儀 [N]');
+            }
+            const rpgSlot = document.querySelector('.wpn-slot[data-wpn="5"]');
+            if (rpgSlot) {
+                rpgSlot.textContent = hasUnlockedRPG ? '[8] 🚀 RPG-7' : '[8] 🔒 RPG-7';
+            }
             document.getElementById('hud-cross-charges').textContent = `${player.crossReviveCharges}`;
             document.getElementById('hud-buddha-status').textContent = player.isBuddhaForm
                 ? `聖光剩餘 ${Math.ceil(player.buddhaTimer)}s`
@@ -3513,6 +3740,34 @@
 
             const crossCountEl = document.getElementById('shop-count-cross');
             if (crossCountEl) crossCountEl.textContent = `持有 ${player.crossReviveCharges} 個`;
+
+            const rpgStatusEl = document.getElementById('shop-status-rpg');
+            const btnRpg = document.getElementById('buy-weapon-rpg');
+            if (rpgStatusEl) {
+                rpgStatusEl.textContent = hasUnlockedRPG ? `已解鎖 (${WEAPONS[5].mag + WEAPONS[5].reserve}發)` : '未解鎖 [8]';
+                rpgStatusEl.className = hasUnlockedRPG
+                    ? 'text-xs px-2 py-0.5 rounded bg-emerald-500/25 text-emerald-300 font-black'
+                    : 'text-xs px-2 py-0.5 rounded bg-stone-800 text-stone-300 font-black';
+            }
+            if (btnRpg) {
+                btnRpg.textContent = hasUnlockedRPG ? '💰 150 金幣補充 4 發火箭彈' : '💰 450 金幣永久購買';
+            }
+
+            const turretCountEl = document.getElementById('shop-count-turret');
+            if (turretCountEl) turretCountEl.textContent = `持有 ${turretCharges} 座`;
+
+            const nvgStatusEl = document.getElementById('shop-status-nvg');
+            const btnNvg = document.getElementById('buy-item-nvg');
+            if (nvgStatusEl) {
+                nvgStatusEl.textContent = hasUnlockedNVG ? '已永久解鎖 [N]' : '未解鎖 [N]';
+                nvgStatusEl.className = hasUnlockedNVG
+                    ? 'text-xs px-2 py-0.5 rounded bg-emerald-500/25 text-emerald-300 font-black'
+                    : 'text-xs px-2 py-0.5 rounded bg-stone-800 text-stone-300 font-black';
+            }
+            if (btnNvg) {
+                btnNvg.textContent = hasUnlockedNVG ? '✅ 已擁有 (按 [N] 鍵開關)' : '💰 240 金幣永久購買';
+                btnNvg.disabled = hasUnlockedNVG;
+            }
         }
 
         function toggleShopModal(forceState = null) {
@@ -3588,6 +3843,11 @@
                 WEAPONS[1].mag = WEAPONS[1].magSize; WEAPONS[1].reserve = 48;
                 WEAPONS[2].mag = WEAPONS[2].magSize; WEAPONS[2].reserve = 250;
                 WEAPONS[3].mag = WEAPONS[3].magSize; WEAPONS[3].reserve = 35;
+                if (hasUnlockedRPG) {
+                    WEAPONS[5].mag = 1;
+                    WEAPONS[5].reserve = 6;
+                    if (weaponAnimParts.rpgWarhead) weaponAnimParts.rpgWarhead.visible = true;
+                }
                 showStreakBanner('📦 戰地滿彈醫療包已送達！', '生命值、護甲、彈藥與手雷全滿');
             });
         });
@@ -3603,6 +3863,47 @@
             purchaseShopItem(220, () => {
                 airstrikeReady = true;
                 showStreakBanner('✈️ A-10 雷霆空襲已呼叫待命！', '按下 [7] 鍵立即發動全街道轟炸');
+            });
+        });
+
+        document.getElementById('buy-weapon-rpg').addEventListener('click', () => {
+            if (!hasUnlockedRPG) {
+                purchaseShopItem(450, () => {
+                    hasUnlockedRPG = true;
+                    WEAPONS[5].mag = 1;
+                    WEAPONS[5].reserve = 5;
+                    if (weaponAnimParts.rpgWarhead) weaponAnimParts.rpgWarhead.visible = true;
+                    toggleShopModal(false);
+                    switchWeapon(5);
+                    showStreakBanner('🚀 已購得 RPG-7 重型火箭筒！', '按 [8] 鍵隨時切換，已自動為你裝備！');
+                });
+            } else {
+                purchaseShopItem(150, () => {
+                    WEAPONS[5].reserve += 4;
+                    if (WEAPONS[5].mag === 0) {
+                        WEAPONS[5].mag = 1;
+                        WEAPONS[5].reserve--;
+                        if (weaponAnimParts.rpgWarhead) weaponAnimParts.rpgWarhead.visible = true;
+                    }
+                    showStreakBanner('🚀 已補充 4 發高爆火箭彈！', `目前總備彈：${WEAPONS[5].mag + WEAPONS[5].reserve} 發`);
+                });
+            }
+        });
+
+        document.getElementById('buy-item-turret').addEventListener('click', () => {
+            purchaseShopItem(280, () => {
+                turretCharges++;
+                showStreakBanner('🤖 已購得全自動哨戒機槍塔！', `目前持有 ${turretCharges} 座，按 [T] 鍵立即部署於戰場`);
+            });
+        });
+
+        document.getElementById('buy-item-nvg').addEventListener('click', () => {
+            if (hasUnlockedNVG) return;
+            purchaseShopItem(240, () => {
+                hasUnlockedNVG = true;
+                toggleShopModal(false);
+                if (!isNVGActive) toggleNightVision();
+                showStreakBanner('🥽 已永久解鎖戰術夜視儀！', '按 [N] 鍵可隨時切換熱成像夜視模式');
             });
         });
 
@@ -3631,141 +3932,92 @@
         document.getElementById('btn-inspect').addEventListener('click', toggleWeaponInspect);
         document.getElementById('btn-reload').addEventListener('click', startReload);
         document.getElementById('btn-grenade').addEventListener('click', throwFragGrenade);
+        document.getElementById('btn-turret').addEventListener('click', deployAutoTurret);
+        document.getElementById('btn-nvg').addEventListener('click', toggleNightVision);
         document.getElementById('btn-cross-revive').addEventListener('click', triggerSacredCross);
-        document.getElementById('btn-gameover-cross-revive').addEventListener('click', triggerSacredCross);
         document.getElementById('btn-buddha-form').addEventListener('click', triggerBuddhaTransform);
+        document.getElementById('btn-gameover-cross-revive').addEventListener('click', triggerSacredCross);
 
-        function setBattleMode(newMode, silent = false) {
-            battleMode = newMode;
+        function setBattleMode(nextMode, silent = false) {
+            battleMode = nextMode;
+            isPvpEnabled = (battleMode !== 'coop3');
             document.querySelectorAll('input[name="battle-mode-radio"]').forEach(r => {
                 r.checked = (r.value === battleMode);
             });
-            remotePlayers.forEach((rp, uid) => {
-                const isCoopAlly = (battleMode === 'coop3');
-                rp.isCoopAlly = isCoopAlly;
-                if (rp.nameTag) rp.group.remove(rp.nameTag);
-                const newTag = createPlayerNameTag(isCoopAlly ? `🛡️ 隊友 ${uid.slice(0, 5)}` : `⚔️ 對手 ${uid.slice(0, 5)}`, !isCoopAlly);
-                rp.group.add(newTag);
-                rp.nameTag = newTag;
-            });
-            applyRoleSpawnPosition(myRole, gameState === 'MENU');
-            updateSideRoomUI(remotePlayers.size + 1);
 
             if (battleMode === 'pure1v1') {
                 clearBotsAndAllies();
-                if (!silent) showStreakBanner('⚔️ 已切換為「純 1v1 單挑」', '已清空所有電腦 AI 與小兵，只留兩台電腦對決！');
-            } else if (battleMode === 'coop3') {
-                spawnAllies();
-                spawnWaveEnemies(currentWave);
-                if (!silent) showStreakBanner('🤝 已切換為「3台電腦合作打機器人」', '已關閉隊友誤傷，三台電腦同房合力抗敵！');
             } else {
                 spawnAllies();
                 if (enemies.length === 0) spawnWaveEnemies(currentWave);
-                if (!silent) showStreakBanner('🔥 已切換為「人機波次＋好友混戰」', '迷彩隊友與波次敵軍已投入戰場！');
             }
+            updateSideRoomUI(remotePlayers.size + 1);
             updateHUD();
-        }
 
-        document.getElementById('btn-toggle-mode').addEventListener('click', () => {
-            const order = ['coop3', 'pure1v1', 'hybrid'];
-            const nextMode = order[(order.indexOf(battleMode) + 1) % order.length];
-            setBattleMode(nextMode);
-        });
+            if (!silent) {
+                if (battleMode === 'coop3') {
+                    showStreakBanner('🤝 已切換為「3台電腦合作打機器人」', '已關閉隊友誤傷！最多 3 台電腦同房聯手掃蕩敵軍');
+                } else if (battleMode === 'hybrid') {
+                    showStreakBanner('🔥 已切換為「人機波次＋好友混戰」', '敵軍波次已部署於街道中段，同時可與對手對決！');
+                } else {
+                    showStreakBanner('⚔️ 已切換為「純 1v1 單挑模式」', '已清空 AI 機器人，專注兩台電腦玩家對決！');
+                }
+            }
+        }
 
         document.querySelectorAll('input[name="battle-mode-radio"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
-                if (e.target.checked) setBattleMode(e.target.value);
+                if (e.target.checked) setBattleMode(e.target.value, false);
             });
         });
 
-        function handleJoinRoomAction(rawCode) {
-            const clean = String(rawCode || '').trim().toUpperCase();
-            if (!clean) {
-                showStreakBanner('⚠️ 請輸入 4 碼房號', '例如 7788，兩台電腦需輸入完全相同的房號');
-                return;
-            }
-            subscribeToRoom(clean);
-            if (!mqttConnected) {
-                initGlobalMqttRelay();
-            } else {
-                publishMqttPacket({ type: 'ping_hello', from: myUid, tsMs: Date.now() });
-                broadcastPlayerState(true);
-            }
-            showStreakBanner(`🌐 已切換至房號 [${currentRoom}]`, '請確認另一台電腦也輸入相同房號並按「加入」！');
-        }
-
-        document.getElementById('btn-join-room').addEventListener('click', () => {
-            handleJoinRoomAction(document.getElementById('input-room-code').value);
-        });
-        document.getElementById('lobby-btn-join').addEventListener('click', () => {
-            handleJoinRoomAction(document.getElementById('lobby-input-room').value);
+        document.getElementById('btn-toggle-mode').addEventListener('click', () => {
+            const next = battleMode === 'coop3' ? 'pure1v1' : (battleMode === 'pure1v1' ? 'hybrid' : 'coop3');
+            setBattleMode(next, false);
         });
 
-        function handleNewRoomAction() {
-            const newCode = generateRandomRoomCode();
-            subscribeToRoom(newCode);
-            showStreakBanner(`🎲 已建立新房號：${newCode}`, '點擊「複製邀請網址」傳給另一台電腦的朋友即可秒連！');
+        function handleJoinRoomInput(inputId) {
+            const val = document.getElementById(inputId).value.trim().toUpperCase();
+            if (!val) return;
+            subscribeToRoom(val);
+            showStreakBanner(`🔗 已切換至房號 [${currentRoom}]`, '請確認另一台電腦也輸入相同房號並點擊加入');
         }
-        document.getElementById('btn-new-room').addEventListener('click', handleNewRoomAction);
-        document.getElementById('lobby-btn-new').addEventListener('click', handleNewRoomAction);
+
+        document.getElementById('btn-join-room').addEventListener('click', () => handleJoinRoomInput('input-room-code'));
+        document.getElementById('lobby-btn-join').addEventListener('click', () => handleJoinRoomInput('lobby-input-room'));
+
+        function handleCreateNewRoom() {
+            const code = generateRandomRoomCode();
+            subscribeToRoom(code);
+            showStreakBanner(`🎲 已建立新房間 [${code}]`, '請將房號分享給另一台電腦輸入加入！');
+        }
+
+        document.getElementById('btn-new-room').addEventListener('click', handleCreateNewRoom);
+        document.getElementById('lobby-btn-new').addEventListener('click', handleCreateNewRoom);
 
         function handleCopyInviteLink() {
-            let shareUrl = window.location.href;
+            let shareText = `來《沙塵突圍 3D》跟我連線！房間代碼：【${currentRoom}】`;
             try {
                 const u = new URL(window.location.href);
                 u.searchParams.set('room', currentRoom);
-                shareUrl = u.toString();
+                shareText = `${u.toString()} （房號：${currentRoom}）`;
             } catch (e) {}
-            const inviteText = `來《沙塵突圍 3D》跟我跨電腦連線！房號代碼：【${currentRoom}】\n直連網址：${shareUrl}`;
-            const tempInput = document.createElement('input');
-            tempInput.value = inviteText;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            try { document.execCommand('copy'); } catch (e) {}
-            document.body.removeChild(tempInput);
-            showStreakBanner(`🔗 已複製房號【${currentRoom}】邀請連結！`, '傳給另一台電腦的朋友開啟並輸入相同房號即可直連！');
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(shareText).catch(() => {});
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = shareText;
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); } catch (e) {}
+                document.body.removeChild(ta);
+            }
+            showStreakBanner(`📋 已複製房號 [${currentRoom}] 邀請資訊`, '傳給另一台電腦貼上即可加入同一戰場！');
         }
+
         document.getElementById('btn-copy-id').addEventListener('click', handleCopyInviteLink);
         document.getElementById('lobby-btn-copy').addEventListener('click', handleCopyInviteLink);
-
-        function enterCoopThreeMode() {
-            const lobbyInput = document.getElementById('lobby-input-room');
-            const sideInput = document.getElementById('input-room-code');
-            const chosenCode = (lobbyInput && lobbyInput.value.trim())
-                ? lobbyInput.value.trim().toUpperCase()
-                : ((sideInput && sideInput.value.trim()) ? sideInput.value.trim().toUpperCase() : currentRoom);
-
-            if (chosenCode !== currentRoom) subscribeToRoom(chosenCode);
-            setBattleMode('coop3', true);
-            gameState = 'MENU';
-            startOrResetGame();
-            showStreakBanner(`🤝 3人合作打機器人（房號 ${currentRoom}）`, '三台電腦輸入同房號即可並肩作戰，無隊友誤傷！');
-        }
-
-        function enterOneVsOneMode() {
-            const lobbyInput = document.getElementById('lobby-input-room');
-            const sideInput = document.getElementById('input-room-code');
-            const chosenCode = (lobbyInput && lobbyInput.value.trim())
-                ? lobbyInput.value.trim().toUpperCase()
-                : ((sideInput && sideInput.value.trim()) ? sideInput.value.trim().toUpperCase() : currentRoom);
-
-            if (chosenCode !== currentRoom) subscribeToRoom(chosenCode);
-            setBattleMode('pure1v1', true);
-            gameState = 'MENU';
-            startOrResetGame();
-            showStreakBanner(`⚔️ 已進入跨電腦 1v1（房號 ${currentRoom}）`, '兩台電腦輸入同房號即可在街頭展開對決！');
-        }
-
-        document.getElementById('btn-enter-coop3-main').addEventListener('click', enterCoopThreeMode);
-        document.getElementById('lobby-btn-start-duel').addEventListener('click', () => {
-            if (battleMode === 'coop3') enterCoopThreeMode();
-            else if (battleMode === 'pure1v1') enterOneVsOneMode();
-            else {
-                gameState = 'MENU';
-                startOrResetGame();
-            }
-        });
-        document.getElementById('btn-enter-1v1-main').addEventListener('click', enterOneVsOneMode);
 
         document.getElementById('btn-help').addEventListener('click', () => {
             if (document.pointerLockElement === canvas && document.exitPointerLock) {
@@ -3774,204 +4026,138 @@
             document.getElementById('start-overlay').classList.remove('hidden');
         });
 
-        function startOrResetGame() {
+        function resetAndStartGame(selectedMode = null) {
             audio.init();
-            document.getElementById('start-overlay').classList.add('hidden');
-            document.getElementById('gameover-overlay').classList.add('hidden');
+            if (selectedMode) setBattleMode(selectedMode, true);
+            else {
+                const checkedRadio = document.querySelector('input[name="battle-mode-radio"]:checked');
+                if (checkedRadio) setBattleMode(checkedRadio.value, true);
+            }
+            currentWave = 1;
+            killstreak = 0;
+            airstrikeReady = false;
 
-            if (gameState === 'GAMEOVER' || gameState === 'MENU') {
-                currentWave = 1;
-                killstreak = 0;
-                applyRoleSpawnPosition(myRole, true);
-                player.pitch = 0;
-                player.hp = 100;
-                player.maxArmor = 100 + armorUpgradeLevel * 25;
-                player.armor = player.maxArmor;
-                player.grenades = 3;
-                player.isCrouching = false;
-                player.isReloading = false;
-                player.isADS = false;
-                player.adsProgress = 0;
-                player.isInspecting = false;
-                player.crossReviveCharges = 2;
-                player.crossHoldTimer = 0;
-                player.isBuddhaForm = false;
-                player.buddhaTimer = 0;
-                sacredCrossMesh.visible = false;
-                buddhaFormMesh.visible = false;
-                const aura = document.getElementById('buddha-aura');
-                if (aura) aura.style.opacity = '0';
+            player.hp = player.maxHp;
+            player.maxArmor = 100 + armorUpgradeLevel * 25;
+            player.armor = player.maxArmor;
+            player.vel.set(0, 0, 0);
+            player.isCrouching = false;
+            player.isADS = false;
+            player.adsProgress = 0;
+            player.isReloading = false;
+            player.grenades = 3;
+            player.crossReviveCharges = 2;
+            player.isBuddhaForm = false;
+            player.buddhaTimer = 0;
+            player.buddhaCooldown = 0;
+            sacredCrossMesh.visible = false;
+            buddhaFormMesh.visible = false;
+            document.getElementById('buddha-aura').style.opacity = '0';
 
-                WEAPONS.forEach(w => {
-                    if (w.type !== 'knife') {
-                        w.mag = w.magSize;
-                    }
-                });
-                switchWeapon(0);
+            applyRoleSpawnPosition(myRole, true);
 
-                if (battleMode === 'pure1v1') {
-                    clearBotsAndAllies();
-                } else {
-                    spawnAllies();
-                    spawnWaveEnemies(1);
-                }
+            WEAPONS[0].mag = 30; WEAPONS[0].reserve = 150;
+            WEAPONS[1].mag = 8;  WEAPONS[1].reserve = 40;
+            WEAPONS[2].mag = 100; WEAPONS[2].reserve = 200;
+            WEAPONS[3].mag = 5;  WEAPONS[3].reserve = 30;
+            WEAPONS[5].mag = 1;  WEAPONS[5].reserve = 5;
+            if (weaponAnimParts.rpgWarhead) weaponAnimParts.rpgWarhead.visible = true;
+            switchWeapon(0);
+
+            if (battleMode === 'hybrid' || battleMode === 'coop3') {
+                spawnAllies();
+                spawnWaveEnemies(1);
+            } else {
+                clearBotsAndAllies();
             }
 
             gameState = 'PLAYING';
+            document.getElementById('start-overlay').classList.add('hidden');
+            document.getElementById('gameover-overlay').classList.add('hidden');
+            updateHUD();
+            broadcastPlayerState(true);
+
             if (canvas.requestPointerLock) {
                 try { canvas.requestPointerLock(); } catch (e) {}
             }
-            updateHUD();
-            broadcastPlayerState(true);
         }
 
-        document.getElementById('btn-start-game').addEventListener('click', () => {
-            setBattleMode('hybrid', true);
-            gameState = 'MENU';
-            startOrResetGame();
-        });
-        document.getElementById('btn-restart-game').addEventListener('click', () => {
-            gameState = 'GAMEOVER';
-            startOrResetGame();
-        });
+        document.getElementById('btn-enter-coop3-main').addEventListener('click', () => resetAndStartGame('coop3'));
+        document.getElementById('btn-enter-1v1-main').addEventListener('click', () => resetAndStartGame('pure1v1'));
+        document.getElementById('btn-start-game').addEventListener('click', () => resetAndStartGame('hybrid'));
+        document.getElementById('lobby-btn-start-duel').addEventListener('click', () => resetAndStartGame());
+        document.getElementById('btn-restart-game').addEventListener('click', () => resetAndStartGame());
 
         // ==========================================
-        // 10. 主渲染與物理循環（含動態準星、拋殼落地物理、槍機泵動/拉栓、彈藥箱補給）
+        // 10. 主遊戲迴圈（含機械泵動/拉栓動畫、動態準星、開鏡與真實彈殼物理）
         // ==========================================
-        let lastFrameTime = performance.now();
+        let prevTime = performance.now();
+
         function animate(now) {
             requestAnimationFrame(animate);
-            const dt = Math.min(0.05, Math.max(0.001, (now - lastFrameTime) / 1000));
-            lastFrameTime = now;
+            const dt = Math.min(0.05, (now - prevTime) / 1000);
+            prevTime = now;
 
-            // 沙塵粒子微風飄動
-            const posAttr = dustGeo.attributes.position;
+            const dustArr = dustGeo.attributes.position.array;
             for (let i = 0; i < dustCount; i++) {
-                let x = posAttr.getX(i) + dt * 0.65;
-                if (x > 21) x = -21;
-                posAttr.setX(i, x);
+                dustArr[i * 3] += dt * 0.55;
+                if (dustArr[i * 3] > 21) dustArr[i * 3] = -21;
             }
-            posAttr.needsUpdate = true;
+            dustGeo.attributes.position.needsUpdate = true;
 
             if (gameState === 'PLAYING') {
-                const forward = new THREE.Vector3(-Math.sin(player.yaw), 0, -Math.cos(player.yaw));
-                const right = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
-                const moveDir = new THREE.Vector3();
-                if (keys['KeyW'] || keys['ArrowUp']) moveDir.add(forward);
-                if (keys['KeyS'] || keys['ArrowDown']) moveDir.sub(forward);
-                if (keys['KeyD'] || keys['ArrowRight']) moveDir.add(right);
-                if (keys['KeyA'] || keys['ArrowLeft']) moveDir.sub(right);
-
-                const isMoving = moveDir.lengthSq() > 0.001;
-                const isSprinting = isMoving && (keys['ShiftLeft'] || keys['ShiftRight']) && !player.isCrouching && !player.isADS;
-                const isHoldingBreath = player.isADS && (keys['ShiftLeft'] || keys['ShiftRight']);
-
-                if (isMoving) {
-                    moveDir.normalize();
-                    const moveSpeed = player.isCrouching ? 3.2 : (isSprinting ? 8.2 : (player.isADS ? 3.6 : 5.6));
-                    player.pos.addScaledVector(moveDir, moveSpeed * dt);
-                    player.walkBobTimer += dt * (isSprinting ? 14 : (player.isADS ? 7.5 : 10.5));
+                if (player.fireCooldown > 0) player.fireCooldown -= dt;
+                if (player.buddhaCooldown > 0) {
+                    player.buddhaCooldown = Math.max(0, player.buddhaCooldown - dt);
+                    if (Math.floor(player.buddhaCooldown) !== Math.floor(player.buddhaCooldown + dt)) updateHUD();
                 }
-
-                // 檢查是否靠近彈藥與護甲補給箱
-                supplyCrates.forEach(sc => {
-                    if (sc.cooldown > 0) {
-                        sc.cooldown -= dt;
-                        return;
-                    }
-                    if (player.pos.distanceTo(sc.pos) < 1.65) {
-                        sc.cooldown = 16.0;
-                        WEAPONS[0].reserve = Math.min(240, WEAPONS[0].reserve + 60);
-                        WEAPONS[1].reserve = Math.min(64, WEAPONS[1].reserve + 16);
-                        WEAPONS[2].reserve = Math.min(300, WEAPONS[2].reserve + 100);
-                        WEAPONS[3].reserve = Math.min(45, WEAPONS[3].reserve + 10);
-                        player.armor = Math.min(player.maxArmor, player.armor + 35);
-                        player.grenades = Math.min(4, player.grenades + 1);
-                        audio.playReloadClick('in');
-                        showStreakBanner('📦 戰地彈藥箱補給完成！', '全武器備彈、破片手雷與護甲已補充');
+                if (player.crossHoldTimer > 0) {
+                    player.crossHoldTimer -= dt;
+                    sacredCrossMesh.rotation.y += dt * 3.5;
+                    if (player.crossHoldTimer <= 0) sacredCrossMesh.visible = false;
+                }
+                if (player.isBuddhaForm) {
+                    player.buddhaTimer -= dt;
+                    haloRing.rotation.z += dt * 2.4;
+                    if (Math.floor(player.buddhaTimer) !== Math.floor(player.buddhaTimer + dt)) updateHUD();
+                    if (player.buddhaTimer <= 0) {
+                        player.isBuddhaForm = false;
+                        buddhaFormMesh.visible = false;
+                        document.getElementById('buddha-aura').style.opacity = '0';
                         updateHUD();
                     }
-                });
-
-                const eyeOffset = player.isCrouching ? 0.92 : 1.72;
-                const currentFeetY = Math.max(0, player.pos.y - eyeOffset);
-                const floorY = getGroundHeightAt(player.pos.x, player.pos.z, currentFeetY);
-                const targetEyeHeight = floorY + eyeOffset;
-
-                if (!player.onGround) {
-                    player.vel.y -= 16.5 * dt;
-                    player.pos.y += player.vel.y * dt;
-                    if (player.pos.y <= targetEyeHeight) {
-                        player.pos.y = targetEyeHeight;
-                        player.vel.y = 0;
-                        player.onGround = true;
-                    }
-                } else {
-                    if (currentFeetY > floorY + 0.45) {
-                        player.onGround = false;
-                        player.vel.y = 0;
-                    } else {
-                        player.pos.y += (targetEyeHeight - player.pos.y) * Math.min(1, dt * 16);
-                    }
                 }
 
-                resolvesCollision(player.pos, 0.45, Math.max(0, player.pos.y - eyeOffset));
+                radioTimer -= dt;
+                if (radioTimer <= 0) {
+                    radioTimer = 11;
+                    setRadioMessage(radioMessages[Math.floor(Math.random() * radioMessages.length)]);
+                }
 
-                // 平滑過渡第一人稱 <-> 第三人稱越肩視角攝影機與防穿牆碰撞
-                const targetTp = player.isThirdPerson ? 1 : 0;
-                player.tpProgress += (targetTp - player.tpProgress) * Math.min(1, dt * 14);
-
-                camera.rotation.y = player.yaw + player.recoilYawKick;
-                camera.rotation.x = player.pitch + player.recoilKick;
+                for (let i = 0; i < supplyCrates.length; i++) {
+                    const sc = supplyCrates[i];
+                    if (sc.cooldown > 0) {
+                        sc.cooldown -= dt;
+                        sc.mesh.visible = sc.cooldown <= 0;
+                        continue;
+                    }
+                    if (player.pos.distanceTo(sc.pos) < 1.85) {
+                        sc.cooldown = 16;
+                        sc.mesh.visible = false;
+                        player.armor = Math.min(player.maxArmor, player.armor + 35);
+                        player.grenades = Math.min(3, player.grenades + 1);
+                        WEAPONS[0].reserve += 60;
+                        WEAPONS[1].reserve += 16;
+                        WEAPONS[2].reserve += 100;
+                        WEAPONS[3].reserve += 10;
+                        audio.playReloadClick('in');
+                        showStreakBanner('📦 拾獲戰術彈藥補給箱！', '全武器備彈、破片手雷與護甲已補充');
+                        updateHUD();
+                    }
+                }
 
                 const curWpn = WEAPONS[player.currentWeaponIdx];
-                const isSniperScoped = (curWpn.type === 'sniper' && player.adsProgress > 0.72);
-
-                if (player.tpProgress > 0.01 && !isSniperScoped) {
-                    const rightVec = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
-                    const backVec = new THREE.Vector3(Math.sin(player.yaw), 0, Math.cos(player.yaw));
-                    const shoulderDist = 3.1 - player.adsProgress * 1.55;
-                    const shoulderRight = 0.68 - player.adsProgress * 0.12;
-                    const shoulderUp = (player.isCrouching ? 0.36 : 0.44) - player.adsProgress * 0.16;
-
-                    const desiredCamPos = player.pos.clone()
-                        .add(new THREE.Vector3(0, shoulderUp, 0))
-                        .addScaledVector(rightVec, shoulderRight)
-                        .addScaledVector(backVec, shoulderDist);
-
-                    // 攝影機防穿牆射線檢測：若背後有牆壁則自動拉近攝影機距離
-                    const headPivot = player.pos.clone().add(new THREE.Vector3(0, 0.1, 0));
-                    const toCam = desiredCamPos.clone().sub(headPivot);
-                    const maxCamDist = toCam.length();
-                    const camDir = toCam.normalize();
-                    const camWallHit = getFirstObstacleDistance(headPivot, camDir, maxCamDist + 0.25);
-                    const safeDist = camWallHit ? Math.max(0.45, camWallHit.distance - 0.25) : maxCamDist;
-                    const finalTpPos = headPivot.clone().addScaledVector(camDir, safeDist);
-
-                    camera.position.lerpVectors(player.pos, finalTpPos, player.tpProgress);
-                } else {
-                    camera.position.copy(player.pos);
-                }
-
-                // 同步本地 3D 特戰兵模型位置、蹲伏高度、走路擺動與金剛佛光環
-                const soldier = ensureLocalSoldierMesh();
-                const showLocalBody = (player.tpProgress > 0.15 && !isSniperScoped);
-                soldier.group.visible = showLocalBody;
-                if (showLocalBody) {
-                    const feetWorldY = Math.max(0, player.pos.y - eyeOffset);
-                    soldier.group.position.set(player.pos.x, feetWorldY, player.pos.z);
-                    soldier.group.rotation.y = player.yaw + Math.PI;
-                    soldier.group.scale.y = player.isCrouching ? 0.68 : 1.0;
-                    soldier.buddhaHalo.visible = player.isBuddhaForm;
-                    if (player.isBuddhaForm) soldier.buddhaHalo.rotation.z += dt * 3;
-                }
-
-                player.recoilKick = Math.max(0, player.recoilKick - dt * 0.42);
-                player.recoilYawKick *= Math.pow(0.05, dt);
-                player.weaponRecoilZ = Math.max(0, player.weaponRecoilZ - dt * 0.45);
-
-                if (player.fireCooldown > 0) player.fireCooldown -= dt;
-                if (isMouseDown && (curWpn.type === 'rifle' || player.isBuddhaForm) && player.fireCooldown <= 0) {
+                if (isMouseDown && curWpn.type === 'rifle' && !player.isReloading) {
                     handlePrimaryFire();
                 }
 
@@ -3983,259 +4169,435 @@
                         const load = Math.min(need, curWpn.reserve);
                         curWpn.mag += load;
                         curWpn.reserve -= load;
+                        if (curWpn.id === 'RPG7' && curWpn.mag > 0 && weaponAnimParts.rpgWarhead) {
+                            weaponAnimParts.rpgWarhead.visible = true;
+                        }
                         updateHUD();
                     }
                 }
 
-                // 動態十字準星擴散計算
-                const baseSpread = !player.onGround ? 26 : (isSprinting ? 22 : (isMoving ? 15 : (player.isCrouching ? 7.5 : 10.5)));
-                player.crosshairSpread += (baseSpread - player.crosshairSpread) * Math.min(1, dt * 12);
+                const forward = new THREE.Vector3(-Math.sin(player.yaw), 0, -Math.cos(player.yaw));
+                const right = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
+                const moveDir = new THREE.Vector3(0, 0, 0);
+                if (keys['KeyW'] || keys['ArrowUp']) moveDir.add(forward);
+                if (keys['KeyS'] || keys['ArrowDown']) moveDir.sub(forward);
+                if (keys['KeyD'] || keys['ArrowRight']) moveDir.add(right);
+                if (keys['KeyA'] || keys['ArrowLeft']) moveDir.sub(right);
+
+                const isMoving = moveDir.lengthSq() > 0.001;
+                if (isMoving) moveDir.normalize();
+                const isHoldingBreath = player.isADS && curWpn.type === 'sniper' && (keys['ShiftLeft'] || keys['ShiftRight']);
+                const moveSpeed = player.isCrouching ? 3.5 : (player.isADS ? 4.2 : ((keys['ShiftLeft'] || keys['ShiftRight']) ? 8.8 : 6.2));
+                player.pos.x += moveDir.x * moveSpeed * dt;
+                player.pos.z += moveDir.z * moveSpeed * dt;
+
+                const eyeHeight = player.isCrouching ? 1.12 : 1.72;
+                const currentFeetY = Math.max(0, player.pos.y - eyeHeight);
+                const groundH = getGroundHeightAt(player.pos.x, player.pos.z, currentFeetY);
+                const targetEyeY = groundH + eyeHeight;
+
+                if (!player.onGround || player.pos.y > targetEyeY + 0.05) {
+                    player.vel.y -= 17.5 * dt;
+                    player.pos.y += player.vel.y * dt;
+                    if (player.pos.y <= targetEyeY) {
+                        player.pos.y = targetEyeY;
+                        player.vel.y = 0;
+                        player.onGround = true;
+                    }
+                } else {
+                    player.pos.y += (targetEyeY - player.pos.y) * Math.min(1, dt * 18);
+                    player.onGround = true;
+                }
+                resolvesCollision(player.pos, 0.45, Math.max(0, player.pos.y - eyeHeight));
+
+                player.crosshairSpread += ((isMoving ? 19 : 11) - player.crosshairSpread) * Math.min(1, dt * 12);
+                const sp = Math.round(player.crosshairSpread);
                 const chTop = document.getElementById('ch-top');
-                const chBottom = document.getElementById('ch-bottom');
-                const chLeft = document.getElementById('ch-left');
-                const chRight = document.getElementById('ch-right');
-                if (chTop && chBottom && chLeft && chRight) {
-                    const offset = Math.round(player.crosshairSpread);
-                    chTop.style.transform = `translateY(-${offset}px)`;
-                    chBottom.style.transform = `translateY(${offset}px)`;
-                    chLeft.style.transform = `translateX(-${offset}px)`;
-                    chRight.style.transform = `translateX(${offset}px)`;
+                const chBot = document.getElementById('ch-bottom');
+                const chL = document.getElementById('ch-left');
+                const chR = document.getElementById('ch-right');
+                if (chTop && chBot && chL && chR) {
+                    chTop.style.transform = `translateY(${-sp}px)`;
+                    chBot.style.transform = `translateY(${sp}px)`;
+                    chL.style.transform = `translateX(${-sp}px)`;
+                    chR.style.transform = `translateX(${sp}px)`;
                 }
 
-                // 平滑開鏡插值進度
-                const targetAdsProg = player.isADS ? 1 : 0;
-                player.adsProgress += (targetAdsProg - player.adsProgress) * Math.min(1, dt * 15);
+                const targetAds = player.isADS ? 1 : 0;
+                player.adsProgress += (targetAds - player.adsProgress) * Math.min(1, dt * 15);
 
-                const targetFov = 72 + (curWpn.adsFov - 72) * player.adsProgress;
-                camera.fov = targetFov;
-                camera.updateProjectionMatrix();
-
-                const chBars = document.getElementById('ch-bars');
-                if (chBars) chBars.style.opacity = `${player.isThirdPerson && !isSniperScoped ? 1 : Math.max(0, 1 - player.adsProgress * 1.45)}`;
-                const adsVig = document.getElementById('ads-vignette');
-                if (adsVig) adsVig.style.opacity = `${(player.adsProgress * 0.85).toFixed(2)}`;
+                const isSniperScoped = (curWpn.type === 'sniper' && player.adsProgress > 0.72 && !player.isThirdPerson);
                 const scopeOverlay = document.getElementById('sniper-scope-overlay');
-                if (scopeOverlay) {
-                    scopeOverlay.style.opacity = isSniperScoped ? `${Math.min(1, (player.adsProgress - 0.72) / 0.25)}` : '0';
+                if (scopeOverlay) scopeOverlay.style.opacity = isSniperScoped ? '1' : '0';
+
+                const targetTp = player.isThirdPerson ? 1 : 0;
+                player.tpProgress += (targetTp - player.tpProgress) * Math.min(1, dt * 14);
+                weaponHolder.visible = (player.tpProgress < 0.45) && !isSniperScoped;
+
+                if (player.tpProgress > 0.05) {
+                    const soldier = ensureLocalSoldierMesh();
+                    soldier.group.visible = true;
+                    soldier.group.position.set(player.pos.x, Math.max(0, player.pos.y - eyeHeight), player.pos.z);
+                    soldier.group.rotation.y = player.yaw + Math.PI;
+                    soldier.group.scale.y = player.isCrouching ? 0.74 : 1.0;
+                    soldier.buddhaHalo.visible = player.isBuddhaForm;
+                } else if (localSoldier) {
+                    localSoldier.group.visible = false;
                 }
 
-                // 呼吸晃動與行走動態擺動（Shift 屏息時穩定呼吸晃動）
-                player.swayTimer += dt * (isHoldingBreath ? 0.5 : (player.isCrouching ? 1.4 : 2.2));
-                const swayScale = isHoldingBreath ? 0.00018 : (player.isADS ? (player.isCrouching ? 0.00055 : 0.0014) : 0.0032);
-                const swayX = Math.cos(player.swayTimer) * swayScale;
-                const swayY = Math.sin(player.swayTimer * 2) * swayScale * 0.85;
-                const bobScale = isMoving ? (player.isADS ? 0.0022 : 0.0085) : 0;
-                const bobX = Math.cos(player.walkBobTimer * 0.5) * bobScale;
-                const bobY = Math.abs(Math.sin(player.walkBobTimer)) * bobScale;
-
-                // 武器可動機械零件動畫：M870 泵動護木、M249 進彈彈鏈、M24 右手拉栓
-                if (weaponAnimParts.m870PumpGroup) {
-                    if (player.pumpActionTimer > 0) {
-                        player.pumpActionTimer = Math.max(0, player.pumpActionTimer - dt);
-                        const pCycle = Math.sin((1 - player.pumpActionTimer / 0.34) * Math.PI);
-                        weaponAnimParts.m870PumpGroup.position.z = pCycle * 0.075;
-                    } else {
-                        weaponAnimParts.m870PumpGroup.position.z = 0;
-                    }
-                }
-                if (weaponAnimParts.m249AmmoBelt) {
-                    if (player.beltJitterTimer > 0) {
-                        player.beltJitterTimer = Math.max(0, player.beltJitterTimer - dt);
-                        weaponAnimParts.m249AmmoBelt.position.y = Math.sin(now * 0.08) * 0.007;
-                    } else {
-                        weaponAnimParts.m249AmmoBelt.position.y = 0;
-                    }
-                }
-                if (weaponAnimParts.m24BoltGroup) {
-                    if (player.boltActionTimer > 0) {
-                        player.boltActionTimer = Math.max(0, player.boltActionTimer - dt);
-                        const bCycle = Math.sin((1 - player.boltActionTimer / 0.48) * Math.PI);
-                        weaponAnimParts.m24BoltGroup.rotation.z = bCycle * 0.85;
-                        weaponAnimParts.m24BoltGroup.position.z = 0.08 + bCycle * 0.065;
-                    } else {
-                        weaponAnimParts.m24BoltGroup.rotation.z = 0;
-                        weaponAnimParts.m24BoltGroup.position.z = 0.08;
-                    }
+                const adsVignette = document.getElementById('ads-vignette');
+                if (adsVignette) adsVignette.style.opacity = isSniperScoped ? '0' : (player.adsProgress * 0.92).toFixed(2);
+                const chBars = document.getElementById('ch-bars');
+                if (chBars) {
+                    const hideCrosshair = isSniperScoped || (!player.isThirdPerson && player.adsProgress > 0.65);
+                    chBars.style.opacity = hideCrosshair ? '0' : '1';
                 }
 
-                const activeMesh = weaponMeshes[player.currentWeaponIdx];
-                if (activeMesh) {
-                    activeMesh.visible = (!isSniperScoped && player.tpProgress < 0.35);
-
-                    if (player.isInspecting) {
-                        player.inspectTimer += dt;
-                        activeMesh.position.set(0.06, -0.14, -0.34);
-                        activeMesh.rotation.y = Math.sin(player.inspectTimer * 2.4) * 0.85;
-                        activeMesh.rotation.z = 0.45;
-                    } else if (player.currentWeaponIdx === 4 && player.knifeSwingTimer > 0) {
-                        player.knifeSwingTimer -= dt;
-                        const prog = 1 - (player.knifeSwingTimer / player.knifeSwingDuration);
-                        activeMesh.position.set(0.12 - Math.sin(prog * Math.PI) * 0.18, -0.18, -0.52);
-                        activeMesh.rotation.y = -0.35 + Math.sin(prog * Math.PI) * 1.4 * player.knifeComboFlip;
-                    } else if (player.isReloading) {
-                        const rProg = 1 - (player.reloadTimer / player.reloadTotal);
-                        const magTilt = Math.sin(rProg * Math.PI);
-                        activeMesh.position.lerp(new THREE.Vector3(0.16, -0.25 - magTilt * 0.04, -0.38), Math.min(1, dt * 14));
-                        activeMesh.rotation.set(-0.28 * magTilt, 0.25 * magTilt, -0.52 * magTilt);
-                    } else {
-                        const hp = curWpn.hipPos;
-                        const ap = curWpn.adsPos;
-                        const p = player.adsProgress;
-                        const cantAngle = Math.sin(p * Math.PI) * -0.16;
-
-                        const desiredX = hp.x + (ap.x - hp.x) * p + swayX + bobX;
-                        const desiredY = hp.y + (ap.y - hp.y) * p + swayY - bobY;
-                        const desiredZ = hp.z + (ap.z - hp.z) * p + player.weaponRecoilZ;
-
-                        activeMesh.position.set(desiredX, desiredY, desiredZ);
-                        activeMesh.rotation.set(
-                            (player.currentWeaponIdx === 4 ? 0.25 : 0) + player.recoilKick * 0.85,
-                            player.currentWeaponIdx === 4 ? -0.35 : 0,
-                            (player.currentWeaponIdx === 4 ? 0.35 : 0) + cantAngle
-                        );
-                    }
+                const targetFov = player.isThirdPerson
+                    ? (74 - player.adsProgress * 18)
+                    : (72 + (curWpn.adsFov - 72) * player.adsProgress);
+                if (Math.abs(camera.fov - targetFov) > 0.05) {
+                    camera.fov += (targetFov - camera.fov) * Math.min(1, dt * 16);
+                    camera.updateProjectionMatrix();
                 }
 
-                // 槍口火光動態更新
-                if (player.muzzleFlashTimer > 0 && activeMesh) {
+                if (isMoving && player.onGround) {
+                    player.walkBobTimer += dt * (player.isADS ? 7.5 : 11.5);
+                } else {
+                    player.walkBobTimer = 0;
+                }
+                player.swayTimer += dt * 1.8;
+
+                if (player.recoilKick > 0) player.recoilKick = Math.max(0, player.recoilKick - dt * 0.34);
+                if (Math.abs(player.recoilYawKick) > 0.0001) player.recoilYawKick *= Math.max(0, 1 - dt * 16);
+                if (player.weaponRecoilZ > 0) player.weaponRecoilZ = Math.max(0, player.weaponRecoilZ - dt * 0.42);
+                if (player.muzzleFlashTimer > 0) {
                     player.muzzleFlashTimer -= dt;
-                    muzzleFlashGroup.visible = !isSniperScoped;
-                    muzzleFlashGroup.position.set(
-                        activeMesh.position.x,
-                        activeMesh.position.y + 0.02,
-                        activeMesh.position.z - 0.62
-                    );
-                    muzzleFlashGroup.rotation.z = Math.random() * Math.PI;
-                    muzzleLight.intensity = 2.8;
+                    muzzleFlashGroup.visible = player.muzzleFlashTimer > 0;
+                    muzzleLight.intensity = player.muzzleFlashTimer > 0 ? 4.5 : 0;
+                    flashPlane1.rotation.z += dt * 32;
                 } else {
                     muzzleFlashGroup.visible = false;
                     muzzleLight.intensity = 0;
                 }
 
-                if (player.crossHoldTimer > 0) {
-                    player.crossHoldTimer -= dt;
-                    sacredCrossMesh.rotation.y += dt * 3.5;
-                    if (player.crossHoldTimer <= 0) sacredCrossMesh.visible = false;
+                const bobAmp = player.isADS ? 0.0025 : 0.014;
+                const bobY = isMoving ? Math.sin(player.walkBobTimer) * bobAmp : 0;
+                const bobX = isMoving ? Math.cos(player.walkBobTimer * 0.5) * bobAmp * 1.1 : 0;
+                const breathAmp = isHoldingBreath ? 0.0004 : (player.isADS ? 0.0032 : 0.005);
+                const swayX = Math.sin(player.swayTimer) * breathAmp;
+                const swayY = Math.cos(player.swayTimer * 1.3) * breathAmp;
+
+                const hip = curWpn.hipPos;
+                const ads = curWpn.adsPos;
+                const t = player.adsProgress;
+                const basePosX = hip.x + (ads.x - hip.x) * t;
+                const basePosY = hip.y + (ads.y - hip.y) * t;
+                const basePosZ = hip.z + (ads.z - hip.z) * t;
+
+                let reloadPitch = 0, reloadRoll = 0, reloadOffsetY = 0;
+                if (player.isReloading) {
+                    const p = Math.sin((1 - player.reloadTimer / player.reloadTotal) * Math.PI);
+                    reloadPitch = -0.38 * p;
+                    reloadRoll = 0.25 * p;
+                    reloadOffsetY = -0.055 * p;
                 }
-                if (player.buddhaCooldown > 0) player.buddhaCooldown = Math.max(0, player.buddhaCooldown - dt);
-                if (player.isBuddhaForm) {
-                    player.buddhaTimer -= dt;
-                    haloRing.rotation.z += dt * 2.8;
-                    if (player.buddhaTimer <= 0) {
-                        player.isBuddhaForm = false;
-                        buddhaFormMesh.visible = false;
-                        const aura = document.getElementById('buddha-aura');
-                        if (aura) aura.style.opacity = '0';
-                        showStreakBanner('☸ 金剛佛陀聖光圓滿', '已恢復常規戰術武器作戰');
+
+                if (player.pumpActionTimer > 0 && weaponAnimParts.m870PumpGroup) {
+                    player.pumpActionTimer = Math.max(0, player.pumpActionTimer - dt);
+                    const pCycle = Math.sin((1 - player.pumpActionTimer / 0.34) * Math.PI);
+                    weaponAnimParts.m870PumpGroup.position.z = pCycle * 0.095;
+                } else if (weaponAnimParts.m870PumpGroup) {
+                    weaponAnimParts.m870PumpGroup.position.z = 0;
+                }
+
+                if (player.boltActionTimer > 0 && weaponAnimParts.m24BoltGroup) {
+                    player.boltActionTimer = Math.max(0, player.boltActionTimer - dt);
+                    const bCycle = Math.sin((1 - player.boltActionTimer / 0.48) * Math.PI);
+                    weaponAnimParts.m24BoltGroup.rotation.z = -bCycle * 0.95;
+                    weaponAnimParts.m24BoltGroup.position.z = 0.08 + bCycle * 0.075;
+                } else if (weaponAnimParts.m24BoltGroup) {
+                    weaponAnimParts.m24BoltGroup.rotation.z = 0;
+                    weaponAnimParts.m24BoltGroup.position.z = 0.08;
+                }
+
+                if (player.beltJitterTimer > 0 && weaponAnimParts.m249AmmoBelt) {
+                    player.beltJitterTimer = Math.max(0, player.beltJitterTimer - dt);
+                    weaponAnimParts.m249AmmoBelt.position.y = Math.sin(now * 0.09) * 0.008;
+                } else if (weaponAnimParts.m249AmmoBelt) {
+                    weaponAnimParts.m249AmmoBelt.position.y = 0;
+                }
+
+                let inspectYaw = 0, inspectRoll = 0;
+                if (player.isInspecting) {
+                    player.inspectTimer += dt;
+                    inspectYaw = Math.sin(player.inspectTimer * 2.2) * 0.48;
+                    inspectRoll = 0.22;
+                }
+
+                let knifeRotX = 0, knifeRotY = 0, knifeRotZ = 0, knifeOffX = 0, knifeOffZ = 0;
+                if (curWpn.type === 'knife' && player.knifeSwingTimer > 0) {
+                    player.knifeSwingTimer = Math.max(0, player.knifeSwingTimer - dt);
+                    const kNorm = 1 - (player.knifeSwingTimer / player.knifeSwingDuration);
+                    const kPulse = Math.sin(kNorm * Math.PI);
+                    if (player.knifeSwingType === 'stab') {
+                        knifeOffZ = -0.26 * kPulse;
+                        knifeOffX = -0.09 * kPulse;
+                        knifeRotX = -0.18 * kPulse;
+                    } else {
+                        knifeOffX = -0.22 * kPulse;
+                        knifeOffZ = -0.12 * kPulse;
+                        knifeRotY = 0.95 * kPulse * player.knifeComboFlip;
+                        knifeRotZ = 0.65 * kPulse * player.knifeComboFlip;
                     }
-                    updateHUD();
                 }
 
-                radioTimer -= dt;
-                if (radioTimer <= 0) {
-                    radioTimer = 11;
-                    setRadioMessage(radioMessages[Math.floor(Math.random() * radioMessages.length)]);
+                weaponHolder.position.set(
+                    basePosX + bobX + swayX + knifeOffX,
+                    basePosY + bobY + swayY + reloadOffsetY,
+                    basePosZ + player.weaponRecoilZ + knifeOffZ
+                );
+                weaponHolder.rotation.set(
+                    player.recoilKick * 1.45 + reloadPitch + knifeRotX,
+                    inspectYaw + knifeRotY,
+                    inspectRoll + reloadRoll + knifeRotZ
+                );
+
+                muzzleFlashGroup.position.set(0, curWpn.type === 'sniper' ? 0.03 : 0.015, curWpn.type === 'sniper' ? -0.71 : -0.61);
+
+                camera.rotation.y = player.yaw + player.recoilYawKick;
+                camera.rotation.x = Math.max(-1.25, Math.min(1.25, player.pitch + player.recoilKick + (isHoldingBreath ? 0 : swayY * 0.45)));
+
+                const fpCamPos = new THREE.Vector3(player.pos.x, player.pos.y + bobY * 0.5, player.pos.z);
+                if (player.tpProgress > 0.001) {
+                    const camBack = new THREE.Vector3(0, 0, 1).applyEuler(new THREE.Euler(camera.rotation.x, camera.rotation.y, 0, 'YXZ'));
+                    const camRight = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
+                    const desiredDist = 2.9 - player.adsProgress * 1.35;
+                    const desiredRight = 0.55 - player.adsProgress * 0.14;
+                    const desiredUp = 0.42 - player.adsProgress * 0.12;
+                    const tpAnchor = player.pos.clone().add(new THREE.Vector3(0, desiredUp, 0)).addScaledVector(camRight, desiredRight);
+                    const wallCheck = getFirstObstacleDistance(tpAnchor, camBack, desiredDist + 0.35);
+                    const safeDist = wallCheck ? Math.max(0.55, wallCheck.distance - 0.32) : desiredDist;
+                    const tpCamPos = tpAnchor.clone().addScaledVector(camBack, safeDist);
+                    camera.position.lerpVectors(fpCamPos, tpCamPos, player.tpProgress);
+                } else {
+                    camera.position.copy(fpCamPos);
                 }
 
-                if (battleMode === 'hybrid' || battleMode === 'coop3') {
-                    allies.forEach((al, idx) => {
-                        const desiredPos = new THREE.Vector3(
-                            player.pos.x + (idx === 0 ? -3.0 : 3.0),
-                            0,
-                            Math.min(16, player.pos.z - 2.2)
-                        );
-                        const toDesired = desiredPos.clone().sub(al.group.position);
-                        toDesired.y = 0;
-                        if (toDesired.length() > 1.2) {
-                            toDesired.normalize();
-                            al.group.position.addScaledVector(toDesired, 3.8 * dt);
-                            resolvesCollision(al.group.position, 0.42);
+                broadcastPlayerState(false);
+
+                const nowMs = Date.now();
+                remotePlayers.forEach((rp, uid) => {
+                    const lastSeen = remoteLastSeen.get(uid) || 0;
+                    if (nowMs - lastSeen > 22000) {
+                        scene.remove(rp.group);
+                        const idx1 = remoteHitMeshes.indexOf(rp.torso);
+                        if (idx1 !== -1) remoteHitMeshes.splice(idx1, 1);
+                        const idx2 = remoteHitMeshes.indexOf(rp.head);
+                        if (idx2 !== -1) remoteHitMeshes.splice(idx2, 1);
+                        remotePlayers.delete(uid);
+                        remoteLastSeen.delete(uid);
+                        updateSideRoomUI(remotePlayers.size + 1);
+                        updateHUD();
+                        return;
+                    }
+                    rp.group.position.lerp(rp.targetPos, Math.min(1, dt * 14));
+                    rp.group.rotation.y = rp.targetYaw + Math.PI;
+                });
+
+                for (let i = allies.length - 1; i >= 0; i--) {
+                    const al = allies[i];
+                    let nearestEn = null;
+                    let nearestDist = 48;
+                    enemies.forEach(en => {
+                        const d = al.group.position.distanceTo(en.group.position);
+                        if (d < nearestDist) {
+                            nearestDist = d;
+                            nearestEn = en;
+                        }
+                    });
+                    if (nearestEn) {
+                        const lookAtPt = new THREE.Vector3(nearestEn.group.position.x, al.group.position.y, nearestEn.group.position.z);
+                        al.group.lookAt(lookAtPt);
+                        if (nearestDist > 16) {
+                            const step = nearestEn.group.position.clone().sub(al.group.position).setY(0).normalize();
+                            al.group.position.addScaledVector(step, 2.6 * dt);
+                            resolvesCollision(al.group.position, 0.45);
                         }
                         al.fireCooldown -= dt;
-                        if (enemies.length > 0) {
-                            const targetEn = enemies[idx % enemies.length];
-                            const lookDir = targetEn.group.position.clone().sub(al.group.position);
-                            al.group.rotation.y = Math.atan2(lookDir.x, lookDir.z);
-                            if (al.fireCooldown <= 0) {
-                                al.fireCooldown = 1.1 + Math.random() * 0.7;
-                                const muzzle = al.group.position.clone().add(new THREE.Vector3(0, 1.35, 0));
-                                const shotDir = targetEn.group.position.clone().add(new THREE.Vector3(0, 1.2, 0)).sub(muzzle).normalize();
-                                const wallHit = getFirstObstacleDistance(muzzle, shotDir, 90);
-                                const wallDist = wallHit ? wallHit.distance : 90;
-                                const distToEn = muzzle.distanceTo(targetEn.group.position);
-                                spawnTracerBullet(muzzle, shotDir, 110);
-                                if (wallDist >= distToEn - 0.3 && Math.random() < 0.45) {
-                                    damageBotEnemy(targetEn, 18, false, targetEn.group.position.clone().add(new THREE.Vector3(0, 1.2, 0)), '隊友支援');
+                        if (al.fireCooldown <= 0) {
+                            al.fireCooldown = 0.72 + Math.random() * 0.45;
+                            const origin = al.group.position.clone().add(new THREE.Vector3(0, 1.35, 0));
+                            const targetPt = nearestEn.group.position.clone().add(new THREE.Vector3(0, 1.2, 0));
+                            const dir = targetPt.clone().sub(origin).normalize();
+                            const distToEn = origin.distanceTo(targetPt);
+                            const wallHit = getFirstObstacleDistance(origin, dir, distToEn);
+                            if (!wallHit || wallHit.distance >= distToEn - 0.2) {
+                                spawnTracerBullet(origin, dir, 120);
+                                if (Math.random() < 0.68) {
+                                    damageBotEnemy(nearestEn, 24, Math.random() < 0.2, targetPt);
                                 }
                             }
                         }
-                    });
-
-                    enemies.forEach(en => {
-                        const toPlayer = player.pos.clone().sub(en.group.position);
-                        toPlayer.y = 0;
-                        const dist = toPlayer.length();
-                        const dirToPlayer = toPlayer.clone().normalize();
-                        en.group.rotation.y = Math.atan2(dirToPlayer.x, dirToPlayer.z);
-
-                        en.strafeTimer -= dt;
-                        if (en.strafeTimer <= 0) {
-                            en.strafeTimer = 1.2 + Math.random() * 1.6;
-                            en.strafeDir *= -1;
-                        }
-                        const strafeVec = new THREE.Vector3(-dirToPlayer.z * en.strafeDir, 0, dirToPlayer.x * en.strafeDir);
-                        if (dist > 11) {
-                            en.group.position.addScaledVector(dirToPlayer, en.speed * dt);
-                        }
-                        en.group.position.addScaledVector(strafeVec, en.speed * 0.55 * dt);
-                        resolvesCollision(en.group.position, 0.45);
-
-                        en.fireCooldown -= dt;
-                        if (en.fireCooldown <= 0 && dist < 58) {
-                            en.fireCooldown = 1.35 + Math.random() * 1.1;
-                            const muzzle = en.group.position.clone().add(new THREE.Vector3(0, 1.38, 0));
-                            const targetEye = player.pos.clone().add(new THREE.Vector3(0, -0.15, 0));
-                            const shotDir = targetEye.clone().sub(muzzle).normalize();
-                            const distToP = muzzle.distanceTo(targetEye);
-                            const wallHit = getFirstObstacleDistance(muzzle, shotDir, distToP + 1);
-                            const wallDist = wallHit ? wallHit.distance : distToP + 1;
-                            spawnTracerBullet(muzzle, shotDir, 95);
-
-                            if (wallDist >= distToP - 0.25) {
-                                const hitChance = player.isCrouching ? 0.24 : 0.42;
-                                if (Math.random() < hitChance) {
-                                    damagePlayer(en.dmg, en.group.position);
-                                }
-                            }
-                        }
-                    });
+                    }
                 }
 
-                broadcastPlayerState(false);
-            } else {
-                broadcastPlayerState(false);
+                for (let i = enemies.length - 1; i >= 0; i--) {
+                    const en = enemies[i];
+                    let targetPos = player.pos.clone();
+                    let targetingPlayer = true;
+                    let targetRemoteUid = null;
+
+                    if (battleMode === 'coop3') {
+                        remotePlayers.forEach((rp, uid) => {
+                            if (rp.group.visible) {
+                                const dToRemote = en.group.position.distanceTo(rp.group.position);
+                                if (dToRemote < en.group.position.distanceTo(targetPos)) {
+                                    targetPos = rp.group.position.clone().add(new THREE.Vector3(0, 1.4, 0));
+                                    targetingPlayer = false;
+                                    targetRemoteUid = uid;
+                                }
+                            }
+                        });
+                    }
+                    allies.forEach(al => {
+                        const dToAlly = en.group.position.distanceTo(al.group.position);
+                        if (dToAlly < en.group.position.distanceTo(targetPos)) {
+                            targetPos = al.group.position.clone().add(new THREE.Vector3(0, 1.3, 0));
+                            targetingPlayer = false;
+                            targetRemoteUid = null;
+                        }
+                    });
+
+                    const flatTarget = new THREE.Vector3(targetPos.x, en.group.position.y, targetPos.z);
+                    const dist = en.group.position.distanceTo(flatTarget);
+                    en.group.lookAt(flatTarget);
+
+                    en.strafeTimer -= dt;
+                    if (en.strafeTimer <= 0) {
+                        en.strafeTimer = 1.1 + Math.random() * 1.4;
+                        en.strafeDir *= -1;
+                    }
+                    const fwd = flatTarget.clone().sub(en.group.position).normalize();
+                    const side = new THREE.Vector3(-fwd.z, 0, fwd.x).multiplyScalar(en.strafeDir);
+
+                    if (dist > 11) {
+                        en.group.position.addScaledVector(fwd, en.speed * dt);
+                    }
+                    en.group.position.addScaledVector(side, en.speed * 0.48 * dt);
+                    resolvesCollision(en.group.position, 0.45);
+
+                    en.fireCooldown -= dt;
+                    if (en.fireCooldown <= 0 && dist < 52) {
+                        en.fireCooldown = 1.05 + Math.random() * 0.9;
+                        const origin = en.group.position.clone().add(new THREE.Vector3(0, 1.35, 0));
+                        const dir = targetPos.clone().sub(origin).normalize();
+                        const wallHit = getFirstObstacleDistance(origin, dir, dist);
+                        if (!wallHit || wallHit.distance >= dist - 0.35) {
+                            spawnTracerBullet(origin, dir, 105);
+                            if (targetingPlayer && Math.random() < 0.44) {
+                                damagePlayer(en.dmg, origin);
+                            } else if (targetRemoteUid && Math.random() < 0.35) {
+                                broadcastRoomEvent({
+                                    type: 'pvp_hit',
+                                    target: targetRemoteUid,
+                                    dmg: Math.round(en.dmg * 0.8),
+                                    origin: { x: origin.x, y: origin.y, z: origin.z }
+                                });
+                            }
+                        }
+                    }
+                }
             }
 
-            const nowMs = Date.now();
-            remotePlayers.forEach((rp, uid) => {
-                const lastSeen = remoteLastSeen.get(uid) || nowMs;
-                if (nowMs - lastSeen > 12000) {
-                    scene.remove(rp.group);
-                    const idx1 = remoteHitMeshes.indexOf(rp.torso);
-                    if (idx1 !== -1) remoteHitMeshes.splice(idx1, 1);
-                    const idx2 = remoteHitMeshes.indexOf(rp.head);
-                    if (idx2 !== -1) remoteHitMeshes.splice(idx2, 1);
-                    remotePlayers.delete(uid);
-                    remoteLastSeen.delete(uid);
-                    updateSideRoomUI(remotePlayers.size + 1);
-                    return;
-                }
-                rp.group.position.lerp(rp.targetPos, Math.min(1, dt * 16));
-                rp.group.rotation.y = rp.targetYaw;
-                if (rp.buddhaHalo.visible) rp.buddhaHalo.rotation.z += dt * 3;
-            });
+            for (let i = rockets.length - 1; i >= 0; i--) {
+                const r = rockets[i];
+                const step = r.vel.clone().multiplyScalar(dt);
+                const stepDist = step.length();
+                const dir = step.clone().normalize();
+                const wallHit = getFirstObstacleDistance(r.mesh.position, dir, stepDist + 0.3);
 
-            // 黃銅彈殼拋出物理與落地金屬叮噹聲
+                let hitEnemy = false;
+                for (let j = 0; j < enemies.length; j++) {
+                    if (enemies[j].group.position.clone().add(new THREE.Vector3(0, 1.1, 0)).distanceTo(r.mesh.position) < 1.25) {
+                        hitEnemy = true;
+                        break;
+                    }
+                }
+
+                r.mesh.position.add(step);
+                r.life -= dt;
+
+                if (wallHit || hitEnemy || r.life <= 0) {
+                    const blastPos = wallHit ? wallHit.point : r.mesh.position.clone();
+                    audio.playExplosion();
+                    spawnImpactParticles(blastPos, false, 36);
+                    const blastRadius = 8.5;
+                    for (let j = enemies.length - 1; j >= 0; j--) {
+                        const en = enemies[j];
+                        const d = en.group.position.distanceTo(blastPos);
+                        if (d <= blastRadius) {
+                            const dmg = Math.max(65, Math.round(r.dmg * (1 - d / blastRadius)));
+                            damageBotEnemy(en, dmg, true, en.group.position.clone().add(new THREE.Vector3(0, 1.3, 0)), 'RPG-7火箭筒');
+                        }
+                    }
+                    fuelBarrels.forEach(fb => {
+                        if (fb.alive && fb.mesh.position.distanceTo(blastPos) <= blastRadius) {
+                            detonateFuelBarrel(fb);
+                        }
+                    });
+                    scene.remove(r.mesh);
+                    rockets.splice(i, 1);
+                }
+            }
+
+            for (let i = activeTurrets.length - 1; i >= 0; i--) {
+                const t = activeTurrets[i];
+                t.life -= dt;
+                if (t.life <= 0) {
+                    scene.remove(t.group);
+                    activeTurrets.splice(i, 1);
+                    continue;
+                }
+                let nearestEn = null;
+                let bestDist = 42;
+                enemies.forEach(en => {
+                    const d = t.group.position.distanceTo(en.group.position);
+                    if (d < bestDist) {
+                        bestDist = d;
+                        nearestEn = en;
+                    }
+                });
+                if (nearestEn) {
+                    const aimPt = nearestEn.group.position.clone().add(new THREE.Vector3(0, 1.25, 0));
+                    t.headGroup.lookAt(aimPt);
+                    t.fireCooldown -= dt;
+                    if (t.fireCooldown <= 0) {
+                        t.fireCooldown = 0.24;
+                        const muzzlePos = t.group.position.clone().add(new THREE.Vector3(0, 0.72, 0));
+                        const dir = aimPt.clone().sub(muzzlePos).normalize();
+                        const wallHit = getFirstObstacleDistance(muzzlePos, dir, bestDist);
+                        if (!wallHit || wallHit.distance >= bestDist - 0.3) {
+                            audio.playHitTick();
+                            spawnTracerBullet(muzzlePos, dir, 130);
+                            damageBotEnemy(nearestEn, 26, Math.random() < 0.25, aimPt, '哨戒機槍塔');
+                        }
+                    }
+                } else {
+                    t.headGroup.rotation.y += dt * 1.4;
+                }
+            }
+
+            for (let i = tracers.length - 1; i >= 0; i--) {
+                const tr = tracers[i];
+                tr.mesh.position.addScaledVector(tr.vel, dt);
+                tr.life -= dt;
+                if (tr.life <= 0) {
+                    scene.remove(tr.mesh);
+                    tracers.splice(i, 1);
+                }
+            }
+
             for (let i = shellCasings.length - 1; i >= 0; i--) {
                 const sc = shellCasings[i];
                 sc.vel.y -= 13.5 * dt;
@@ -4243,16 +4605,18 @@
                 sc.mesh.rotation.x += sc.rotVel.x * dt;
                 sc.mesh.rotation.y += sc.rotVel.y * dt;
                 sc.mesh.rotation.z += sc.rotVel.z * dt;
-                if (sc.mesh.position.y < 0.02) {
+                if (sc.mesh.position.y <= 0.02) {
                     sc.mesh.position.y = 0.02;
                     if (!sc.bounced) {
                         sc.bounced = true;
+                        sc.vel.y = Math.abs(sc.vel.y) * 0.38;
+                        sc.vel.x *= 0.45;
+                        sc.vel.z *= 0.45;
                         audio.playShellCasingClink();
+                    } else {
+                        sc.vel.set(0, 0, 0);
+                        sc.rotVel.set(0, 0, 0);
                     }
-                    sc.vel.y *= -0.35;
-                    sc.vel.x *= 0.55;
-                    sc.vel.z *= 0.55;
-                    sc.rotVel.multiplyScalar(0.5);
                 }
                 sc.life -= dt;
                 if (sc.life <= 0) {
@@ -4261,7 +4625,6 @@
                 }
             }
 
-            // 牆面彈孔漸隱清理
             for (let i = bulletDecals.length - 1; i >= 0; i--) {
                 bulletDecals[i].life -= dt;
                 if (bulletDecals[i].life <= 0) {
@@ -4270,41 +4633,31 @@
                 }
             }
 
-            for (let i = tracers.length - 1; i >= 0; i--) {
-                const t = tracers[i];
-                t.mesh.position.addScaledVector(t.vel, dt);
-                t.life -= dt;
-                if (t.life <= 0) {
-                    scene.remove(t.mesh);
-                    tracers.splice(i, 1);
-                }
-            }
-
             for (let i = grenades.length - 1; i >= 0; i--) {
                 const g = grenades[i];
-                g.vel.y -= 18 * dt;
+                g.vel.y -= 14.5 * dt;
                 g.mesh.position.addScaledVector(g.vel, dt);
                 if (g.mesh.position.y < 0.12) {
                     g.mesh.position.y = 0.12;
                     g.vel.y *= -0.45;
-                    g.vel.x *= 0.7;
-                    g.vel.z *= 0.7;
+                    g.vel.x *= 0.72;
+                    g.vel.z *= 0.72;
                 }
                 g.timer -= dt;
                 if (g.timer <= 0) {
-                    detonateGrenade(g.mesh.position.clone());
+                    detonateGrenade(g.mesh.position);
                     scene.remove(g.mesh);
                     grenades.splice(i, 1);
                 }
             }
 
             for (let i = particles.length - 1; i >= 0; i--) {
-                const p = particles[i];
-                p.vel.y -= 12 * dt;
-                p.mesh.position.addScaledVector(p.vel, dt);
-                p.life -= dt;
-                if (p.life <= 0) {
-                    scene.remove(p.mesh);
+                const pt = particles[i];
+                pt.vel.y -= 11 * dt;
+                pt.mesh.position.addScaledVector(pt.vel, dt);
+                pt.life -= dt;
+                if (pt.life <= 0) {
+                    scene.remove(pt.mesh);
                     particles.splice(i, 1);
                 }
             }
@@ -4320,9 +4673,8 @@
         });
 
         window.onload = function () {
-            updateSideRoomUI(1);
             updateHUD();
-            requestAnimationFrame(animate);
+            animate(performance.now());
         };
     </script>
 </body>
